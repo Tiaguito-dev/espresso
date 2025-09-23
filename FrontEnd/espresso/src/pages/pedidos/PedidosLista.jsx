@@ -1,12 +1,14 @@
 // src/pages/pedidos/PedidosLista.jsx
 import React, { useState, useEffect } from "react";
 import { getPedidos, updatePedido } from "../../services/pedidosService"; // Importamos las funciones
+import { useNavigate } from "react-router-dom"; // Esto es para navegar programáticamente, es decir, cuando hacemos click en "Agregar Pedido"
 import "./PedidosLista.css";
 
 export default function PedidosLista() {
   const [pedidos, setPedidos] = useState([]);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [estadoFiltro, setEstadoFiltro] = useState("todos");
+  const navigate = useNavigate();
 
   // Usamos useEffect para cargar los pedidos del back-end al inicio
   useEffect(() => {
@@ -71,7 +73,7 @@ export default function PedidosLista() {
           <span onClick={() => filtrarEstado("Finalizado")}>Finalizados</span>
           <span onClick={() => filtrarEstado("Cancelado")}>Cancelados</span>
         </div>
-        <button className="btn-agregar">+ Agregar Pedido</button>
+        <button className="btn-agregar" onClick={() => navigate("/pedidos/agregar")}>+ Agregar Pedido</button>
       </div>
 
       {/* Tabla */}

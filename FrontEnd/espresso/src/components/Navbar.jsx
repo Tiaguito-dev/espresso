@@ -8,7 +8,7 @@ export default function Navbar() {
       <ul>
         <li><NavLink to="/" end>Inicio</NavLink></li>
         <li><NavLink to="/pedidos">Lista de pedidos</NavLink></li>
-        <li><NavLink to="/pedidos/agregar">Agregar pedido</NavLink></li>
+        <li><NavLink to="/menu">Gestión de menú</NavLink></li>
       </ul>
     </nav>
   );

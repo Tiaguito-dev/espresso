@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar.jsx";
 import Home from "./pages/Home.jsx";
 import PedidosLista from "./pages/pedidos/PedidosLista.jsx";
 import AgregarPedido from "./pages/pedidos/AgregarPedido.jsx";
+import Menu from "./pages/menu/Menu.jsx";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/pedidos" element={<PedidosLista />} />
           <Route path="/pedidos/agregar" element={<AgregarPedido />} />
+          <Route path="/menu" element={<Menu />} />
         </Routes>
       </div>
     </Router>
