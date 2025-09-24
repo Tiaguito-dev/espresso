@@ -8,6 +8,13 @@ const validarDataMesa = (data) => {
     if (!data.nroMesa || typeof data.nroMesa !== 'number' || data.nroMesa <= 0) {
         errores.push('El número de mesa es obligatorio, debe ser un numero positivo');
     }
+
+    if (data.estadoMesa){
+        const estadosValidos = ['disponible', 'ocupada', 'reservada', 'fuera de servicio'];
+        if (!estadosValidos.includes(data.estadoMesa)) {
+            errores.push(`El estado de la mesa debe ser uno de los siguientes: ${estadosValidos.join(', ')}`);
+        }
+    }
 }
 
 class Mesa {

@@ -21,7 +21,7 @@ const validarDataPedido = (data) => {
     //PREGUUNTAR si habria que validar que fecha sea Date
 
     if (data.estadoPedido){
-        const estadosValidos = ['pendiente', 'en preparacion', 'servido', 'cancelado'];
+        const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado'];
         if (!estadosValidos.includes(data.estadoPedido)) {
             errores.push(`El estado del pedido debe ser uno de los siguientes: ${estadosValidos.join(', ')}`);
         }
