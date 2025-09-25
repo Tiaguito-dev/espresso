@@ -22,6 +22,7 @@ export const createProducto = async (productoData) => {
 };
 
 export const updateProducto = async (id, productoData) => {
+    console.log('Updating product with ID:', id, 'Data:', productoData); // Línea de depuración
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

@@ -26,7 +26,7 @@ let productos = [
         nombre: 'Tostado jyq',
         descripcion: 'Jamón y queso, clásico entre los clásicos',
         precio: 3500,
-        disponible: true,
+        disponible: false,
     },
 ];
 

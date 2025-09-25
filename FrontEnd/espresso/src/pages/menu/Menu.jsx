@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { getPedidos, updatePedido } from "../../services/pedidosService"; // Importamos las funciones
-import { useNavigate } from "react-router-dom"; // Esto es para navegar programáticamente, es decir, cuando hacemos click en "Agregar Pedido"
-import "./Menu.css";
+import { getProductos, updateProducto } from "../../services/productosService";
+import { useNavigate } from "react-router-dom";
+import "../pedidos/PedidosLista.css";
 
-//useState, useEffect y useNavigate son hooks de React.
 export default function Menu() {
-    const [pedidos, setPedidos] = useState([]);
+    const [productos, setProductos] = useState([]);
     const [mostrarFiltros, setMostrarFiltros] = useState(false);
     const [estadoFiltro, setEstadoFiltro] = useState("todos");
     const navigate = useNavigate();
 
-    // Usamos useEffect para cargar los pedidos del back-end al inicio
+    // Cargar productos del back-end al inicio
     useEffect(() => {
-        fetchPedidos();
+        fetchProductos();
     }, []);
 
-    const fetchPedidos = async () => {
+    const fetchProductos = async () => {
         try {
-            const data = await getPedidos();
-            setPedidos(data);
+            const data = await getProductos();
+            setProductos(data);
         } catch (error) {
-            console.error("Error al obtener los pedidos:", error);
+            console.error("Error al obtener los productos:", error);
         }
     };
 
@@ -34,20 +33,33 @@ export default function Menu() {
 
     const cambiarEstado = async (id) => {
         const nuevoEstado = prompt(
-            "Ingrese nuevo estado (Pendiente, Listo, Finalizado, Cancelado):"
+            "¿El producto está disponible? (true/false):"
         );
-        if (!nuevoEstado) return;
+
+        // Convertir string a boolean
+        const disponible = nuevoEstado === "true";
+
+        if (nuevoEstado === null) return; // Usuario canceló
 
         try {
-            await updatePedido(id, { estado: nuevoEstado });
-            fetchPedidos(); // Vuelve a cargar los pedidos para ver el cambio
+            await updateProducto(id, { disponible });
+            fetchProductos(); // Recargar productos
         } catch (error) {
-            console.error("Error al actualizar el estado del pedido:", error);
+            console.error("Error al actualizar el estado del producto:", error);
         }
     };
 
-    const pedidosFiltrados =
-        estadoFiltro === "todos" ? pedidos : pedidos.filter((p) => p.estado === estadoFiltro);
+    // Filtrar productos según el estado seleccionado
+    const productosFiltrados = (() => {
+        switch (estadoFiltro) {
+            case "disponibles":
+                return productos.filter(p => p.disponible === true);
+            case "no-disponibles":
+                return productos.filter(p => p.disponible === false);
+            default:
+                return productos;
+        }
+    })();
 
     return (
         <div className="container">
@@ -62,22 +74,41 @@ export default function Menu() {
                 </div>
             )}
 
-            {/* Estados + agregar pedido */}
+            {/* Estados + agregar producto */}
             <div className="filtros-estado">
                 <div className="estados">
-                    <span onClick={() => filtrarEstado("todos")}>Todos</span>
-                    <span onClick={() => filtrarEstado("Pendiente")}>Pendientes</span>
-                    <span onClick={() => filtrarEstado("Listo")}>Listos</span>
-                    <span onClick={() => filtrarEstado("Finalizado")}>Finalizados</span>
-                    <span onClick={() => filtrarEstado("Cancelado")}>Cancelados</span>
+                    <span
+                        className={estadoFiltro === "todos" ? "activo" : ""}
+                        onClick={() => filtrarEstado("todos")}
+                    >
+                        Todos
+                    </span>
+                    <span
+                        className={estadoFiltro === "disponibles" ? "activo" : ""}
+                        onClick={() => filtrarEstado("disponibles")}
+                    >
+                        Disponibles
+                    </span>
+                    <span
+                        className={estadoFiltro === "no-disponibles" ? "activo" : ""}
+                        onClick={() => filtrarEstado("no-disponibles")}
+                    >
+                        No disponibles
+                    </span>
                 </div>
-                <button className="btn-agregar" onClick={() => navigate("/pedidos/agregar")}>+ Agregar Pedido</button>
+                <button
+                    className="btn-agregar"
+                    onClick={() => navigate("/productos/agregar")}
+                >
+                    + Agregar Producto
+                </button>
             </div>
 
             {/* Tabla */}
             <table>
                 <thead>
                     <tr>
+                        <th>Código</th>
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Precio</th>
@@ -86,21 +117,25 @@ export default function Menu() {
                     </tr>
                 </thead>
                 <tbody>
-                    {pedidosFiltrados.map((pedido) => (
-                        <tr key={pedido.id} data-estado={pedido.estado}>
-                            <td>{pedido.id}</td>
-                            <td>{pedido.productos.map(p => `${p.nombre} ($${p.precio})`).join(', ')}</td>
-                            <td>${pedido.total}</td>
+                    {productosFiltrados.map((producto) => (
+                        <tr
+                            key={producto.id}
+                            data-estado={producto.disponible ? 'disponible' : 'no-disponible'}
+                        >
+                            <td>{producto.id}</td>
+                            <td>{producto.nombre}</td>
+                            <td>{producto.descripcion}</td>
+                            <td>${producto.precio}</td>
                             <td>
-                                <span className={`estado ${pedido.estado.toLowerCase()}`}>
-                                    {pedido.estado}
+                                <span className={`disponibilidad ${producto.disponible ? 'disponible' : 'no-disponible'}`}>
+                                    {producto.disponible ? "Disponible" : "No disponible"}
                                 </span>
                             </td>
                             <td className="acciones">
                                 <button className="info">ℹ️ Mostrar info</button>
                                 <button
                                     className="modificar"
-                                    onClick={() => cambiarEstado(pedido.id)}
+                                    onClick={() => cambiarEstado(producto.id)}
                                 >
                                     ✏️ Modificar
                                 </button>
