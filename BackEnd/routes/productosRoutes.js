@@ -1,15 +1,15 @@
-// routes/pedidosRoutes.js
+// routes/productosRoutes.js
 const express = require('express');
 const router = express.Router();
-const pedidosController = require('../controllers/menuController');
+const menuController = require('../controllers/menuController');
 
-// Ruta para obtener todos los pedidos
+// Ruta para obtener todos los productos
 router.get('/', menuController.obtenerProductos);
 
-// Ruta para crear un nuevo pedido
+// Ruta para crear un nuevo producto
 router.post('/', menuController.crearProducto);
 
-// Ruta para actualizar un pedido
+// Ruta para actualizar un producto
 router.put('/:id', menuController.actualizarProducto);
 
 module.exports = router;

@@ -1,19 +1,30 @@
 // server.js
 const express = require('express');
 const app = express();
-const cors = require('cors'); // Agrega cors para permitir que el front-end se comunique con el back-end
+const cors = require('cors');
+
+console.log('🚀 Iniciando servidor...');
+
+// Importar rutas
+console.log('📁 Importando rutas...');
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
+console.log('✅ Rutas importadas correctamente');
 
 // Middlewares
-app.use(express.json()); // Para que el servidor entienda los datos JSON
-app.use(cors()); // Habilita CORS
+app.use(express.json());
+app.use(cors());
 
-// Rutas
-app.use('/api/pedidos', pedidosRoutes); // Usamos el router de pedidos
-app.use('/api/productos', productosRoutes); // Usamos el router de productos
+// Registrar rutas
+console.log('🔗 Registrando rutas...');
+app.use('/api/pedidos', pedidosRoutes);
+app.use('/api/productos', productosRoutes);
+console.log('✅ /api/productos registrado');
 
-const PORT = 3001; // Puedes usar el puerto que quieras
+const PORT = 3001;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+  console.log('🧪 Rutas disponibles:');
+  console.log('   - GET http://localhost:3001/api/productos');
+  console.log('   - GET http://localhost:3001/api/pedidos');
 });
