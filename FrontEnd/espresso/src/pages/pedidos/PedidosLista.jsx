@@ -4,8 +4,41 @@ import { getPedidos, updatePedido } from "../../services/pedidosService"; // Imp
 import { useNavigate } from "react-router-dom"; // Esto es para navegar programáticamente, es decir, cuando hacemos click en "Agregar Pedido"
 import "./PedidosLista.css";
 
+/*
+  🔄 FLUJO COMPLETO:
+
+  1. Componente carga:
+    pedidos = [] → Tabla vacía 📋
+
+  2. fetchPedidos() ejecuta:
+    Backend responde con datos 📡
+
+  3. setPedidos(data) ejecuta:
+    pedidos = [datos] → React re-renderiza 🔄
+
+  4. Tabla se actualiza:
+    map() recorre los datos → Filas aparecen ✅
+*/
+
 export default function PedidosLista() {
   const [pedidos, setPedidos] = useState([]);
+
+  /*
+    ¿Por qué es confuso lo de setPedidos?
+    Porque no ves la definición explícita de setPedidos, pero React la crea automáticamente cuando usas useState.
+          
+    Versión manual (sin React):
+    let pedidos = [];
+  
+    function setPedidos(nuevoValor) {
+    pedidos = nuevoValor;
+    // Re-renderizar componente manualmente
+    }
+  
+    Versión React (automática):
+    const [pedidos, setPedidos] = useState([]); // ← React hace todo por ti
+  */
+
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [estadoFiltro, setEstadoFiltro] = useState("todos");
   const navigate = useNavigate();
@@ -46,10 +79,19 @@ export default function PedidosLista() {
     }
   };
 
+  // REFERENCIA N°1: HAY UNA VARIABLE DE ESTADO PARA estadoFiltro así que cuando cambie se actualiza automáticamente pedidosFiltrados
   const pedidosFiltrados =
-    estadoFiltro === "todos"
-      ? pedidos
-      : pedidos.filter((p) => p.estado === estadoFiltro);
+    estadoFiltro === "todos" ? pedidos : pedidos.filter((p) => p.estado === estadoFiltro);
+
+  /* 
+    Alternativa sin usar operador ternario (if else):
+    let pedidosFiltrados;
+    if (estadoFiltro === "todos") {
+      pedidosFiltrados = pedidos;
+    } else {
+      pedidosFiltrados = pedidos.filter((p) => p.estado === estadoFiltro);
+    }
+  */
 
   return (
     <div className="container">
@@ -90,6 +132,7 @@ export default function PedidosLista() {
           </tr>
         </thead>
         <tbody>
+          {/* Para entender por qué usa pedidosFiltrados mirar la REFERENCIA N°1 */}
           {pedidosFiltrados.map((pedido) => (
             <tr key={pedido.id} data-estado={pedido.estado}>
               <td>{pedido.id}</td>

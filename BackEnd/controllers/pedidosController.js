@@ -52,13 +52,13 @@ let pedidos = [
 ];
 
 exports.obtenerPedidos = (req, res) => {
-  res.json(pedidos);
+  res.json(pedidos); // ← Devuelve TODOS los pedidos como JSON
 };
 
 exports.crearPedido = (req, res) => {
-  const nuevoPedido = { ...req.body, id: Date.now().toString() };
-  pedidos.push(nuevoPedido);
-  res.status(201).json(nuevoPedido);
+  const nuevoPedido = { ...req.body, id: Date.now().toString() }; // Esto es meramente temporal, ya que después lo va a manejar la base de datos
+  pedidos.push(nuevoPedido); // Agrega al array de pedidos que antes se definió
+  res.status(201).json(nuevoPedido); // Responde con status 201 (Created)
 };
 
 exports.actualizarPedido = (req, res) => {
