@@ -98,7 +98,7 @@ export default function Menu() {
                 </div>
                 <button
                     className="btn-agregar"
-                    onClick={() => navigate("/productos/agregar")}
+                    onClick={() => navigate("/menu/productos/")}
                 >
                     + Agregar Producto
                 </button>
@@ -132,13 +132,8 @@ export default function Menu() {
                                 </span>
                             </td>
                             <td className="acciones">
-                                <button className="info">ℹ️ Mostrar info</button>
-                                <button
-                                    className="modificar"
-                                    onClick={() => cambiarEstado(producto.id)}
-                                >
-                                    ✏️ Modificar
-                                </button>
+                                <button className="info" onClick={() => cambiarEstado(producto.id)}>ℹ️ Disponibilidad</button>
+                                <button className="modificar" onClick={() => navigate(`/menu/productos/${producto.id}`)}> ✏️ Modificar </button>
                                 <button className="baja">🗑️ Baja</button>
                             </td>
                         </tr>

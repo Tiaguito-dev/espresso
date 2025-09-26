@@ -6,6 +6,9 @@ const menuController = require('../controllers/menuController');
 // Ruta para obtener todos los productos
 router.get('/', menuController.obtenerProductos);
 
+// Ruta para obtener un producto por ID
+router.get('/:id', menuController.obtenerProductoPorId);
+
 // Ruta para crear un nuevo producto
 router.post('/', menuController.crearProducto);
 
