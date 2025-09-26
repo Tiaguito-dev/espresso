@@ -40,9 +40,6 @@ class Producto {
     isDisponible() {
         return this.disponible;
     }
-    getCategoria() {
-        return this.categoria;
-    }   
     getDescripcion() {
         return this.descripcion;
     }
