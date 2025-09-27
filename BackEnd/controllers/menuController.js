@@ -3,14 +3,14 @@ let productos = [
     {
         id: '001',
         nombre: 'Medialuna',
-        descripcion: 'La que le gusta a la trola de tu abuela',
+        descripcion: 'Dulce o salada, vos elegís',
         precio: 800,
         disponible: true,
     },
     {
         id: '002',
-        nombre: 'Café',
-        descripcion: 'Caliente como tu vieja',
+        nombre: 'Café americano',
+        descripcion: 'Para comenzar el día con todo',
         precio: 1600,
         disponible: true,
     },
@@ -32,6 +32,18 @@ let productos = [
 
 exports.obtenerProductos = (req, res) => {
     res.json(productos); // Devuelve TODOS los productos como JSON
+};
+
+exports.obtenerProductoPorId = (req, res) => {
+    // Tiene que devolver un solo producto con ese ID en particular
+    const { id } = req.params;
+    const producto = productos.find((p) => p.id === id);
+    if (!producto) {
+        return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+    res.json(productos); // Devuelve TODOS los productos como JSON
+    console.log('./controllers/menuController.js \n devolviendo el producto con ID:', id);
+    console.log(producto);
 };
 
 exports.crearProducto = (req, res) => {

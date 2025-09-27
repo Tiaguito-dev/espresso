@@ -5,10 +5,10 @@ const validarDataProducto = (data) => {
 
     if (!data || typeof data !== 'object') {
         errores.push('Se requieren los datos del producto');
-        return errores; 
+        return errores;
     }
 
-    if (!data.nombre ) {
+    if (!data.nombre) {
         errores.push('El nombre es obligatorio');
     }
 
@@ -22,13 +22,17 @@ const validarDataProducto = (data) => {
 }
 
 class Producto {
-    constructor (data){
+    constructor(data) {
+        const errores = validarDataProducto(data);
+        if (errores.length > 0) {
+            throw new Error(`Errores de validacion: ${errores.join(', ')}`);
+        }
         this.nombre = data.nombre;
         this.descripcion = data.descripcion || ''; //si no tiene descripcion, la inicializa en cadena vacia
         this.precio = data.precio || 0; //si no tiene precio, lo inicializa en 0
         this.disponible = data.disponible || false; //si no tiene disponible, lo inicializa en false (no disponible)
         this.categoria = data.categoria || null; //si no tiene categoria, lo inicializa en null
-           
+
     }
 
     getNombre() {
@@ -36,12 +40,12 @@ class Producto {
     }
     getPrecio() {
         return this.precio;
-    }   
+    }
     isDisponible() {
         return this.disponible;
     }
     getDescripcion() {
         return this.descripcion;
     }
-    
+
 }

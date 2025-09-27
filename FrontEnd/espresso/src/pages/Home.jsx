@@ -13,7 +13,7 @@ function Home() {
           to="/pedidos"
           className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-xl shadow-lg transition"
         >
-          Lista de Pedidos
+          Gestión de Pedidos
         </Link>
 
         <Link
