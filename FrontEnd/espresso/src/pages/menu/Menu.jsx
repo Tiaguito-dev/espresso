@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getProductos, updateProducto } from "../../services/productosService";
+import { getProductos, updateProducto, deleteProducto } from "../../services/productosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 
@@ -60,6 +60,24 @@ export default function Menu() {
                 return productos;
         }
     })();
+
+    //elimino un producto    
+    const eliminarProducto = async (id) => {
+        if(window.confirm("¿Seguro que desea eliminar el producto?")) {
+            try{
+                await deleteProducto(id);
+                alert("Producto eliminado correctamente");
+                setProductos(prevProductos => 
+                prevProductos.filter(p => String(p.id) !== String(id))
+            );
+            } catch (error) {
+                console.error("Error al eliminar el producto");
+                alert("No se pudo eliminar el producto");
+            };
+
+        };
+    };
+
 
     return (
         <div className="container">
@@ -134,7 +152,7 @@ export default function Menu() {
                             <td className="acciones">
                                 <button className="info" onClick={() => cambiarEstado(producto.id)}>ℹ️ Disponibilidad</button>
                                 <button className="modificar" onClick={() => navigate(`/menu/productos/${producto.id}`)}> ✏️ Modificar </button>
-                                <button className="baja">🗑️ Baja</button>
+                                <button className="baja"onClick={()=> eliminarProducto(producto.id)}>🗑️ Baja</button>
                             </td>
                         </tr>
                     ))}

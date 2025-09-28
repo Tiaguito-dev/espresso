@@ -43,3 +43,15 @@ export const updateProducto = async (id, productoData) => {
     }
     return response.json();
 };
+
+export const deleteProducto = async (id) => {
+    console.log('Eliminando producto con ID:', id);
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+    });
+    if (!response.ok) {
+
+        throw new Error(`No se pudo eliminar el producto con ID ${id}`);
+    }
+    return response.json();
+};
