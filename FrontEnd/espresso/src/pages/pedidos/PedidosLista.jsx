@@ -4,6 +4,8 @@ import { getPedidos, updatePedido } from "../../services/pedidosService"; // Imp
 import { useNavigate } from "react-router-dom"; // Esto es para navegar programáticamente, es decir, cuando hacemos click en "Agregar Pedido"
 import "./PedidosLista.css";
 
+import Filtro from "./../menu/Filtro";
+
 /*
   🔄 FLUJO COMPLETO:
 
@@ -109,12 +111,13 @@ export default function PedidosLista() {
       {/* Estados + agregar pedido */}
       <div className="filtros-estado">
         <div className="estados">
-          <span onClick={() => filtrarEstado("todos")}>Todos</span>
-          <span onClick={() => filtrarEstado("Pendiente")}>Pendientes</span>
-          <span onClick={() => filtrarEstado("Listo")}>Listos</span>
-          <span onClick={() => filtrarEstado("Finalizado")}>Finalizados</span>
-          <span onClick={() => filtrarEstado("Cancelado")}>Cancelados</span>
+          <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
+          <Filtro estadoActual={estadoFiltro} estadoValor="Pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
+          <Filtro estadoActual={estadoFiltro} estadoValor="Listo" nombreFiltro="Listo" onClick={filtrarEstado} />
+          <Filtro estadoActual={estadoFiltro} estadoValor="Finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
+          <Filtro estadoActual={estadoFiltro} estadoValor="Cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
         </div>
+
         <button className="btn-agregar" onClick={() => navigate("/pedidos/agregar")}>+ Agregar Pedido</button>
       </div>
 

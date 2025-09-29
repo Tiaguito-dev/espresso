@@ -3,6 +3,8 @@ import { getProductos, updateProducto } from "../../services/productosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 
+import Filtro from "./Filtro";
+
 export default function Menu() {
     const [productos, setProductos] = useState([]);
     const [mostrarFiltros, setMostrarFiltros] = useState(false);
@@ -75,29 +77,12 @@ export default function Menu() {
                 </div>
             )}
 
-{/* LOS SPAN DEBERIAN SER UN MISMO COMPONENTE QUE RECIBA COMO PARAMETRO EL TEXTO, EL ESTADO Y LA FUNCION */}
-
             {/* Estados + agregar producto */}
             <div className="filtros-estado">
                 <div className="estados">
-                    <span
-                        className={estadoFiltro === "todos" ? "activo" : ""}
-                        onClick={() => filtrarEstado("todos")}
-                    >
-                        Todos
-                    </span>
-                    <span
-                        className={estadoFiltro === "disponibles" ? "activo" : ""}
-                        onClick={() => filtrarEstado("disponibles")}
-                    >
-                        Disponibles
-                    </span>
-                    <span
-                        className={estadoFiltro === "no-disponibles" ? "activo" : ""}
-                        onClick={() => filtrarEstado("no-disponibles")}
-                    >
-                        No disponibles
-                    </span>
+                    <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="disponible" nombreFiltro="Disponible" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="no-disponible" nombreFiltro="No Disponible" onClick={filtrarEstado} />
                 </div>
 
 {/* ESTE BUTTON DEBE SER EL MISMO COMPONENTE QUE EL LA SECCION DE PEDIDOS */}
