@@ -1,0 +1,29 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Fondo y fuente */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f5f0;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* El root ocupa toda la pantalla */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Contenedor general */
+.container {
+  flex: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto; /* centra horizontalmente */
+}
