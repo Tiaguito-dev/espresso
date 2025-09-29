@@ -9,7 +9,7 @@ function Home() {
         Sistema de gestión de pedidos. Usa la barra de navegacion o selecciona una opción aquí abajo.
       </p>
 
-      <div className="home-conteiner">
+      <div className="home-container">
         <BotonHome
           ruta="/pedidos"
           texto="Gestion de Pedidos"

@@ -64,6 +64,7 @@ export default function Menu() {
     return (
         <div className="container">
             {/* Botón filtros */}
+{/* TODO ESTE APARTADO DE FILTROS ES UN COMPONENTE AL QUE SE LE PASA POR PARAMETRO TEXTO Y FUNCION*/}
             <button className="toggle-filtros" onClick={toggleFiltros}>
                 Filtros
             </button>
@@ -73,6 +74,8 @@ export default function Menu() {
                     <input type="text" placeholder="Buscar por nombre" />
                 </div>
             )}
+
+{/* LOS SPAN DEBERIAN SER UN MISMO COMPONENTE QUE RECIBA COMO PARAMETRO EL TEXTO, EL ESTADO Y LA FUNCION */}
 
             {/* Estados + agregar producto */}
             <div className="filtros-estado">
@@ -96,6 +99,8 @@ export default function Menu() {
                         No disponibles
                     </span>
                 </div>
+
+{/* ESTE BUTTON DEBE SER EL MISMO COMPONENTE QUE EL LA SECCION DE PEDIDOS */}
                 <button
                     className="btn-agregar"
                     onClick={() => navigate("/menu/productos/")}
@@ -104,6 +109,8 @@ export default function Menu() {
                 </button>
             </div>
 
+
+{/* LA TABLA DEBE SER UN COMPONENTE COMPUESTO */}
             {/* Tabla */}
             <table>
                 <thead>
@@ -118,6 +125,8 @@ export default function Menu() {
                 </thead>
                 <tbody>
                     {productosFiltrados.map((producto) => (
+
+/* TODO EL TR ES UN COMPONENTE */
                         <tr
                             key={producto.id}
                             data-estado={producto.disponible ? 'disponible' : 'no-disponible'}
@@ -131,6 +140,8 @@ export default function Menu() {
                                     {producto.disponible ? "Disponible" : "No disponible"}
                                 </span>
                             </td>
+
+{/* ESTE TD ES TODO UN COMPONENTE COMPLETO */}
                             <td className="acciones">
                                 <button className="info" onClick={() => cambiarEstado(producto.id)}>ℹ️ Disponibilidad</button>
                                 <button className="modificar" onClick={() => navigate(`/menu/productos/${producto.id}`)}> ✏️ Modificar </button>
