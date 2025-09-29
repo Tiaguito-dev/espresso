@@ -68,3 +68,19 @@ exports.actualizarProducto = (req, res) => {
         res.status(404).json({ message: 'Producto no encontrado' });
     }
 };
+
+exports.eliminarProducto = (req, res) => {
+    const { id } = req.params;  
+    const idAComparar = String(id);
+    const productoIndex = productos.findIndex((producto) => String(producto.id) === idAComparar); 
+
+    console.log(`Resultado de findIndex: ${productoIndex}`); // <-- Mira si esto es 0 o -1
+
+    if (productoIndex !== -1){
+        productos.splice(productoIndex, 1);
+        res.status(200).json({ message: `El producto ${id} fue eliminado exitosamente` });
+    } else {
+        console.error(`ERROR 404: No se pudo encontrar el producto con ID ${id}`); 
+        res.status(404).json({message:`No fue posible elminar el producto ${id}`});
+    }
+};
