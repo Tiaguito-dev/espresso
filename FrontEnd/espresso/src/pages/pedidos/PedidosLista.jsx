@@ -1,15 +1,10 @@
 // src/pages/pedidos/PedidosLista.jsx
 import React, { useState, useEffect } from "react";
-<<<<<<< Updated upstream
-import { getPedidos, updatePedido } from "../../services/pedidosService"; // Importamos las funciones
-import "./PedidosLista.css";
-=======
 // Asegúrate de que updatePedido esté importado desde el path correcto
 import { getPedidos, updatePedido } from "../../services/pedidosService"; 
 import { useNavigate } from "react-router-dom";
 import "./PedidosLista.css";
 import BotonBaja from "../../components/BotonBaja"; 
->>>>>>> Stashed changes
 
 export default function PedidosLista() {
   const [pedidos, setPedidos] = useState([]);
@@ -94,10 +89,6 @@ export default function PedidosLista() {
     }
   };
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
   const pedidosFiltrados =
     estadoFiltro === "todos"
       ? pedidos
@@ -123,16 +114,12 @@ export default function PedidosLista() {
           <span onClick={() => filtrarEstado("Finalizado")}>Finalizados</span>
           <span onClick={() => filtrarEstado("Cancelado")}>Cancelados</span>
         </div>
-<<<<<<< Updated upstream
-        <button className="btn-agregar">+ Agregar Pedido</button>
-=======
         <button
           className="btn-agregar"
           onClick={() => navigate("/pedidos/agregar")}
         >
           + Agregar Pedido
         </button>
->>>>>>> Stashed changes
       </div>
 
       <table>
