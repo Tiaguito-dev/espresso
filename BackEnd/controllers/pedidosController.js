@@ -12,7 +12,6 @@ let pedidos = [
     ],
     total: 800,
     estado: 'Pendiente',
-    historial: 'Pendiente',
   },
   {
     id: '002',
@@ -24,7 +23,6 @@ let pedidos = [
     ],
     total: 2000,
     estado: 'Listo',
-    historial: 'Pendiente → Listo',
   },
   {
     id: '003',
@@ -35,7 +33,6 @@ let pedidos = [
     ],
     total: 250,
     estado: 'Finalizado',
-    historial: 'Pendiente → Finalizado',
   },
   {
     id: '004',
@@ -47,7 +44,6 @@ let pedidos = [
     ],
     total: 1400,
     estado: 'Pendiente',
-    historial: 'Pendiente',
   },
 ];
 
@@ -63,18 +59,50 @@ exports.crearPedido = (req, res) => {
 
 exports.actualizarPedido = (req, res) => {
   const { id } = req.params;
-  const { estado, ...resto } = req.body;
+  // Se espera que el frontend envíe { nuevoEstado: "..." } para cambio específico.
+  const { nuevoEstado } = req.body; 
   const pedidoIndex = pedidos.findIndex((p) => p.id === id);
 
-  if (pedidoIndex !== -1) {
-    pedidos[pedidoIndex] = {
-      ...pedidos[pedidoIndex],
-      ...resto,
-      estado,
-      historial: pedidos[pedidoIndex].historial + ' → ' + estado,
-    };
-    res.json(pedidos[pedidoIndex]);
-  } else {
-    res.status(404).json({ message: 'Pedido no encontrado' });
+  if (pedidoIndex === -1) {
+    return res.status(404).json({ message: "Pedido no encontrado" });
   }
+
+  const pedido = pedidos[pedidoIndex];
+  let estadoFinal = pedido.estado;
+
+  // 1. Lógica cuando se envía un estado específico (como "Cancelado")
+  if (nuevoEstado) {
+    const estadoActualLower = pedido.estado.toLowerCase();
+    
+    // No permitir cambio si ya está en estado terminal, a menos que el nuevo estado sea el mismo.
+    if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") && 
+        nuevoEstado.toLowerCase() !== estadoActualLower) {
+      return res.status(400).json({ message: "No se puede cambiar un pedido finalizado o cancelado" });
+    }
+    estadoFinal = nuevoEstado;
+  } 
+  // 2. Lógica de avance automático (si no se especifica 'nuevoEstado')
+  else {
+    switch (pedido.estado) {
+      case "Pendiente":
+        estadoFinal = "Listo";
+        break;
+      case "Listo":
+        estadoFinal = "Finalizado";
+        break;
+      case "Cancelado":
+      case "Finalizado":
+        // Si ya está en un estado final, no avanza más
+        estadoFinal = pedido.estado;
+        break;
+    }
+  }
+
+  // Aseguramos que los estados finales no se sobrescriban por error
+  if (pedido.estado === "Finalizado" || pedido.estado === "Cancelado") {
+      estadoFinal = pedido.estado;
+  }
+  
+  pedidos[pedidoIndex] = { ...pedido, estado: estadoFinal };
+  res.json({ message: `Pedido actualizado a ${estadoFinal}`, pedido: pedidos[pedidoIndex] });
 };

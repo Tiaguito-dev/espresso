@@ -1,14 +1,21 @@
 // src/pages/pedidos/PedidosLista.jsx
 import React, { useState, useEffect } from "react";
+<<<<<<< Updated upstream
 import { getPedidos, updatePedido } from "../../services/pedidosService"; // Importamos las funciones
 import "./PedidosLista.css";
+=======
+// Asegúrate de que updatePedido esté importado desde el path correcto
+import { getPedidos, updatePedido } from "../../services/pedidosService"; 
+import { useNavigate } from "react-router-dom";
+import "./PedidosLista.css";
+import BotonBaja from "../../components/BotonBaja"; 
+>>>>>>> Stashed changes
 
 export default function PedidosLista() {
   const [pedidos, setPedidos] = useState([]);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [estadoFiltro, setEstadoFiltro] = useState("todos");
 
-  // Usamos useEffect para cargar los pedidos del back-end al inicio
   useEffect(() => {
     fetchPedidos();
   }, []);
@@ -30,20 +37,67 @@ export default function PedidosLista() {
     setEstadoFiltro(estado);
   };
 
-  const cambiarEstado = async (id) => {
-    const nuevoEstado = prompt(
-      "Ingrese nuevo estado (Pendiente, Listo, Finalizado, Cancelado):"
-    );
-    if (!nuevoEstado) return;
-
+  /**
+   * Actualiza el estado de un pedido.
+   * @param {string} id - ID del pedido.
+   * @param {string | null} [nuevoEstadoFijo=null] - Estado específico a asignar ('Cancelado', etc.). 
+   * Si es null, usa la lógica de avance (Pendiente -> Listo -> Finalizado).
+   */
+  const cambiarEstado = async (id, nuevoEstadoFijo = null) => {
     try {
-      await updatePedido(id, { estado: nuevoEstado });
-      fetchPedidos(); // Vuelve a cargar los pedidos para ver el cambio
+      const pedidoActual = pedidos.find((p) => p.id === id);
+      if (!pedidoActual) return;
+
+      let estadoAEnviar = nuevoEstadoFijo;
+      let bodyData = {};
+
+      // Si se especificó un estado fijo (ej: 'Cancelado')
+      if (nuevoEstadoFijo) {
+        bodyData = { nuevoEstado: estadoAEnviar };
+      } 
+      // Si se requiere avance automático (sin estado fijo)
+      else {
+        let siguienteEstado;
+        if (pedidoActual.estado === "Pendiente") {
+          siguienteEstado = "Listo";
+        } else if (pedidoActual.estado === "Listo") {
+          siguienteEstado = "Finalizado";
+        } else {
+          alert(`El pedido ${id} ya está ${pedidoActual.estado} y no se puede avanzar.`);
+          return;
+        }
+        estadoAEnviar = siguienteEstado;
+        bodyData = { nuevoEstado: estadoAEnviar }; 
+        
+        
+      }
+      
+      // Bloqueo en el frontend para estados finales (aunque el backend también lo bloquea)
+      if ((pedidoActual.estado === "Finalizado" || pedidoActual.estado === "Cancelado") && nuevoEstadoFijo !== pedidoActual.estado) {
+         alert(`El pedido ${id} ya está ${pedidoActual.estado} y no se puede modificar.`);
+         return;
+      }
+
+
+      // **LLAMADA CLAVE:** Enviamos el cuerpo con la propiedad 'nuevoEstado'
+      await updatePedido(id, bodyData);
+
+      // Actualizar el estado local con el estado que se acaba de enviar
+      setPedidos((prevPedidos) =>
+        prevPedidos.map((p) =>
+          p.id === id ? { ...p, estado: estadoAEnviar } : p
+        )
+      );
     } catch (error) {
       console.error("Error al actualizar el estado del pedido:", error);
+      alert("Error al actualizar el pedido. Revisa la consola y el servidor.");
     }
   };
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
   const pedidosFiltrados =
     estadoFiltro === "todos"
       ? pedidos
@@ -51,7 +105,6 @@ export default function PedidosLista() {
 
   return (
     <div className="container">
-      {/* Botón filtros */}
       <button className="toggle-filtros" onClick={toggleFiltros}>
         Filtros
       </button>
@@ -62,7 +115,6 @@ export default function PedidosLista() {
         </div>
       )}
 
-      {/* Estados + agregar pedido */}
       <div className="filtros-estado">
         <div className="estados">
           <span onClick={() => filtrarEstado("todos")}>Todos</span>
@@ -71,10 +123,18 @@ export default function PedidosLista() {
           <span onClick={() => filtrarEstado("Finalizado")}>Finalizados</span>
           <span onClick={() => filtrarEstado("Cancelado")}>Cancelados</span>
         </div>
+<<<<<<< Updated upstream
         <button className="btn-agregar">+ Agregar Pedido</button>
+=======
+        <button
+          className="btn-agregar"
+          onClick={() => navigate("/pedidos/agregar")}
+        >
+          + Agregar Pedido
+        </button>
+>>>>>>> Stashed changes
       </div>
 
-      {/* Tabla */}
       <table>
         <thead>
           <tr>
@@ -83,7 +143,6 @@ export default function PedidosLista() {
             <th>Productos</th>
             <th>Precio Total</th>
             <th>Estado</th>
-            <th>Cambio de Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -92,27 +151,38 @@ export default function PedidosLista() {
             <tr key={pedido.id} data-estado={pedido.estado}>
               <td>{pedido.id}</td>
               <td>{pedido.mesa}</td>
-              <td>{pedido.productos.map(p => `${p.nombre} ($${p.precio})`).join(', ')}</td>
+              <td>
+                {pedido.productos
+                  .map((p) => `${p.nombre} ($${p.precio})`)
+                  .join(", ")}
+              </td>
               <td>${pedido.total}</td>
               <td>
                 <span className={`estado ${pedido.estado.toLowerCase()}`}>
                   {pedido.estado}
                 </span>
               </td>
-              <td>
-                <span className={`historial ${pedido.estado.toLowerCase()}`}>
-                  {pedido.historial}
-                </span>
-              </td>
               <td className="acciones">
-                <button className="info">ℹ️ Mostrar info</button>
+                <button className="info">Mostrar info</button>
+                
+                {}
                 <button
                   className="modificar"
                   onClick={() => cambiarEstado(pedido.id)}
+                  disabled={pedido.estado === "Finalizado" || pedido.estado === "Cancelado"}
                 >
-                  ✏️ Modificar
-                </button>
-                <button className="baja">🗑️ Baja</button>
+                  {pedido.estado === "Pendiente"
+                    ? "Pasar a Listo"
+                    : pedido.estado === "Listo"
+                    ? "Pasar a Finalizado"
+                    : "Finalizado"}
+                </button> 
+                {/* ¡Reemplazamos el botón original por el nuevo componente! */}
+              {/* Le pasamos el ID del pedido y la función 'cambiarEstado' */}
+              <BotonBaja
+                pedidoId={pedido.id}
+                onCancelar={cambiarEstado}
+              />
               </td>
             </tr>
           ))}
