@@ -1,5 +1,6 @@
-function FilaProducto({ producto, arrayBotonesAccion }) {
+import BotonAccion from "./BotonAccion";
 
+function FilaProducto({ producto, funcionCambiarEstado, funcionModificar}) {
 
     return (
         <tr
@@ -16,11 +17,7 @@ function FilaProducto({ producto, arrayBotonesAccion }) {
                 </span>
             </td>
                 
-            <td className="acciones">
-                {arrayBotonesAccion.map((botonAccion) => (
-                    {botonAccion}
-                ))}
-            </td>
+            <BotonAccion productoId={producto.id} funcionCambiarEstado={funcionCambiarEstado} funcionModificar={funcionModificar}></BotonAccion>
         </tr>
     );
 }

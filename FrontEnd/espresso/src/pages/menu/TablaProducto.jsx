@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import CabeceraTabla from "./CabeceraTabla";
 import FilaProducto from "./FilaProducto";
 
-function TablaProducto({ productos, arrayCampos}) {
+function TablaProducto({ productos, arrayCampos, funcionCambiarEstado, funcionModificar}) {
 
     return (
         <Fragment>
@@ -13,11 +13,7 @@ function TablaProducto({ productos, arrayCampos}) {
                 </thead>
                 <tbody>
                     {productos.map((producto) => (
-                        <FilaProducto producto={producto} arrayBotonesAccion={[
-                            /*<BotonAccion className={"info"} onClick={cambiarEstado(producto.id)} texto={"ℹ️ Disponibilidad"}></BotonAccion>,
-                            <BotonAccion className={"modificar"} onClick={navigate(`/menu/productos/${producto.id}`)} texto={"✏️ Modificar"}></BotonAccion>,
-                            <BotonAccion className={"baja"} onClick={onclick()} texto={"🗑️ Baja"}></BotonAccion>*/
-                        ]}></FilaProducto>
+                        <FilaProducto key={producto.id} producto={producto} funcionCambiarEstado={funcionCambiarEstado} funcionModificar={funcionModificar}></FilaProducto>
                     ))}
                 </tbody>
             </table>

@@ -65,6 +65,10 @@ export default function Menu() {
         }
     })();
 
+    const navegarAModificar = (idProducto) => {
+        navigate(`/menu/productos/${idProducto}`);
+    };
+
     return (
         <div className="container">
             {/* Botón filtros */}
@@ -99,46 +103,12 @@ export default function Menu() {
 
 {/* LA TABLA DEBE SER UN COMPONENTE COMPUESTO */}
             {/* Tabla */}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Disponible</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {productosFiltrados.map((producto) => (
-
-/* TODO EL TR ES UN COMPONENTE */
-                        <tr
-                            key={producto.id}
-                            data-estado={producto.disponible ? 'disponible' : 'no-disponible'}
-                        >
-                            <td>{producto.id}</td>
-                            <td>{producto.nombre}</td>
-                            <td>{producto.descripcion}</td>
-                            <td>${producto.precio}</td>
-                            <td>
-                                <span className={`disponibilidad ${producto.disponible ? 'disponible' : 'no-disponible'}`}>
-                                    {producto.disponible ? "Disponible" : "No disponible"}
-                                </span>
-                            </td>
-
-{/* ESTE TD ES TODO UN COMPONENTE COMPLETO */}
-                            <td className="acciones">
-                                <button className="info" onClick={() => cambiarEstado(producto.id)}>ℹ️ Disponibilidad</button>
-                                <button className="modificar" onClick={() => navigate(`/menu/productos/${producto.id}`)}> ✏️ Modificar </button>
-                                <button className="baja">🗑️ Baja</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <TablaProducto productos={productosFiltrados} arrayCampos={["Codigo", "Nombre", "Descripcion", "Precio", "Disponible", "Acciones"]}></TablaProducto>
+            <TablaProducto 
+                productos={productosFiltrados}
+                arrayCampos={["Codigo", "Nombre", "Descripcion", "Precio", "Disponible", "Acciones"]}
+                funcionCambiarEstado={cambiarEstado}
+                funcionModificar={navegarAModificar}
+            ></TablaProducto>
         </div>
         
     );
