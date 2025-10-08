@@ -90,7 +90,6 @@ export default function Menu() {
     return (
         <div className="container">
             {/* Botón filtros */}
-{/* TODO ESTE APARTADO DE FILTROS ES UN COMPONENTE AL QUE SE LE PASA POR PARAMETRO TEXTO Y FUNCION*/}
             <button className="toggle-filtros" onClick={toggleFiltros}>
                 Filtros
             </button>
@@ -109,7 +108,7 @@ export default function Menu() {
                     <Filtro estadoActual={estadoFiltro} estadoValor="no-disponible" nombreFiltro="No Disponible" onClick={filtrarEstado} />
                 </div>
 
-{/* ESTE BUTTON DEBE SER EL MISMO COMPONENTE QUE EL LA SECCION DE PEDIDOS */}
+
                 <button
                     className="btn-agregar"
                     onClick={() => navigate("/menu/productos/")}
@@ -118,48 +117,7 @@ export default function Menu() {
                 </button>
             </div>
 
-
-{/* LA TABLA DEBE SER UN COMPONENTE COMPUESTO */}
-            {/* Tabla */}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Disponible</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {productosFiltrados.map((producto) => (
-
-/* TODO EL TR ES UN COMPONENTE */
-                        <tr
-                            key={producto.id}
-                            data-estado={producto.disponible ? 'disponible' : 'no-disponible'}
-                        >
-                            <td>{producto.id}</td>
-                            <td>{producto.nombre}</td>
-                            <td>{producto.descripcion}</td>
-                            <td>${producto.precio}</td>
-                            <td>
-                                <span className={`disponibilidad ${producto.disponible ? 'disponible' : 'no-disponible'}`}>
-                                    {producto.disponible ? "Disponible" : "No disponible"}
-                                </span>
-                            </td>
-
-{/* ESTE TD ES TODO UN COMPONENTE COMPLETO */}
-                            <td className="acciones">
-                                <button className="info" onClick={() => cambiarEstado(producto.id)}>ℹ️ Disponibilidad</button>
-                                <button className="modificar" onClick={() => navigate(`/menu/productos/${producto.id}`)}> ✏️ Modificar </button>
-                                <button className="baja"onClick={()=> eliminarProducto(producto.id)}>🗑️ Baja</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            
             <TablaProducto 
                 productos={productosFiltrados}
                 arrayCampos={["Codigo", "Nombre", "Descripcion", "Precio", "Disponible", "Acciones"]}
