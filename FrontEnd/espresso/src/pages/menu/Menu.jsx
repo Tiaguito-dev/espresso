@@ -5,7 +5,6 @@ import "../pedidos/PedidosLista.css";
 
 import Filtro from "./Filtro";
 import TablaProducto from "./TablaProducto";
-import BotonAccion from "./BotonAccion";
 
 export default function Menu() {
     const [productos, setProductos] = useState([]);
