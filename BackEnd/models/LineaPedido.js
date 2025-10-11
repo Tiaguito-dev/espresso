@@ -17,6 +17,7 @@ const validarDataLineaPedido = (data) => {
     if (!data.cantidad || typeof data.cantidad !== 'number' || data.cantidad <= 0) {
         errores.push('La cantidad es obligatoria, debe ser un numero positivo');
     }
+    return errores;
 }
 
 

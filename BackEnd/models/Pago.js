@@ -16,7 +16,7 @@ const validarDataPago = (data) => {
     } else if (typeof data.monto !== 'number' || data.monto < 0) {
         errores.push('El monto debe ser un número positivo');
     }
-
+    return errores;
 }
 
 class Pago {
