@@ -1,6 +1,6 @@
 const Menu = require('../models/Menu');
 const Producto = require('../models/Producto');
-const productosIniciales = require('../data/productos.json');
+const productosIniciales = require('../DB/productos.json');
 const { json } = require('express');
 
 const menu = new Menu();
@@ -44,12 +44,12 @@ exports.modificarProducto = (req, res) => {
 
     const productoParaModificar = menu.buscarProductoPorId(id);
 
-    if (!productoParaModificar){
-        return res.status(404),json({ message: 'Producto para modificar no encontrado'});
+    if (!productoParaModificar) {
+        return res.status(404), json({ message: 'Producto para modificar no encontrado' });
     }
 
     productoParaModificar.nombre = datosModificados.nombre ?? productoParaModificar.nombre;
-    productoParaModificar.descripcion = datosModificados. descripcion ?? productoParaModificar.descripcion;
+    productoParaModificar.descripcion = datosModificados.descripcion ?? productoParaModificar.descripcion;
     productoParaModificar.precio = datosModificados.precio ?? productoParaModificar.precio;
     productoParaModificar.disponible = datosModificados.disponible ?? productoParaModificar.disponible;
 
@@ -57,12 +57,12 @@ exports.modificarProducto = (req, res) => {
 };
 
 exports.eliminarProducto = (req, res) => {
-    const { id } = req.params;  
+    const { id } = req.params;
     const exito = menu.eliminarProductoPorId(id);
 
-    if (exito){
+    if (exito) {
         res.status(200).json({ message: `El producto ${id} fue eliminado exitosamente` });
     } else {
-        res.status(404).json({message:`No fue posible elminar el producto ${id}`});
+        res.status(404).json({ message: `No fue posible elminar el producto ${id}` });
     }
 };
