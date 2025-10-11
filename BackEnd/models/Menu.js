@@ -15,7 +15,9 @@ class Menu {
     agregarProducto(producto) {
         if (producto instanceof Producto) {
             this.productos.push(producto);
+            return producto;
         }
+        return null;
     }
 
     getProductos(){
