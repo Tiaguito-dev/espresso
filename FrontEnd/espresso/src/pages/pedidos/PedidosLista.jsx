@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { getPedidos, updatePedido } from "../../services/pedidosService"; // Importamos las funciones
 import { useNavigate } from "react-router-dom"; // Esto es para navegar programáticamente, es decir, cuando hacemos click en "Agregar Pedido"
 import "./PedidosLista.css";
-
+import BotonBaja from "../../components/BotonBaja";
 import Filtro from "./../menu/Filtro";
 
 /*
@@ -67,17 +67,54 @@ export default function PedidosLista() {
     setEstadoFiltro(estado);
   };
 
-  const cambiarEstado = async (id) => {
-    const nuevoEstado = prompt(
-      "Ingrese nuevo estado (Pendiente, Listo, Finalizado, Cancelado):"
-    );
-    if (!nuevoEstado) return;
-
+     const cambiarEstado = async (id, nuevoEstadoFijo = null) => {
     try {
-      await updatePedido(id, { estado: nuevoEstado });
-      fetchPedidos(); // Vuelve a cargar los pedidos para ver el cambio
+      const pedidoActual = pedidos.find((p) => p.id === id);
+      if (!pedidoActual) return;
+
+      let estadoAEnviar = nuevoEstadoFijo;
+      let bodyData = {};
+
+      // Si se especificó un estado fijo (ej: 'Cancelado')
+      if (nuevoEstadoFijo) {
+        bodyData = { nuevoEstado: estadoAEnviar };
+      } 
+      // Si se requiere avance automático (sin estado fijo)
+      else {
+        let siguienteEstado;
+        if (pedidoActual.estado === "Pendiente") {
+          siguienteEstado = "Listo";
+        } else if (pedidoActual.estado === "Listo") {
+          siguienteEstado = "Finalizado";
+        } else {
+          alert(`El pedido ${id} ya está ${pedidoActual.estado} y no se puede avanzar.`);
+          return;
+        }
+        estadoAEnviar = siguienteEstado;
+        bodyData = { nuevoEstado: estadoAEnviar }; 
+        
+        
+      }
+      
+      // Bloqueo en el frontend para estados finales (aunque el backend también lo bloquea)
+      if ((pedidoActual.estado === "Finalizado" || pedidoActual.estado === "Cancelado") && nuevoEstadoFijo !== pedidoActual.estado) {
+         alert(`El pedido ${id} ya está ${pedidoActual.estado} y no se puede modificar.`);
+         return;
+      }
+
+
+      // **LLAMADA CLAVE:** Enviamos el cuerpo con la propiedad 'nuevoEstado'
+      await updatePedido(id, bodyData);
+
+      // Actualizar el estado local con el estado que se acaba de enviar
+      setPedidos((prevPedidos) =>
+        prevPedidos.map((p) =>
+          p.id === id ? { ...p, estado: estadoAEnviar } : p
+        )
+      );
     } catch (error) {
       console.error("Error al actualizar el estado del pedido:", error);
+      alert("Error al actualizar el pedido. Revisa la consola y el servidor.");
     }
   };
 
@@ -136,31 +173,38 @@ export default function PedidosLista() {
         </thead>
         <tbody>
           {/* Para entender por qué usa pedidosFiltrados mirar la REFERENCIA N°1 */}
-          {pedidosFiltrados.map((pedido) => (
+            {pedidosFiltrados.map((pedido) => (
             <tr key={pedido.id} data-estado={pedido.estado}>
               <td>{pedido.id}</td>
               <td>{pedido.mesa}</td>
               <td>{pedido.productos.map(p => `${p.nombre} ($${p.precio})`).join(', ')}</td>
               <td>${pedido.total}</td>
               <td>
-                <span className={`estado ${pedido.estado.toLowerCase()}`}>
-                  {pedido.estado}
-                </span>
-              </td>
-              <td>
-                <span className={`historial ${pedido.estado.toLowerCase()}`}>
-                  {pedido.historial}
+                <span className={`estado ${pedido.estado?.toLowerCase() || "sin-estado"}`}>
+                {pedido.estado || "Sin estado"}
                 </span>
               </td>
               <td className="acciones">
-                <button className="info">ℹ️ Mostrar info</button>
+                <button className="info">Mostrar info</button>
+                
+                {}
                 <button
                   className="modificar"
                   onClick={() => cambiarEstado(pedido.id)}
+                  disabled={pedido.estado === "Finalizado" || pedido.estado === "Cancelado"}
                 >
-                  ✏️ Modificar
-                </button>
-                <button className="baja">🗑️ Baja</button>
+                  {pedido.estado === "Pendiente"
+                    ? "Pasar a Listo"
+                    : pedido.estado === "Listo"
+                    ? "Pasar a Finalizado"
+                    : "Finalizado"}
+                </button> 
+                {/* ¡Reemplazamos el botón original por el nuevo componente! */}
+              {/* Le pasamos el ID del pedido y la función 'cambiarEstado' */}
+              <BotonBaja
+                pedidoId={pedido.id}
+                onCancelar={cambiarEstado}
+              />
               </td>
             </tr>
           ))}
@@ -168,4 +212,4 @@ export default function PedidosLista() {
       </table>
     </div>
   );
-}
+};

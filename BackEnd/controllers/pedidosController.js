@@ -11,8 +11,7 @@ let pedidos = [
       { id: "medialuna", nombre: "Medialuna", precio: 300, cantidad: 2 },
     ],
     total: 800,
-    estado: 'Pendiente',
-    historial: 'Pendiente',
+    estado: 'Listo',
   },
   {
     id: '002',
@@ -23,8 +22,7 @@ let pedidos = [
       { id: "agua", nombre: "Agua", precio: 500, cantidad: 1 },
     ],
     total: 2000,
-    estado: 'Listo',
-    historial: 'Pendiente → Listo',
+    estado: 'Pendiente',
   },
   {
     id: '003',
@@ -35,7 +33,6 @@ let pedidos = [
     ],
     total: 250,
     estado: 'Finalizado',
-    historial: 'Pendiente → Finalizado',
   },
   {
     id: '004',
@@ -46,35 +43,66 @@ let pedidos = [
       { id: "jugo", nombre: "Jugo", precio: 600, cantidad: 1 },
     ],
     total: 1400,
-    estado: 'Pendiente',
-    historial: 'Pendiente',
+    estado: 'Listo',
   },
 ];
 
 exports.obtenerPedidos = (req, res) => {
-  res.json(pedidos); // ← Devuelve TODOS los pedidos como JSON
+  res.json(pedidos);
 };
 
 exports.crearPedido = (req, res) => {
-  const nuevoPedido = { ...req.body, id: Date.now().toString() }; // Esto es meramente temporal, ya que después lo va a manejar la base de datos
-  pedidos.push(nuevoPedido); // Agrega al array de pedidos que antes se definió
-  res.status(201).json(nuevoPedido); // Responde con status 201 (Created)
+  const nuevoPedido = { ...req.body, id: Date.now().toString() };
+  pedidos.push(nuevoPedido);
+  res.status(201).json(nuevoPedido);
 };
 
 exports.actualizarPedido = (req, res) => {
   const { id } = req.params;
-  const { estado, ...resto } = req.body;
+  // Se espera que el frontend envíe { nuevoEstado: "..." } para cambio específico.
+  const { nuevoEstado } = req.body;
   const pedidoIndex = pedidos.findIndex((p) => p.id === id);
 
-  if (pedidoIndex !== -1) {
-    pedidos[pedidoIndex] = {
-      ...pedidos[pedidoIndex],
-      ...resto,
-      estado,
-      historial: pedidos[pedidoIndex].historial + ' → ' + estado,
-    };
-    res.json(pedidos[pedidoIndex]);
-  } else {
-    res.status(404).json({ message: 'Pedido no encontrado' });
+  if (pedidoIndex === -1) {
+    return res.status(404).json({ message: "Pedido no encontrado" });
   }
+
+  const pedido = pedidos[pedidoIndex];
+  let estadoFinal = pedido.estado;
+
+  // 1. Lógica cuando se envía un estado específico (como "Cancelado")
+  if (nuevoEstado) {
+    const estadoActualLower = pedido.estado.toLowerCase();
+
+    // No permitir cambio si ya está en estado terminal, a menos que el nuevo estado sea el mismo.
+    if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") &&
+      nuevoEstado.toLowerCase() !== estadoActualLower) {
+      return res.status(400).json({ message: "No se puede cambiar un pedido finalizado o cancelado" });
+    }
+    estadoFinal = nuevoEstado;
+  }
+  // 2. Lógica de avance automático (si no se especifica 'nuevoEstado')
+  else {
+    switch (pedido.estado) {
+      case "Pendiente":
+        estadoFinal = "Listo";
+        break;
+      case "Listo":
+        estadoFinal = "Finalizado";
+        break;
+      case "Cancelado":
+      case "Finalizado":
+        // Si ya está en un estado final, no avanza más
+        estadoFinal = pedido.estado;
+        break;
+    }
+  }
+
+  // Aseguramos que los estados finales no se sobrescriban por error
+  if (pedido.estado === "Finalizado" || pedido.estado === "Cancelado") {
+    estadoFinal = pedido.estado;
+  }
+
+  pedidos[pedidoIndex] = { ...pedido, estado: estadoFinal };
+  res.json({ message: `Pedido actualizado a ${estadoFinal}`, pedido: pedidos[pedidoIndex] });
 };
