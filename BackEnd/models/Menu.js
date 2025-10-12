@@ -1,13 +1,45 @@
 const Producto = require('./Producto');
+const Categoria = require('./Categoria');
 
 class Menu {
     constructor (){
         this.productos = [];
+        this.categorias = [];
     }
     
+    obtenerOCrearCategoria(nombreCategoria){
+        if (!nombreCategoria || typeof nombreCategoria !== 'string'){
+            return null;
+        }
+        
+        const nombreMinusculas = nombreCategoria.trim().toLowerCase();
+
+        const categoriaExistente = this.categorias.find(
+            cat => cat.nombre.toLowerCase() === nombreMinusculas
+        );
+        
+        if (categoriaExistente){
+            return categoriaExistente;
+
+        }
+
+        const nuevaCategoria = new Categoria({ nombre: nombreCategoria.trim()});
+        this.categorias.push(nuevaCategoria);
+        return nuevaCategoria;
+    }
+
     cargarProductos(productosData) {
         productosData.forEach(producto => {
-            const nuevoProducto = new Producto(producto);
+            const nombreCategoria = producto.categoria;
+
+            const categoriaObj = this.obtenerOCrearCategoria(nombreCategoria);
+
+            const dataProducto ={
+                ...producto,
+                categoria: categoriaObj
+            };
+
+            const nuevoProducto = new Producto(dataProducto);
             this.productos.push(nuevoProducto)
         });
     }

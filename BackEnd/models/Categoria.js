@@ -7,3 +7,5 @@ class Categoria {
         this.nombre = data.nombre;
     }
 }
+
+module.exports = Categoria;
