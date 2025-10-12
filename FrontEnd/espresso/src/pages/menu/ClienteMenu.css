@@ -1,0 +1,81 @@
+/*boton para ver el menu*/
+.btn-ver-menu{
+    background: #a97457;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.btn-ver-menu:hover {
+  background: #854a27;
+}
+
+/*boton para las categorias*/
+.btn-categoria {
+  font-family: 'Century Gothic', sans-serif;
+  font-size: large; 
+  border-radius: 10px;
+  background-color: rgb(98, 54, 31);
+  color: white;
+  display: flex;        
+  width: 100%;            
+  max-width: 350px;      
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  justify-content: center; 
+  align-items: center;   
+  margin: 0;
+  margin-bottom: 1px; 
+}
+
+.btn-categoria:hover{
+  background-color: rgb(133, 74, 39);
+}
+
+/* Estilo para cuando el botón está activo */
+.btn-categoria.activa {
+    background-color: rgb(133, 74, 39);
+    border-radius: 10px 10px 0 0; 
+}
+
+.item-acordeon {
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 10px; /* Separación entre ítems del acordeón */
+}
+
+.lista-productos {
+  display: block;        
+  width: 100%;             
+  margin: 0 auto;          
+  text-align: left;       
+  background-color: #fcfcfc; 
+  border-radius: 0 0 10px 10px;
+  border: 1px solid rgb(98, 54, 31); 
+  max-height: 0; 
+  overflow: hidden; 
+  padding: 0 10px; /* Padding horizontal */
+  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out; 
+}
+
+/* 2. ESTILO ABIERTO (Clase que se añade con React) */
+.lista-productos.desplegado {
+  max-height: 1000px; /* Un valor alto */
+  padding: 10px 10px; /* Restablece el padding vertical */
+}
+
+/* Estilo para los productos dentro del panel */
+.producto {
+    padding: 8px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.producto:last-child {
+    border-bottom: none;
+}
