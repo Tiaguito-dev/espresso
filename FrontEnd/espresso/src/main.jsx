@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
+<<<<<<< HEAD
   /*
     NOTA IMPORTANTE: DOBLE EJECUCIÓN EN DESARROLLO
     Si notan que hay cosas que se ejecutan dos veces (sobre todo el useEffect), es porque React.StrictMode que está habilitado en la aplicación (generalmente en index.js o App.js).
@@ -18,6 +19,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
     Más info: https://react.dev/reference/react/StrictMode#fixing-bugs-found-by-double-execution
  */
+=======
+>>>>>>> 5d4ba000b058c793dc0599fd40f4714cc4af4cfa
   <React.StrictMode>
     <App />
   </React.StrictMode>

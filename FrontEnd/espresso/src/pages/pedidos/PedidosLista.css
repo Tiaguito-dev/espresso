@@ -78,7 +78,7 @@ body {
 
 /* Botón agregar */
 .btn-agregar {
-  background-color: #24c924;
+  background-color: #a97457;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -88,7 +88,7 @@ body {
 }
 
 .btn-agregar:hover {
-  background-color: #1ea31e;
+  background-color: #8a5d44;
 }
 
 /* Tabla */

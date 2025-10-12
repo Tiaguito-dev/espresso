@@ -8,18 +8,6 @@ function AgregarPedido() {
   const [mozo, setMozo] = useState("");
   const [productos, setProductos] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [modalCantidades, setModalCantidades] = useState({});
-
-  /*
-    const [productos, setProductos] = useState([]);
-    es lo mismo que hacer esto:
-
-    let productos = [];
-    function setProductos(nuevosProductos) {
-      productos = nuevosProductos;
-      // React se encarga de re-renderizar el componente
-    }
-  */
 
   // Definición del "menú" (idealmente esto también vendría del back-end)
   const menu = {
@@ -27,7 +15,8 @@ function AgregarPedido() {
     Comida: [{ id: "medialuna", nombre: "Medialuna", precio: 300 }],
   };
 
-//coty romero's function
+  const [modalCantidades, setModalCantidades] = useState({});
+
   const handleModalQtyChange = (id, value) => {
     setModalCantidades((prev) => ({ ...prev, [id]: Math.max(1, parseInt(value || 1)) }));
   };
@@ -117,8 +106,8 @@ function AgregarPedido() {
       </div>
 
       <div className="productos-section">
-        <button className="btn-agregar" onClick={() => setShowModal(true)}>
-          + Agregar productos
+        <button className="btn" onClick={() => setShowModal(true)}>
+          Abrir menú (Agregar productos)
         </button>
 
         <h3>Productos seleccionados</h3>

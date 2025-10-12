@@ -3,8 +3,11 @@ import Navbar from "./components/Navbar.jsx";
 import Home from "./pages/Home.jsx";
 import PedidosLista from "./pages/pedidos/PedidosLista.jsx";
 import AgregarPedido from "./pages/pedidos/AgregarPedido.jsx";
+<<<<<<< HEAD
 import Menu from "./pages/menu/Menu.jsx";
 import FormProducto from "./pages/menu/FormProducto.jsx";
+=======
+>>>>>>> 5d4ba000b058c793dc0599fd40f4714cc4af4cfa
 
 function App() {
   return (
@@ -15,9 +18,12 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/pedidos" element={<PedidosLista />} />
           <Route path="/pedidos/agregar" element={<AgregarPedido />} />
+<<<<<<< HEAD
           <Route path="/menu" element={<Menu />} />
           {/* Se pone ? para que el indicar que el parámetro sea opcional */}
           <Route path="/menu/productos/:id?" element={<FormProducto />} />
+=======
+>>>>>>> 5d4ba000b058c793dc0599fd40f4714cc4af4cfa
         </Routes>
       </div>
     </Router>

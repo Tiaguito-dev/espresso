@@ -11,7 +11,11 @@ nav {
 }
 
 .brand {
+<<<<<<< HEAD
   font-family: 'Playfair Display', serif;
+=======
+  font-family: 'Playfair Display', serif; /* Fuente elegante */
+>>>>>>> 5d4ba000b058c793dc0599fd40f4714cc4af4cfa
   font-style: italic;
   font-size: 1.8rem;
   color: #fff;
