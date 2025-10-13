@@ -3,6 +3,8 @@ import { getProductos } from '../../services/productosService';
 import "../menu/ClienteMenu.css"
 import Categoria from './Categoria';
 
+
+
 export default function MenuCliente() {
     
     const [productos, setProductos] = useState([]);
@@ -76,6 +78,10 @@ export default function MenuCliente() {
                     );
                 })}
             </div>
+            
         </div>
     );
+
+
+
 }
