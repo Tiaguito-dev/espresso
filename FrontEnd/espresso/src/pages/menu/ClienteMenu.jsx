@@ -6,17 +6,19 @@ import Categoria from './Categoria';
 export default function MenuCliente() {
     
     const [productos, setProductos] = useState([]);
-    // Usamos null para el estado inicial
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null); 
     
-    const CATEGORIAS = ['Pizzas', 'Hamburguesas', 'Bebidas', 'Postres']; 
+    const categoriasDinamicas = ["Todos los productos",
+        ...Array.from(
+        new Set(productos.map(p => p.categoria.nombre.trim()))
+        ),
+    ];
     
-    // ... useEffect para cargar productos (queda igual) ...
     useEffect(() => {
         const fetchProductos = async () => {
             try {
                 const data = await getProductos();
-                setProductos(data.filter(p => p.disponible));
+                setProductos(data.filter(productoItem => productoItem.disponible));
             } catch (error) {
                 console.error("Error al obtener el menú:", error);
             }
@@ -35,33 +37,38 @@ export default function MenuCliente() {
             <h1>Nuestro Menú</h1>
 
             <div className="contenedor-categorias">
-                {CATEGORIAS.map((cat, index) => {
-                    const activa = categoriaSeleccionada === cat;
-                    const productosDeCat = productos.filter(p => p.categoria === cat);
+                {categoriasDinamicas.map((categoriaItem, index) => {
+                    const activa = categoriaSeleccionada === categoriaItem;
+                    const productosDeCategoria =
+                        categoriaItem === 'Todos los productos'
+                            ? productos
+                            : productos.filter(
+                                productoItem =>
+                                    productoItem.categoria &&
+                                    productoItem.categoria.nombre.trim().toLowerCase() ===
+                                    categoriaItem.trim().toLowerCase()
+                );
 
                     return (
-                        // Contenedor para cada ITEM COMPLETO del acordeón
                         <div key={index} className="item-acordeon"> 
-                            {/* USAMOS EL COMPONENTE EXTERNO PARA EL BOTÓN */}
                             <Categoria 
-                                nombre={cat}
+                                nombre={categoriaItem}
                                 onClick={handleCategoria}
                                 categoriaActiva={activa}
                             />
 
-                            {/* PANEL DESPLEGABLE (Se mantiene la lógica de renderizado aquí) */}
                             {activa && (
                                 <div className="lista-productos desplegado">
-                                    {productosDeCat.length > 0 ? (
-                                        productosDeCat.map(p => (
-                                            <div key={p.id} className="producto">
-                                                <h3>{p.nombre}</h3>
-                                                <p>{p.descripcion}</p>
-                                                <span>${p.precio}</span>
+                                    {productosDeCategoria.length > 0 ? (
+                                        productosDeCategoria.map(productoItem => (
+                                            <div key={productoItem.id} className="producto">
+                                                <h3>{productoItem.nombre}</h3>
+                                                <p>{productoItem.descripcion}</p>
+                                                <span>${productoItem.precio}</span>
                                             </div>
                                         ))
                                     ) : (
-                                        <p>No hay productos disponibles en {cat}.</p>
+                                        <p>No hay productos disponibles en {categoriaItem}.</p>
                                     )}
                                 </div>
                             )}

@@ -33,10 +33,21 @@
   margin-bottom: 6px;
 }
 
-.form-field input {
+.form-field input, .form-field select {
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.form-field select {
+    color: #666; 
+}
+
+.form-field select:invalid, .form-field select[value=""] {
+    color: #666;
 }
 
 /* Productos */

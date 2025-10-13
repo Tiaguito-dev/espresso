@@ -15,67 +15,110 @@
   background: #854a27;
 }
 
-/*boton para las categorias*/
-.btn-categoria {
+.menu-container {
+  text-align: center;
   font-family: 'Century Gothic', sans-serif;
-  font-size: large; 
-  border-radius: 10px;
-  background-color: rgb(98, 54, 31);
-  color: white;
-  display: flex;        
-  width: 100%;            
-  max-width: 350px;      
-  height: 50px;
-  border: none;
-  cursor: pointer;
-  justify-content: center; 
-  align-items: center;   
-  margin: 0;
-  margin-bottom: 1px; 
+  padding: 20px;
 }
 
-.btn-categoria:hover{
-  background-color: rgb(133, 74, 39);
+h1 {
+  margin: 20px;
+  font-size: 50px;
+  color: black;
 }
 
-/* Estilo para cuando el botón está activo */
-.btn-categoria.activa {
-    background-color: rgb(133, 74, 39);
-    border-radius: 10px 10px 0 0; 
+.contenedor-categorias {
+  margin: 0 auto;
+  max-width: 900px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .item-acordeon {
-    width: 100%;
-    max-width: 350px;
-    margin-bottom: 10px; /* Separación entre ítems del acordeón */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  width: 100%; 
 }
+
+.btn-categoria {
+  font-family: inherit;
+  font-size: large;
+  border-radius: 10px;
+  background-color: rgb(98, 54, 31);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 350px; 
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  margin: 0 auto; 
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.btn-categoria:hover {
+  background-color: rgb(133, 74, 39);
+}
+
+
+.btn-categoria.activa {
+  background-color: rgb(133, 74, 39);
+  border-radius: 10px 10px 10px 10px;
+}
+
 
 .lista-productos {
-  display: block;        
-  width: 100%;             
-  margin: 0 auto;          
-  text-align: left;       
-  background-color: #fcfcfc; 
-  border-radius: 0 0 10px 10px;
-  border: 1px solid rgb(98, 54, 31); 
-  max-height: 0; 
-  overflow: hidden; 
-  padding: 0 10px; /* Padding horizontal */
-  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out; 
+  background-color: #fcfcfc;
+  border: 1px solid rgb(98, 54, 31);
+  border-radius: 10px 10px 10px 10px;
+  width: 100%;
+  max-width: 800px;
+  margin: 8px 0 auto; 
+  text-align: center;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 15px;
+  box-sizing: border-box;
+  transition:
+    max-height 0.7s cubic-bezier(0.19, 1, 0.22, 1),
+    padding 0.5s ease,
+    opacity 0.4s ease;
+    opacity: 0;
 }
 
-/* 2. ESTILO ABIERTO (Clase que se añade con React) */
 .lista-productos.desplegado {
-  max-height: 1000px; /* Un valor alto */
-  padding: 10px 10px; /* Restablece el padding vertical */
+  max-height: 1000px; 
+  padding: 12px 15px;
+  opacity: 1; 
 }
 
-/* Estilo para los productos dentro del panel */
 .producto {
-    padding: 8px 0;
-    border-bottom: 1px dashed #e0e0e0;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e0e0e0;
 }
 
 .producto:last-child {
-    border-bottom: none;
+  border-bottom: none;
+}
+
+.producto h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: rgb(98, 54, 31);
+}
+
+.producto p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+.producto span {
+  font-weight: bold;
+  color: rgb(98, 54, 31);
 }

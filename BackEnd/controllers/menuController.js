@@ -10,6 +10,10 @@ exports.obtenerProductos = (req, res) => {
     res.json(menu.getProductos());
 };
 
+exports.obtenerCategoria = (req, res) => {
+    res.json(menu.getCategorias());
+};
+
 exports.obtenerProductoPorId = (req, res) => {
     // Tiene que devolver un solo producto con ese ID en particular
     const { id } = req.params;
@@ -23,11 +27,14 @@ exports.obtenerProductoPorId = (req, res) => {
 };
 
 exports.crearProducto = (req, res) => {
-    const { nombre, descripcion, precio, disponible } = req.body;
+
+    const { nombre, categoria, descripcion, precio, disponible } = req.body;
+    const categoriaObj = menu.obtenerOCrearCategoria(categoria);
 
     const datosDeProducto = {
-        id: Date.now.toString(), // Id temporal (lo mismo q antes)
+        id: Date.now().toString(), // Id temporal (lo mismo q antes)
         nombre: nombre,
+        categoria: categoriaObj,
         descripcion: descripcion,
         precio: precio,
         disponible: disponible
@@ -36,8 +43,14 @@ exports.crearProducto = (req, res) => {
     const nuevoProducto = new Producto(datosDeProducto);
 
     const productoAgregado = menu.agregarProducto(nuevoProducto);
+    const respuestaConFormatoCorrecto = {
+        ...productoAgregado,
+        categoria: { nombre: productoAgregado.categoria.nombre } 
+    };
 
-    res.status(201).json(productoAgregado); // Responde con status 201 (Created)
+    res.status(201).json(respuestaConFormatoCorrecto); 
+
+    //res.status(201).json(productoAgregado); // Responde con status 201 (Created)
 };
 
 exports.modificarProducto = (req, res) => {
@@ -55,7 +68,18 @@ exports.modificarProducto = (req, res) => {
     productoParaModificar.precio = datosModificados.precio ?? productoParaModificar.precio;
     productoParaModificar.disponible = datosModificados.disponible ?? productoParaModificar.disponible;
 
-    res.status(200).json(productoParaModificar);
+    if (datosModificados.categoria !== undefined) {
+        const nuevaCategoriaObj = menu.obtenerOCrearCategoria(datosModificados.categoria);
+        productoParaModificar.categoria = nuevaCategoriaObj;
+    }
+
+    const respuestaConFormatoCorrecto = {
+        ...productoParaModificar,
+        categoria: { nombre: productoParaModificar.categoria.nombre } 
+    };
+    
+    res.status(200).json(respuestaConFormatoCorrecto);
+
 };
 
 exports.eliminarProducto = (req, res) => {

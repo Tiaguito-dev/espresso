@@ -25,6 +25,7 @@ class Menu {
 
         const nuevaCategoria = new Categoria({ nombre: nombreCategoria.trim()});
         this.categorias.push(nuevaCategoria);
+        console.log("categoria creada correctamemte");
         return nuevaCategoria;
     }
 
@@ -40,7 +41,9 @@ class Menu {
             };
 
             const nuevoProducto = new Producto(dataProducto);
+    
             this.productos.push(nuevoProducto)
+
         });
     }
 
@@ -54,6 +57,10 @@ class Menu {
 
     getProductos(){
         return this.productos;
+    }
+
+    getCategorias(){
+        return this.categorias;
     }
 
     buscarProductoPorNombre(nombre) {   

@@ -55,3 +55,19 @@ export const deleteProducto = async (id) => {
     }
     return response.json();
 };
+
+export const obtenerCategorias = async () => {
+    try {
+        const response = await fetch(`${API_URL}/categoria`);
+        if (!response.ok) {
+            console.error('Error al obtener categorías:', response.statusText);
+            return []; 
+        }
+        const data = await response.json();
+        return data; 
+        
+    } catch (error) {
+        console.error("Error de red al obtener categorías:", error);
+        return [];
+    }
+};
