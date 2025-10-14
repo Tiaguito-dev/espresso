@@ -218,3 +218,12 @@ th {
 .info:hover {
   background-color: #ffca28;
 }
+
+
+.tabla-acordeon {
+  border-radius: 0px 0px 6px 6px;
+}
+
+.fila th, .fila td {
+  background-color: #f8f5f0;
+}
