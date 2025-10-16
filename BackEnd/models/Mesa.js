@@ -29,4 +29,8 @@ class Mesa {
         this.nroMesa = data.nroMesa;
         this.estadoMesa = data.estadoMesa || 'disponible'; //si no tiene estado, lo inicializa en disponible
     }
+
+    cambiarEstadoMesa (nuevoEstado){
+        this.estadoMesa = nuevoEstado; 
+    }
 }

@@ -18,7 +18,7 @@ exports.obtenerProductoPorId = (req, res) => {
         return res.status(404).json({ message: 'Producto no encontrado' });
     }
     res.json(producto);
-    console.log('./controllers/menuController.js \n devolviendo el producto con ID:', id);
+    console.log('Devolviendo el producto con ID:', id);
     console.log(producto);
 };
 

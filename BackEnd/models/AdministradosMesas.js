@@ -11,16 +11,22 @@ class AdministradosMesas {
         }
     }
 
+    getMesas() {
+        return this.mesas;
+    }
+
     buscarMesaPorNumero(nroMesa) {
         return this.mesas.find(mesa => mesa.nroMesa === nroMesa);
     }
 
-    cambiarEstadoMesa(nroMesa, nuevoEstado) {
-        const mesa = this.buscarMesaPorNumero(nroMesa); 
-        if (mesa) {
-            mesa.estadoMesa = nuevoEstado;
+    eliminarMesaPorNumero(nroMesa){
+        const i = this.mesas.findIndex(m => m.nroMesa === nroMesa);
+        if (i !== -1) {
+            this.mesas.splice(i, 1);
             return true;
         }
         return false;
     }
 }
+
+module.exports = AdministradosMesas;
