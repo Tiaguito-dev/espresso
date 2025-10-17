@@ -1,25 +1,46 @@
 const Menu = require('../models/Menu');
 const Producto = require('../models/Producto');
-const productosIniciales = require('../DB/productos.json');
+const ProductosBD = require('../repositories/ProductosBD');
 const { json } = require('express');
 
 const menu = new Menu();
-menu.cargarProductos(productosIniciales);
 
-exports.obtenerProductos = (req, res) => {
-    res.json(menu.getProductos());
+async function inicializarMenu() {
+    try {
+        const productos = await ProductosBD.obtenerProductos();
+        menu.cargarProductos(productos);
+        console.log(`${productos.length} productos cargados en el menú`);
+    } catch (error) {
+        console.error('Error cargando los productos en el Menú:', error);
+    }
+}
+
+// INICIALIZACIÓN DEL MENÚ UNA SOLA VEZ
+inicializarMenu();
+
+exports.obtenerProductos = async (req, res) => {
+    try {
+        res.json(menu.getProductos());
+    } catch (error) {
+        console.error('Error al obtener productos:', error);
+        res.status(500).json({ message: 'Error al obtener productos' });
+    }
 };
 
-exports.obtenerProductoPorId = (req, res) => {
-    // Tiene que devolver un solo producto con ese ID en particular
-    const { id } = req.params;
-    const producto = menu.buscarProductoPorId(id);
-    if (!producto) {
-        return res.status(404).json({ message: 'Producto no encontrado' });
+exports.obtenerProductoPorId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const producto = await ProductosBD.obtenerPorId(4); // Acá lo unico que hice fue probarlo
+
+        if (!producto) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+
+        res.json(producto);
+    } catch (error) {
+        console.error('Error al obtener producto:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
     }
-    res.json(producto);
-    console.log('./controllers/menuController.js \n devolviendo el producto con ID:', id);
-    console.log(producto);
 };
 
 exports.crearProducto = (req, res) => {
@@ -46,12 +67,12 @@ exports.modificarProducto = (req, res) => {
 
     const productoParaModificar = menu.buscarProductoPorId(id);
 
-    if (!productoParaModificar){
-        return res.status(404),json({ message: 'Producto para modificar no encontrado'});
+    if (!productoParaModificar) {
+        return res.status(404), json({ message: 'Producto para modificar no encontrado' });
     }
 
     productoParaModificar.nombre = datosModificados.nombre ?? productoParaModificar.nombre;
-    productoParaModificar.descripcion = datosModificados. descripcion ?? productoParaModificar.descripcion;
+    productoParaModificar.descripcion = datosModificados.descripcion ?? productoParaModificar.descripcion;
     productoParaModificar.precio = datosModificados.precio ?? productoParaModificar.precio;
     productoParaModificar.disponible = datosModificados.disponible ?? productoParaModificar.disponible;
 
@@ -59,12 +80,12 @@ exports.modificarProducto = (req, res) => {
 };
 
 exports.eliminarProducto = (req, res) => {
-    const { id } = req.params;  
+    const { id } = req.params;
     const exito = menu.eliminarProductoPorId(id);
 
-    if (exito){
+    if (exito) {
         res.status(200).json({ message: `El producto ${id} fue eliminado exitosamente` });
     } else {
-        res.status(404).json({message:`No fue posible elminar el producto ${id}`});
+        res.status(404).json({ message: `No fue posible elminar el producto ${id}` });
     }
 };

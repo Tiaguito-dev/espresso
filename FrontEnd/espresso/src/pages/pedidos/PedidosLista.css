@@ -78,7 +78,7 @@ body {
 
 /* Botón agregar */
 .btn-agregar {
-  background-color: #24c924;
+  background-color: #a97457;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -88,7 +88,7 @@ body {
 }
 
 .btn-agregar:hover {
-  background-color: #1ea31e;
+  background-color: #8a5d44;
 }
 
 /* Tabla */
@@ -123,17 +123,14 @@ th {
   background-color: #ffecb3;
   color: #8d6e63;
 }
-
 .listo {
   background-color: #c8e6c9;
   color: #2e7d32;
 }
-
 .finalizado {
   background-color: #b2dfdb;
   color: #00695c;
 }
-
 .cancelado {
   background-color: #ffcdd2;
   color: #c62828;
@@ -150,11 +147,9 @@ th {
 .modificar {
   background-color: #90caf9;
 }
-
 .baja {
   background-color: #ef9a9a;
 }
-
 .info {
   background-color: #ffe082;
 }
@@ -162,11 +157,9 @@ th {
 .modificar:hover {
   background-color: #64b5f6;
 }
-
 .baja:hover {
   background-color: #e57373;
 }
-
 .info:hover {
   background-color: #ffca28;
 }
