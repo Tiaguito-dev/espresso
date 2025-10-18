@@ -22,13 +22,18 @@ export const createPedido = async (pedidoData) => {
 };
 
 export const updatePedido = async (id, pedidoData) => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(pedidoData),
-  });
-  if (!response.ok) {
-    throw new Error('No se pudo actualizar el pedido');
-  }
-  return response.json();
+ const response = await fetch(`${API_URL}/${id}`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(pedidoData),
+ });
+ if (!response.ok) {
+  throw new Error('No se pudo actualizar el pedido');
+ }
+ return response.json();
+};
+
+export const deletePedido = async (id) => {
+  const response = await api.delete(`/pedidos/${id}`);
+  return response.data;
 };

@@ -1,15 +1,12 @@
 // controllers/pedidosController.js
-
+import FormPedido from './pages/pedidos/FormPedido';
 // Array para simular la base de datos de pedidos
 let pedidos = [
   {
     id: '001',
     mesa: 5,
     mozo: 'Juan',
-    productos: [
-      { id: "cafe", nombre: "Café", precio: 200, cantidad: 1 },
-      { id: "medialuna", nombre: "Medialuna", precio: 300, cantidad: 2 },
-    ],
+
     total: 800,
     estado: 'Listo',
   },
@@ -80,27 +77,6 @@ exports.actualizarPedido = (req, res) => {
       return res.status(400).json({ message: "No se puede cambiar un pedido finalizado o cancelado" });
     }
     estadoFinal = nuevoEstado;
-  }
-  // 2. Lógica de avance automático (si no se especifica 'nuevoEstado')
-  else {
-    switch (pedido.estado) {
-      case "Pendiente":
-        estadoFinal = "Listo";
-        break;
-      case "Listo":
-        estadoFinal = "Finalizado";
-        break;
-      case "Cancelado":
-      case "Finalizado":
-        // Si ya está en un estado final, no avanza más
-        estadoFinal = pedido.estado;
-        break;
-    }
-  }
-
-  // Aseguramos que los estados finales no se sobrescriban por error
-  if (pedido.estado === "Finalizado" || pedido.estado === "Cancelado") {
-    estadoFinal = pedido.estado;
   }
 
   pedidos[pedidoIndex] = { ...pedido, estado: estadoFinal };

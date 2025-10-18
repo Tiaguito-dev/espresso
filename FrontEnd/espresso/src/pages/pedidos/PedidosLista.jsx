@@ -1,215 +1,152 @@
 // src/pages/pedidos/PedidosLista.jsx
+
 import React, { useState, useEffect } from "react";
-import { getPedidos, updatePedido } from "../../services/pedidosService"; // Importamos las funciones
-import { useNavigate } from "react-router-dom"; // Esto es para navegar programáticamente, es decir, cuando hacemos click en "Agregar Pedido"
+// Asegúrate de que updatePedido esté correctamente exportado aquí
+import { getPedidos, updatePedido, deletePedido } from "../../services/pedidosService"; 
+import { useNavigate } from "react-router-dom";
 import "./PedidosLista.css";
-import BotonBaja from "../../components/BotonBaja";
-import Filtro from "./../menu/Filtro";
 
-/*
-  🔄 FLUJO COMPLETO:
-
-  1. Componente carga:
-    pedidos = [] → Tabla vacía 📋
-
-  2. fetchPedidos() ejecuta:
-    Backend responde con datos 📡
-
-  3. setPedidos(data) ejecuta:
-    pedidos = [datos] → React re-renderiza 🔄
-
-  4. Tabla se actualiza:
-    map() recorre los datos → Filas aparecen ✅
-*/
+import Filtro from "../menu/Filtro";
+import TablaPedidos from "../../components/TablaPedidos"; // Importamos el componente contenedor de la tabla
 
 export default function PedidosLista() {
-  const [pedidos, setPedidos] = useState([]);
+    const [pedidos, setPedidos] = useState([]);
+    const [mostrarFiltros, setMostrarFiltros] = useState(false);
+    const [estadoFiltro, setEstadoFiltro] = useState("todos");
+    const navigate = useNavigate();
 
-  /*
-    ¿Por qué es confuso lo de setPedidos?
-    Porque no ves la definición explícita de setPedidos, pero React la crea automáticamente cuando usas useState.
-          
-    Versión manual (sin React):
-    let pedidos = [];
-  
-    function setPedidos(nuevoValor) {
-    pedidos = nuevoValor;
-    // Re-renderizar componente manualmente
-    }
-  
-    Versión React (automática):
-    const [pedidos, setPedidos] = useState([]); // ← React hace todo por ti
-  */
+    // 🔄 Cargar pedidos del back-end al inicio
+    useEffect(() => {
+        fetchPedidos();
+    }, []);
 
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  const [estadoFiltro, setEstadoFiltro] = useState("todos");
-  const navigate = useNavigate();
-
-  // Usamos useEffect para cargar los pedidos del back-end al inicio
-  useEffect(() => {
-    fetchPedidos();
-  }, []);
-
-  const fetchPedidos = async () => {
-    try {
-      const data = await getPedidos();
-      setPedidos(data);
-    } catch (error) {
-      console.error("Error al obtener los pedidos:", error);
-    }
-  };
-
-  const toggleFiltros = () => {
-    setMostrarFiltros(!mostrarFiltros);
-  };
-
-  const filtrarEstado = (estado) => {
-    setEstadoFiltro(estado);
-  };
-
-     const cambiarEstado = async (id, nuevoEstadoFijo = null) => {
-    try {
-      const pedidoActual = pedidos.find((p) => p.id === id);
-      if (!pedidoActual) return;
-
-      let estadoAEnviar = nuevoEstadoFijo;
-      let bodyData = {};
-
-      // Si se especificó un estado fijo (ej: 'Cancelado')
-      if (nuevoEstadoFijo) {
-        bodyData = { nuevoEstado: estadoAEnviar };
-      } 
-      // Si se requiere avance automático (sin estado fijo)
-      else {
-        let siguienteEstado;
-        if (pedidoActual.estado === "Pendiente") {
-          siguienteEstado = "Listo";
-        } else if (pedidoActual.estado === "Listo") {
-          siguienteEstado = "Finalizado";
-        } else {
-          alert(`El pedido ${id} ya está ${pedidoActual.estado} y no se puede avanzar.`);
-          return;
+    const fetchPedidos = async () => {
+        try {
+            const data = await getPedidos();
+            setPedidos(data);
+        } catch (error) {
+            console.error("Error al obtener los pedidos:", error);
         }
-        estadoAEnviar = siguienteEstado;
-        bodyData = { nuevoEstado: estadoAEnviar }; 
-        
-        
-      }
-      
-      // Bloqueo en el frontend para estados finales (aunque el backend también lo bloquea)
-      if ((pedidoActual.estado === "Finalizado" || pedidoActual.estado === "Cancelado") && nuevoEstadoFijo !== pedidoActual.estado) {
-         alert(`El pedido ${id} ya está ${pedidoActual.estado} y no se puede modificar.`);
-         return;
-      }
+    };
 
+    // 🎚️ Mostrar/Ocultar filtros
+    const toggleFiltros = () => {
+        setMostrarFiltros(!mostrarFiltros);
+    };
 
-      // **LLAMADA CLAVE:** Enviamos el cuerpo con la propiedad 'nuevoEstado'
-      await updatePedido(id, bodyData);
+    const filtrarEstado = (estado) => {
+        setEstadoFiltro(estado);
+    };
 
-      // Actualizar el estado local con el estado que se acaba de enviar
-      setPedidos((prevPedidos) =>
-        prevPedidos.map((p) =>
-          p.id === id ? { ...p, estado: estadoAEnviar } : p
-        )
-      );
-    } catch (error) {
-      console.error("Error al actualizar el estado del pedido:", error);
-      alert("Error al actualizar el pedido. Revisa la consola y el servidor.");
-    }
-  };
+    // 🔄 Cambiar estado del pedido (Pendiente -> Listo -> Finalizado)
+    const cambiarEstado = async (id) => {
+        try {
+            const pedidoActual = pedidos.find((p) => p.id === id);
+            if (!pedidoActual) return;
 
-  // REFERENCIA N°1: HAY UNA VARIABLE DE ESTADO PARA estadoFiltro así que cuando cambie se actualiza automáticamente pedidosFiltrados
-  const pedidosFiltrados =
-    estadoFiltro === "todos" ? pedidos : pedidos.filter((p) => p.estado === estadoFiltro);
+            let siguienteEstado;
+            if (pedidoActual.estado === "Pendiente") {
+                siguienteEstado = "Listo";
+            } else if (pedidoActual.estado === "Listo") {
+                siguienteEstado = "Finalizado";
+            } else {
+                alert(`El pedido ya está ${pedidoActual.estado} y no se puede avanzar.`);
+                return;
+            }
 
-  /* 
-    Alternativa sin usar operador ternario (if else):
-    let pedidosFiltrados;
-    if (estadoFiltro === "todos") {
-      pedidosFiltrados = pedidos;
-    } else {
-      pedidosFiltrados = pedidos.filter((p) => p.estado === estadoFiltro);
-    }
-  */
+            // Llamada al servicio
+            await updatePedido(id, { nuevoEstado: siguienteEstado });
+            fetchPedidos();
+        } catch (error) {
+            console.error("Error al actualizar el estado del pedido:", error);
+            alert("No se pudo actualizar el estado del pedido.");
+        }
+    };
 
-  return (
-    <div className="container">
-      {/* Botón filtros */}
-      <button className="toggle-filtros" onClick={toggleFiltros}>
-        Filtros
-      </button>
-      {mostrarFiltros && (
-        <div className="filtros">
-          <input type="text" placeholder="Buscar por Mozo" />
-          <input type="text" placeholder="Buscar por Mesa" />
-        </div>
-      )}
-
-      {/* Estados + agregar pedido */}
-      <div className="filtros-estado">
-        <div className="estados">
-          <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
-          <Filtro estadoActual={estadoFiltro} estadoValor="Pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
-          <Filtro estadoActual={estadoFiltro} estadoValor="Listo" nombreFiltro="Listo" onClick={filtrarEstado} />
-          <Filtro estadoActual={estadoFiltro} estadoValor="Finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
-          <Filtro estadoActual={estadoFiltro} estadoValor="Cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
-        </div>
-
-        <button className="btn-agregar" onClick={() => navigate("/pedidos/agregar")}>+ Agregar Pedido</button>
-      </div>
-
-      {/* Tabla */}
-      <table>
-        <thead>
-          <tr>
-            <th>N° Pedido</th>
-            <th>Mesa</th>
-            <th>Productos</th>
-            <th>Precio Total</th>
-            <th>Estado</th>
-            <th>Cambio de Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Para entender por qué usa pedidosFiltrados mirar la REFERENCIA N°1 */}
-            {pedidosFiltrados.map((pedido) => (
-            <tr key={pedido.id} data-estado={pedido.estado}>
-              <td>{pedido.id}</td>
-              <td>{pedido.mesa}</td>
-              <td>{pedido.productos.map(p => `${p.nombre} ($${p.precio})`).join(', ')}</td>
-              <td>${pedido.total}</td>
-              <td>
-                <span className={`estado ${pedido.estado?.toLowerCase() || "sin-estado"}`}>
-                {pedido.estado || "Sin estado"}
-                </span>
-              </td>
-              <td className="acciones">
-                <button className="info">Mostrar info</button>
+    // ❌ Función para CANCELAR el pedido (usa updatePedido)
+    const cancelarPedido = async (id) => {
+        if (window.confirm("¿Seguro que desea CANCELAR el pedido? El estado pasará a 'Cancelado'.")) {
+            try {
+                // Llamada al servicio para actualizar el estado
+                await updatePedido(id, { nuevoEstado: "Cancelado" });
                 
-                {}
-                <button
-                  className="modificar"
-                  onClick={() => cambiarEstado(pedido.id)}
-                  disabled={pedido.estado === "Finalizado" || pedido.estado === "Cancelado"}
-                >
-                  {pedido.estado === "Pendiente"
-                    ? "Pasar a Listo"
-                    : pedido.estado === "Listo"
-                    ? "Pasar a Finalizado"
-                    : "Finalizado"}
-                </button> 
-                {/* ¡Reemplazamos el botón original por el nuevo componente! */}
-              {/* Le pasamos el ID del pedido y la función 'cambiarEstado' */}
-              <BotonBaja
-                pedidoId={pedido.id}
-                onCancelar={cambiarEstado}
-              />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+                fetchPedidos(); 
+                alert("Pedido cancelado correctamente.");
+            } catch (error) {
+                console.error("Error al cancelar el pedido:", error);
+                alert("No se pudo cancelar el pedido.");
+            }
+        }
+    };
+
+    // ✏️ Navegar a modificar pedido
+    const navegarAModificar = (id) => {
+    // 🎯 La ruta debe incluir el ID del pedido
+     navigate(`/pedidos/modificar/${id}`); 
+   };
+
+    // 🔍 Filtrar por estado
+    const pedidosFiltrados = (() => {
+        switch (estadoFiltro) {
+            case "pendiente":
+                return pedidos.filter((p) => p.estado === "Pendiente");
+            case "listo":
+                return pedidos.filter((p) => p.estado === "Listo");
+            case "finalizado":
+                return pedidos.filter((p) => p.estado === "Finalizado");
+            case "cancelado":
+                return pedidos.filter((p) => p.estado === "Cancelado");
+            default:
+                return pedidos;
+        }
+    })();
+    
+    // 📋 Definimos los campos de la tabla
+    const arrayCampos = ["ID", "Mesa", "Mozo", "Fecha", "Estado", "Total", "Acciones"];
+
+
+    return (
+        <div className="container">
+            {/* Botón de filtros */}
+            <button className="toggle-filtros" onClick={toggleFiltros}>
+                Filtros
+            </button>
+
+            {mostrarFiltros && (
+                <div className="filtros">
+                    <input type="text" placeholder="Buscar por mesa" />
+                    <input type="text" placeholder="Buscar por estado" />
+                </div>
+            )}
+
+            {/* Estados + botón agregar */}
+            <div className="filtros-estado">
+                <div className="estados">
+                    <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="listo" nombreFiltro="Listo" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
+                    {/* Podrías añadir un filtro para "Cancelado" si lo deseas */}
+                </div>
+
+                <button 
+            className="btn-agregar" 
+            // 🎯 Ruta para crear un nuevo pedido (normalmente sin ID)
+            onClick={() => navigate("/pedidos/agregar")}
+            >
+               + Agregar Pedido
+          </button>
+            </div>
+
+            {/* 📋 Uso del componente TablaPedidos, que ahora maneja el renderizado */}
+            <TablaPedidos
+                pedidos={pedidosFiltrados}
+                arrayCampos={arrayCampos} // Pasamos los encabezados
+                funcionCambiarEstado={cambiarEstado}
+                funcionModificar={navegarAModificar}
+                funcionEliminar={cancelarPedido} // Pasamos la función de cancelación para el botón "Baja"
+            />
+        </div>
+    );
+}
