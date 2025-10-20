@@ -22,6 +22,10 @@ function Home() {
           ruta="/menu"
           texto="Gestion de Menu"
         ></BotonHome>
+        <BotonHome
+          ruta="/mesas"
+          texto="Gestion mesas"
+        ></BotonHome>
       </div>
     </div>
   );

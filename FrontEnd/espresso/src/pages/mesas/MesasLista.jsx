@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./../pedidos/PedidosLista.css";
+import "./../pedidos/Pedidos.css";
 
 export default function MesasLista() {
   const [mesas, setMesas] = useState([]);

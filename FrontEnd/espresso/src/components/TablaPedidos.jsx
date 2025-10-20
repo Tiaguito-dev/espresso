@@ -1,24 +1,19 @@
-// src/pages/pedidos/TablaPedidos.jsx
+// src/components/TablaPedidos.jsx (o donde lo tengas)
 
-import { Fragment } from "react";
+import CabeceraTablaPedidos from "./CabeceraTablaPedidos"; 
+import FilaPedido from "./FilaPedido";
 
-// Importamos los nuevos componentes específicos de la tabla
-import CabeceraTablaPedidos from "./CabeceraTablaPedidos.jsx"; 
-import FilaPedido from "../pages/pedidos/FilaPedido.jsx";
-
+// 🎯 Debe recibir 'pedidos' y pasarlo al map
 function TablaPedidos({ pedidos, arrayCampos, funcionCambiarEstado, funcionModificar, funcionEliminar}) {
 
     return (
-        // Usamos la clase 'tabla' que ya tienes definida en tus estilos
         <table className="tabla">
             <thead>
-                {/* CabeceraTablaPedidos SOLO necesita los encabezados */}
                 <CabeceraTablaPedidos arrayCampos={arrayCampos} />
             </thead>
             <tbody>
                 {pedidos.length > 0 ? (
                     pedidos.map((pedido) => (
-                        // FilaPedido recibe el objeto 'pedido' completo y las funciones
                         <FilaPedido 
                             key={pedido.id} 
                             pedido={pedido} 
@@ -29,7 +24,6 @@ function TablaPedidos({ pedidos, arrayCampos, funcionCambiarEstado, funcionModif
                     ))
                 ) : (
                     <tr>
-                        {/* El número de columnas debe ser dinámico o fijo (7 en este caso: ID, Mesa, Mozo, Fecha, Estado, Total, Acciones) */}
                         <td colSpan={7}>No hay pedidos registrados.</td>
                     </tr>
                 )}

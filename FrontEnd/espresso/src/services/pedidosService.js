@@ -37,3 +37,14 @@ export const deletePedido = async (id) => {
   const response = await api.delete(`/pedidos/${id}`);
   return response.data;
 };
+
+export const buscarPedidoPorId = async (id) => {
+ const response = await fetch(`${API_URL}/${id}`);
+ 
+ if (!response.ok) {
+  // Si el pedido no existe o hay un error de servidor
+  throw new Error(`Pedido no encontrado o error del servidor: ${response.statusText}`);
+ }
+ 
+ return response.json();
+};

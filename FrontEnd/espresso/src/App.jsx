@@ -6,6 +6,7 @@ import AgregarPedido from "./pages/pedidos/AgregarPedido.jsx";
 import Menu from "./pages/menu/Menu.jsx";
 import FormProducto from "./pages/menu/FormProducto.jsx";
 import MesasLista from "./pages/mesas/MesasLista.jsx";
+import FormPedido from "./pages/pedidos/FormPedido.jsx";
 
 function App() {
   return (
