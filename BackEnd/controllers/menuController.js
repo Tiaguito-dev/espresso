@@ -1,13 +1,22 @@
 const Menu = require('../models/Menu');
 const Producto = require('../models/Producto');
-const ProductosBD = require('../repositories/ProductosBD');
+const ProductoBD = require('../repositories/ProductoBD');
+const CategoriaBD = require('../repositories/CategoriaBD');
 const { json } = require('express');
 
 const menu = new Menu();
 
+function guardarCategoria(categoria) {
+    try {
+        CategoriaBD.crearCategoria(categoria);
+    } catch (error) {
+        console.error('Error guardando la categoría:', error);
+    }
+}
+
 async function inicializarMenu() {
     try {
-        const productos = await ProductosBD.obtenerProductos();
+        const productos = await ProductoBD.obtenerProductos();
         menu.cargarProductos(productos);
         console.log(`${productos.length} productos cargados en el menú`);
     } catch (error) {
@@ -30,7 +39,7 @@ exports.obtenerProductos = async (req, res) => {
 exports.obtenerProductoPorId = async (req, res) => {
     try {
         const { id } = req.params;
-        const producto = await ProductosBD.obtenerPorId(4); // Acá lo unico que hice fue probarlo
+        const producto = await ProductoBD.obtenerProductoPorId(4); // Acá lo unico que hice fue probarlo
 
         if (!producto) {
             return res.status(404).json({ message: 'Producto no encontrado' });
@@ -41,23 +50,39 @@ exports.obtenerProductoPorId = async (req, res) => {
         console.error('Error al obtener producto:', error);
         res.status(500).json({ message: 'Error interno del servidor' });
     }
+    // ESTO NO VA A FUNCIONAR PORQUE LO DEVUELVE EN RESPUESTA ANTES DE QUE LLEGUE LA CONSULTA
+    /*
     res.json(producto);
     console.log('Devolviendo el producto con ID:', id);
     console.log(producto);
+    */
 };
 
 exports.crearProducto = (req, res) => {
 
     console.log(req.body);
 
-    const { nombre, descripcion, precio, disponible } = req.body;
+    const { nombre, descripcion, precio, categoria } = req.body;
+
+    const ultimoId = ProductoBD.obtenerUltimoCodigo();
+
+    if (ProductoBD.existeNombreProducto(nombre)) {
+        res.status(400).json({ message: 'El nombre del producto ya existe' });
+    };
+
+    // TENEMOS QUE GUARDAR LA CATEGORÍA EN LA BD
+    const categoriaObj = menu.obtenerOCrearCategoria(categoria);
+
+    guardarCategoria(categoriaObj);
+
+    const idCategoria = categoriaObj.id;
 
     const datosDeProducto = {
-        id: Date.now.toString(), // Id temporal (lo mismo q antes)
+        id: ultimoId + 1,
+        precio: precio,
         nombre: nombre,
         descripcion: descripcion,
-        precio: precio,
-        disponible: disponible
+        id_categoria: idCategoria,
     };
 
     const nuevoProducto = new Producto(datosDeProducto);

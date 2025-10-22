@@ -18,13 +18,13 @@ exports.obtenerProductos = async () => {
     }
 };
 
-exports.obtenerPorId = async (cod_producto) => {
+exports.obtenerProductoPorId = async (cod_producto) => {
     try {
         const productos = await Gateway.ejecutarQuery({ text: selectProductoPorId, values: [cod_producto] });
         //HAY QUE DEFINIR SI LO VA A BUSCAR POR NOMBRE O POR CODIGO, Porque de eso depende también que sea unique o no
         return productos[0]; // Retornar el primer producto encontrado
     } catch (error) {
-        throw new Error(`Error al obtener producto ${id} desde la base de datos: ${error.message}`);
+        throw new Error(`Error al obtener producto ${cod_producto} desde la base de datos: ${error.message}`);
     }
 };
 
@@ -61,6 +61,7 @@ exports.obtenerUltimoCodigo = async () => {
 };
 
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES DE VALIDACIÓN ===
+// TODO: Hay que implementar esto porque el nombre de un producto lo puse como unique
 exports.existeNombreProducto = async (nombre) => {
     try {
         const productos = await Gateway.ejecutarQuery({ text: selectProductoPorNombre, values: [nombre] });

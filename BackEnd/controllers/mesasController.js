@@ -15,7 +15,7 @@ exports.obtenerMesaPorNumero = (req, res) => {
     const { nroMesa } = req.params;
     const mesa = administradorMesas.buscarMesaPorNumero(parseInt(nroMesa));
     if (!mesa) {
-        return res.status(404).json({ message: 'Mesa no encontrada'});
+        return res.status(404).json({ message: 'Mesa no encontrada' });
     }
     res.json(mesa);
     console.log('Devolviendo la mesa con numero: ', nroMesa);
@@ -26,7 +26,7 @@ exports.crearMesa = (req, res) => {
     const { nroMesa, estado } = req.body;
 
     const mesaExistente = administradorMesas.buscarMesaPorNumero(nroMesa);
-    if (mesaExistente){
+    if (mesaExistente) {
         console.log(`Mesa con número ${nroMesa} ya existente.`)
         return mesaExistente;
     }
@@ -49,8 +49,8 @@ exports.cambiarEstadoMesa = (req, res) => {
 
     const mesaAModificar = administradorMesas.buscarMesaPorNumero(nroMesa);
 
-    if (!mesaAModificar){
-        return res.status(404),json({ message: `Mesa para modificar no encontrada`});
+    if (!mesaAModificar) {
+        return res.status(404), json({ message: `Mesa para modificar no encontrada` });
     }
 
     mesaAModificar.cambiarEstadoMesa(nuevoEstado);
@@ -59,13 +59,14 @@ exports.cambiarEstadoMesa = (req, res) => {
 }
 
 exports.eliminarMesa = (req, res) => {
+    // TODO: si se elimina una mesa tenemos que poner cascade o algun valor por defecto
     const { nroMesa } = req.params;
     const exito = administradorMesas.eliminarMesaPorNumero(nroMesa);
 
-    if (exito){
-        res.status(200).json({ message: `'La mesa ${nroMesa} fue eliminada correctamente.`});
+    if (exito) {
+        res.status(200).json({ message: `'La mesa ${nroMesa} fue eliminada correctamente.` });
     } else {
-        res.status(404).json({message: `No fue posible eliminar la mesa ${nroMesa}`});
+        res.status(404).json({ message: `No fue posible eliminar la mesa ${nroMesa}` });
     }
 }
 
