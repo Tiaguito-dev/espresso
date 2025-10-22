@@ -1,10 +1,11 @@
 const Mesa = require('../models/Mesa');
-const Pedido = require('../models/Pedido');
 const AdministradorMesas = require('../models/AdministradorMesas');
-const Producto = require('../models/Producto');
+const mesasIniciales = require('../DB/mesas.json');
+
 const { json } = require('express');
 
 const administradorMesas = new AdministradorMesas();
+administradorMesas.cargarMesas(mesasIniciales);
 
 exports.obtenerMesas = (req, res) => {
     res.json(administradorMesas.getMesas());
@@ -52,7 +53,7 @@ exports.cambiarEstadoMesa = (req, res) => {
         return res.status(404),json({ message: `Mesa para modificar no encontrada`});
     }
 
-    mesa.cambiarEstadoMesa(nuevoEstado);
+    mesaAModificar.cambiarEstadoMesa(nuevoEstado);
 
     res.status(200).json(mesaAModificar);
 }
@@ -67,3 +68,6 @@ exports.eliminarMesa = (req, res) => {
         res.status(404).json({message: `No fue posible eliminar la mesa ${nroMesa}`});
     }
 }
+
+
+module.exports.mesas = administradorMesas;

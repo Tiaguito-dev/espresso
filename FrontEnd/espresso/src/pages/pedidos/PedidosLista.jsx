@@ -54,6 +54,7 @@ export default function PedidosLista() {
     try {
       const data = await getPedidos();
       setPedidos(data);
+      console.log(data);
     } catch (error) {
       console.error("Error al obtener los pedidos:", error);
     }

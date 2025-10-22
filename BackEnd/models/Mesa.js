@@ -33,4 +33,5 @@ class Mesa {
     cambiarEstadoMesa (nuevoEstado){
         this.estadoMesa = nuevoEstado; 
     }
+
 }

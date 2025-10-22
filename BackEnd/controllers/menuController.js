@@ -68,3 +68,5 @@ exports.eliminarProducto = (req, res) => {
         res.status(404).json({message:`No fue posible elminar el producto ${id}`});
     }
 };
+
+module.exports.menu = menu;

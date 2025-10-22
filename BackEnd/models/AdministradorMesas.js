@@ -1,9 +1,20 @@
 const Mesa = require('./Mesa');
 
-class AdministradosMesas {
+class AdministradorMesas {
     constructor() {
         this.mesas = [];
     }
+
+    cargarMesas(mesasData) {
+        try {
+                mesasData.forEach(dataMesa => {
+                    const nuevaMesa = new Mesa(dataMesa);
+                    this.agregarMesa(nuevaMesa);
+                });
+            } catch (error) {
+                console.error('Error cargando mesas iniciales:', error.message);
+            }
+        }
 
     agregarMesa(mesa) {
         if (mesa instanceof Mesa) {
@@ -29,4 +40,4 @@ class AdministradosMesas {
     }
 }
 
-module.exports = AdministradosMesas;
+module.exports = AdministradorMesas;
