@@ -41,6 +41,9 @@ exports.obtenerProductoPorId = async (req, res) => {
         console.error('Error al obtener producto:', error);
         res.status(500).json({ message: 'Error interno del servidor' });
     }
+    res.json(producto);
+    console.log('Devolviendo el producto con ID:', id);
+    console.log(producto);
 };
 
 exports.crearProducto = (req, res) => {
@@ -92,3 +95,5 @@ exports.eliminarProducto = (req, res) => {
         res.status(404).json({ message: `No fue posible elminar el producto ${id}` });
     }
 };
+
+module.exports.menu = menu;

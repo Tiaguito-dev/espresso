@@ -1,0 +1,10 @@
+[
+  { "nroMesa": 1, "estadoMesa": "disponible" },
+  { "nroMesa": 2, "estadoMesa": "disponible" },
+  { "nroMesa": 3, "estadoMesa": "ocupada" },
+  { "nroMesa": 4, "estadoMesa": "reservada" },
+  { "nroMesa": 5, "estadoMesa": "disponible" },
+  { "nroMesa": 6, "estadoMesa": "disponible" },
+  { "nroMesa": 7, "estadoMesa": "fuera de servicio" },
+  { "nroMesa": 8, "estadoMesa": "disponible" }
+]
