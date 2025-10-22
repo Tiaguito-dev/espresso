@@ -35,3 +35,5 @@ class Mesa {
     }
 
 }
+
+module.exports = Mesa;

@@ -1,4 +1,4 @@
-const {Producto} = require('./Producto');
+const Producto = require('./Producto');
 
 const validarDataLineaPedido = (data) => {
     const errores = []; 
@@ -28,11 +28,13 @@ class LineaPedido {
             throw new Error(`Errores de validacion: ${errores.join(', ')}`);
         }
         this.cantidad = data.cantidad;
-        this.nombreProducto = getNombreProducto(data.producto);
-        this.precioUnitario = getPrecio(data.producto);
+        this.nombreProducto = data.producto.getNombre();
+        this.precioUnitario = data.producto.getPrecio();
     }
 
     getSubTotal() {
         return this.cantidad * this.precioUnitario;
     }
 }
+
+module.exports = LineaPedido;

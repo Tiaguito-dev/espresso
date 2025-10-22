@@ -48,7 +48,7 @@ class Pedido {
         this.nroPedido = data.nroPedido;
         this.fecha = data.fecha;
         this.estadoPedido = data.estadoPedido || 'pendiente'; //si no tiene estado, lo inicializa en pendiente
-        this.mesa = mesa;
+        this.mesa = data.mesa;
         
         this.lineasPedido = data.lineasPedido || []; // inicializar como un array vacío si no contiene las lineas de pedido NOTA: A DEFINIR UCANDO SE HACE ESTO
     }
@@ -79,3 +79,5 @@ class Pedido {
     }
     
 }
+
+module.exports = Pedido;

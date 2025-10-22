@@ -1,6 +1,6 @@
 const Pedido = require('./Pedido');
 const Producto = require('./Producto');
-constLineaPedido = require('./LineaPedido');
+const LineaPedido = require('./LineaPedido');
 
 class AdministradorPedidos {
     constructor() {
@@ -33,6 +33,8 @@ class AdministradorPedidos {
                     estadoPedido: dataPedido.estadoPedido,
                     lineasPedido: lineasPedidoObj
                 };
+                const nuevoPedido = new Pedido(datos);
+                this.agregarPedido(nuevoPedido);
             });
         } catch (error){
             console.error('Error cargando pedidos iniciales:', error.message);

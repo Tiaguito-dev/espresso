@@ -12,6 +12,7 @@ const administradorPedidos = new AdministradorPedidos();
 administradorPedidos.cargarPedidos(pedidosIniciales, menu, mesas)
 
 exports.obtenerPedidos = (req, res) => {
+    console.log("Datos a enviar de pedidos:", administradorPedidos.pedidos);
     res.json(administradorPedidos.pedidos);
 };
 
