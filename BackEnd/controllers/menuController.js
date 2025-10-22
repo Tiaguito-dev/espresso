@@ -44,6 +44,9 @@ exports.obtenerProductoPorId = async (req, res) => {
 };
 
 exports.crearProducto = (req, res) => {
+
+    console.log(req.body);
+
     const { nombre, descripcion, precio, disponible } = req.body;
 
     const datosDeProducto = {
