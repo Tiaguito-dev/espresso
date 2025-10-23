@@ -9,7 +9,7 @@ const selectCategoriaPorNombre = 'SELECT * FROM categoria WHERE nombre = $1';
 exports.obtenerIdCategoriaPorNombre = async (nombreCategoria) => {
     try {
         const resultado = await Gateway.ejecutarQuery({ text: selectCategoriaPorNombre, values: [nombreCategoria] });
-        return resultado[0].id; // Retornar el id de la categoría
+        return resultado[0]?.id_categoria || null; // Retornar el id de la categoría
     } catch (error) {
         throw new Error(`Error al obtener el id de la categoría ${nombreCategoria} desde la base de datos: ${error.message}`);
     }
@@ -18,7 +18,10 @@ exports.obtenerIdCategoriaPorNombre = async (nombreCategoria) => {
 exports.crearCategoria = async (nombreCategoria) => {
     try {
         await Gateway.ejecutarQuery({ text: insertCategoria, values: [nombreCategoria] });
-        // TODO: Acá deberíamos manejar una respuesta como devolver el id de categoría o un mensaje de éxito
+        return {
+            success: true,
+            message: `La categoría ${nombreCategoria} se creó correctamente.`
+        };
     } catch (error) {
         throw new Error(`Error al crear la categoría ${nombreCategoria} desde la base de datos: ${error.message}`);
     }
