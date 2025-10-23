@@ -46,29 +46,11 @@
   margin-bottom: 6px;
 }
 
-<<<<<<< HEAD
-.form-field input, .form-field select {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-.form-field select {
-    color: #666; 
-}
-
-.form-field select:invalid, .form-field select[value=""] {
-    color: #666;
-=======
 .form-field input {
   padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
   transition: border-color 0.2s, box-shadow 0.2s;
->>>>>>> jere
 }
 
 .form-field input:focus {

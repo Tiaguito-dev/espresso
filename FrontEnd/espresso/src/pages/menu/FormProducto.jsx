@@ -15,7 +15,9 @@ function FormProducto() {
         disponible: true
     });
 
-    const [categorias, setCategorias] = useState([]); const [nuevaCategoria, setNuevaCategoria] = useState(""); const [usarNuevaCategoria, setUsarNuevaCategoria] = useState(false);
+    const [categorias, setCategorias] = useState([]); 
+    const [nuevaCategoria, setNuevaCategoria] = useState(""); 
+    const [usarNuevaCategoria, setUsarNuevaCategoria] = useState(false);
     const navigate = useNavigate();
     const existeId = Boolean(id);
 

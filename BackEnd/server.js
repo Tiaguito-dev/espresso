@@ -2,12 +2,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-<<<<<<< HEAD
-=======
-console.log(' Iniciando servidor...');
-
->>>>>>> jere
-// Importar rutas
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
 
