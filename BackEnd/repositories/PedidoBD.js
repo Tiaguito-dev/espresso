@@ -51,7 +51,10 @@ exports.crearPedido = async (datosDePedido) => {
 
     try {
         await Gateway.ejecutarQuery({ text: insertPedido, values: [nroPedido, fecha, observacion, monto, idMozo, idMesa] });
-
+        return {
+            success: true,
+            message: `El pedido ${nroPedido} se creó correctamente.`
+        };
     } catch (error) {
         throw new Error('Error al crear un pedido desde la base de datos: ' + error.message);
     }
@@ -87,6 +90,10 @@ exports.crearLineaPedido = async (datosDeLineaPedido) => {
 
     try {
         await Gateway.ejecutarQuery({ text: insertLineaPedido, values: [idPedido, idProducto, cantidad, monto, nombreProducto] });
+        return {
+            success: true,
+            message: `La línea del pedido ${idPedido} se creó correctamente.`
+        };
     } catch (error) {
         throw new Error('Error al crear una línea de pedido desde la base de datos: ' + error.message);
     }

@@ -37,7 +37,10 @@ exports.crearProducto = async (datosDeProducto) => {
 
     try {
         await Gateway.ejecutarQuery({ text: insertProducto, values: [id, precio, nombre, descripcion, id_categoria] });
-        // TODO: Acá deberíamos manejar una respuesta como devolver el id de producto o un mensaje de éxito
+        return {
+            success: true,
+            message: `El producto ${id} se creó correctamente.`
+        };
     } catch (error) {
         throw new Error('Error al crear un producto desde la base de datos: ' + error.message);
     }
@@ -47,7 +50,10 @@ exports.crearProducto = async (datosDeProducto) => {
 exports.eliminarProducto = async (id) => {
     try {
         await Gateway.ejecutarQuery({ text: deleteProductoPorId, values: [id] });
-        // TODO: Acá deberíamos manejar una respuesta como devolver el id de producto o un mensaje de éxito
+        return {
+            success: true,
+            message: `El producto ${id} se eliminó correctamente.`
+        };
     } catch (error) {
         throw new Error(`Error al eliminar el producto ${id} desde la base de datos: ${error.message}`);
     }
@@ -67,7 +73,10 @@ exports.modificarProducto = async (id, datosActualizados) => {
 
     try {
         await Gateway.ejecutarQuery({ text: updateProductoPorId, values: [id, precio, nombre, descripcion, id_categoria] });
-        // TODO: Acá deberíamos manejar una respuesta como devolver el id de producto o un mensaje de éxito
+        return {
+            success: true,
+            message: `El producto ${id} se modificó correctamente.`
+        };
     } catch (error) {
         throw new Error(`Error al modificar el producto ${id} desde la base de datos: ${error.message}`);
     }

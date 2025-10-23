@@ -51,7 +51,7 @@ exports.runTests = () => {
         idMesa: 1
     })
     .then(resultado => {
-        console.log('Pedido creado:', JSON.stringify(resultado));
+        console.log(resultado.message);
     })
     .catch(error => {
         console.error('Error al crear el pedido:', error);
