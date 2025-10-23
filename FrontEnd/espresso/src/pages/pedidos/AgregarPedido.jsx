@@ -27,7 +27,7 @@ function AgregarPedido() {
     Comida: [{ id: "medialuna", nombre: "Medialuna", precio: 300 }],
   };
 
-//coty romero's function
+
   const handleModalQtyChange = (id, value) => {
     setModalCantidades((prev) => ({ ...prev, [id]: Math.max(1, parseInt(value || 1)) }));
   };
