@@ -44,30 +44,20 @@ let pedidos = [
   },
 ];
 
-
-
-// ===============================================
-// CRUD BÁSICO
-// ===============================================
-
 exports.obtenerPedidos = (req, res) => {
     res.json(pedidos);
 };
 
 exports.crearPedido = (req, res) => {
-    // Aseguramos que el ID se genere y se mantengan los datos del body
     const nuevoPedido = { 
         ...req.body, 
         id: Date.now().toString(),
-        estado: req.body.estado || "Pendiente", // Aseguramos un estado inicial
+        estado: req.body.estado || "Pendiente", // estado inicial
     };
     pedidos.push(nuevoPedido);
     res.status(201).json(nuevoPedido);
 };
 
-// ===============================================
-// 1. OBTENER POR ID (AÑADIDO - Soluciona el error 404 al cargar el formulario)
-// ===============================================
 exports.obtenerPedidoPorId = (req, res) => {
     const { id } = req.params;
 
@@ -82,9 +72,6 @@ exports.obtenerPedidoPorId = (req, res) => {
 };
 
 
-// ===============================================
-// 2. ACTUALIZAR PEDIDO (UNIFICADA - Maneja Edición completa y Cambio de Estado)
-// ===============================================
 exports.actualizarPedido = (req, res) => {
     const { id } = req.params;
     
@@ -99,9 +86,7 @@ exports.actualizarPedido = (req, res) => {
 
     const pedidoActual = pedidos[pedidoIndex];
 
-    // -----------------------------------------------------
-    // A. Lógica de CAMBIO DE ESTADO (Desde PedidosLista)
-    // -----------------------------------------------------
+  
     if (nuevoEstado && Object.keys(req.body).length === 1) { // Si solo viene 'nuevoEstado'
         const estadoActualLower = pedidoActual.estado.toLowerCase();
         const nuevoEstadoLower = nuevoEstado.toLowerCase();
@@ -122,9 +107,6 @@ exports.actualizarPedido = (req, res) => {
         });
     }
 
-    // -----------------------------------------------------
-    // B. Lógica de EDICIÓN COMPLETA (Desde FormPedido)
-    // -----------------------------------------------------
     // Si viene mesa, mozo, productos y total, asumimos edición completa
     if (mesa !== undefined && mozo !== undefined && productos !== undefined && total !== undefined) {
         
