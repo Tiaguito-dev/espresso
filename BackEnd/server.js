@@ -2,7 +2,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-// Importar rutas
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
 

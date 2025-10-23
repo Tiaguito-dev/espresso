@@ -2,6 +2,7 @@ const AdministradorPedidos = require('../models/AdministradorPedidos');
 const Pedido = require('../models/Pedido');
 const LineaPedido = require('../models/LineaPedido');
 const Mesa = require('../models/Mesa');
+//http://localhost:3001/api/pedidos
 
 const { menu } = require('./menuController');
 const { mesas } = require('./mesasController');
@@ -23,8 +24,7 @@ exports.crearPedido = (req, res) => {
         const mesaObj = mesas.buscarMesaPorNumero(mesa);
 
         if (!lineas || !Array.isArray(lineas) || lineas.length === 0) {
-            // TODO: Esto corta corta la ejecución? 
-            throw new Error('Se requiere al menos una linea de pedido');
+            throw new Error('Se requiere al menos una inea de pedido');
         }
 
         const lineasPedidoObj = lineas.map(linea => {

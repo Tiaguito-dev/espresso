@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { getProductos, updateProducto, deleteProducto } from "../../services/productosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
+import "../menu/ClienteMenu.css";
 
 import Filtro from "./Filtro";
 import TablaProducto from "./TablaProducto";
-import BotonAccion from "./BotonAccion";
 
 export default function Menu() {
     const [productos, setProductos] = useState([]);
@@ -93,6 +93,11 @@ export default function Menu() {
             <button className="toggle-filtros" onClick={toggleFiltros}>
                 Filtros
             </button>
+
+            <button className="btn-ver-menu"onClick={() => navigate("/menu/menuEspresso/")}>
+                Ver menú Espresso
+            </button>
+
             {mostrarFiltros && (
                 <div className="filtros">
                     <input type="text" placeholder="Buscar por código" />
@@ -120,7 +125,7 @@ export default function Menu() {
             
             <TablaProducto 
                 productos={productosFiltrados}
-                arrayCampos={["Codigo", "Nombre", "Descripcion", "Precio", "Disponible", "Acciones"]}
+                arrayCampos={["Codigo", "Nombre", "Categoria", "Descripcion", "Precio", "Disponible", "Acciones"]}
                 funcionCambiarEstado={cambiarEstado}
                 funcionModificar={navegarAModificar}
                 funcionEliminar={eliminarProducto}

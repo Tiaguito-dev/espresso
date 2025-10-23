@@ -1,24 +1,37 @@
+/* ================================
+   📦 CONTENEDOR PRINCIPAL
+================================== */
 .agregar-pedido {
   max-width: 900px;
   margin: 24px auto;
-  padding: 18px;
+  padding: 24px;
   background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  font-family: Arial, sans-serif;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  font-family: "Poppins", Arial, sans-serif;
+  color: #333;
 }
 
+/* ================================
+   🧾 ENCABEZADO
+================================== */
 .agregar-pedido h2 {
   color: #5a3e2b;
   text-align: left;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+  border-bottom: 2px solid #a97457;
+  padding-bottom: 6px;
 }
 
-/* Form row (mesa + mozo) */
+/* ================================
+   🧍 CAMPOS GENERALES (Mesa y Mozo)
+================================== */
 .form-row {
   display: flex;
   gap: 16px;
   margin-bottom: 18px;
+  flex-wrap: wrap;
 }
 
 .form-field {
@@ -34,27 +47,56 @@
 }
 
 .form-field input {
-  padding: 8px;
+  padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* Productos */
+.form-field input:focus {
+  border-color: #a97457;
+  box-shadow: 0 0 4px rgba(169, 116, 87, 0.3);
+  outline: none;
+}
+
+/* ================================
+   ☕ SECCIÓN DE PRODUCTOS
+================================== */
 .productos-section {
-  margin-top: 10px;
+  margin-top: 20px;
+  padding: 16px;
+  background: #faf7f5;
+  border-radius: 10px;
+  border: 1px solid #eee;
 }
 
+.productos-section h3 {
+  margin: 0 0 12px;
+  color: #5a3e2b;
+  font-size: 1.2rem;
+}
+
+/* ----------------
+   Botones básicos
+---------------- */
 .btn {
   background: #a97457;
   color: white;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   font-weight: bold;
+  transition: background 0.3s;
 }
-.btn:hover { background:#8a5d44; }
 
+.btn:hover {
+  background: #8a5d44;
+}
+
+/* ================================
+   🛒 LISTA DE PRODUCTOS
+================================== */
 .lista-productos {
   list-style: none;
   padding: 0;
@@ -66,38 +108,81 @@
   gap: 12px;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  background: #faf7f5;
+  padding: 10px 12px;
+  background: #ffffff;
   border-radius: 8px;
   margin-bottom: 8px;
   border: 1px solid #eee;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
-.producto-info { flex: 1; text-align: left; }
-.producto-qty { display:flex; align-items:center; gap:8px; }
-.producto-qty input { width: 70px; padding:6px; border-radius:6px; border:1px solid #ccc; }
-.subtotal { margin-left:8px; font-weight:600; }
-
-.btn-eliminar {
-  background:#ef5350;
-  color:white;
-  padding:6px 10px;
-  border-radius:6px;
-  border:none;
-  cursor:pointer;
+.producto-info {
+  flex: 2;
+  text-align: left;
+  font-weight: 600;
+  color: #3a2a20;
 }
-.btn-eliminar:hover { background:#e53935; }
 
+/* Contenedor de cantidad + subtotal */
+.producto-qty-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* Input de cantidad dentro de la lista */
+.qty-input-list {
+  width: 60px;
+  padding: 6px;
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.subtotal {
+  font-weight: 700;
+  color: #a97457;
+  white-space: nowrap;
+}
+
+/* Botón eliminar */
+.btn-eliminar-item {
+  background: #ef5350;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.btn-eliminar-item:hover {
+  background: #c62828;
+}
+
+/* ================================
+   💰 TOTAL Y GUARDAR
+================================== */
 .total-row {
-  display:flex;
+  display: flex;
   justify-content: flex-end;
   gap: 12px;
   margin-top: 10px;
   font-size: 1.1rem;
+  font-weight: 600;
+  color: #5a3e2b;
 }
 
-/* Guardar */
-.actions { margin-top: 16px; display:flex; justify-content:flex-end; }
+.actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .btn-guardar {
   background: #2196f3;
   color: white;
@@ -105,65 +190,172 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background 0.3s;
 }
-.btn-guardar:hover { background:#1976d2; }
 
-/* Modal */
+.btn-guardar:hover {
+  background: #1976d2;
+}
+
+/* ================================
+   🪟 MODAL DE PRODUCTOS
+================================== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
+
 .modal {
   background: #fff;
   width: 420px;
   max-width: 95%;
-  border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.25s ease-in-out;
 }
 
-.modal h3 { margin-top:0; color:#5a3e2b; text-align:center; }
+.modal h3 {
+  margin-top: 0;
+  color: #5a3e2b;
+  text-align: center;
+  font-size: 1.3rem;
+}
 
-.categoria { margin-top:12px; }
-.categoria h4 { margin:6px 0; color:#5a3e2b; }
+/* ----------------
+   Listado de categorías
+---------------- */
+.categoria {
+  margin-top: 12px;
+}
 
+.categoria h4 {
+  margin: 6px 0;
+  color: #5a3e2b;
+  font-size: 1.05rem;
+}
+
+/* ----------------
+   Ítems del menú
+---------------- */
 .menu-item {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  padding:8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
   border-bottom: 1px dashed #eee;
 }
 
-.menu-item-info { display:flex; gap:10px; align-items:center; }
-.menu-item .nombre { font-weight:600; }
-.menu-item .precio { color:#666; font-size:0.95rem; }
-
-.menu-item-actions { display:flex; gap:8px; align-items:center; }
-.qty-input { width:70px; padding:6px; border-radius:6px; border:1px solid #ccc; }
-
-.btn-agregar {
-  background:#4caf50;
-  color:white;
-  border:none;
-  padding:6px 10px;
-  border-radius:6px;
-  cursor:pointer;
+.menu-item-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
-.btn-agregar:hover { background:#45a049; }
 
+.menu-item .nombre {
+  font-weight: 600;
+  color: #3a2a20;
+}
+
+.menu-item .precio {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* ----------------
+   Acciones del menú
+---------------- */
+.menu-item-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.qty-input {
+  width: 70px;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+/* Botón agregar producto */
+.btn-agregar {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-agregar:hover {
+  background: #45a049;
+}
+
+/* Botón cerrar modal */
 .btn-cerrar {
-  margin-top:12px;
-  background:#a97457;
-  color:white;
-  border:none;
-  padding:8px 10px;
-  border-radius:6px;
-  cursor:pointer;
+  margin-top: 12px;
+  background: #a97457;
+  color: white;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-cerrar:hover {
+  background: #8a5d44;
+}
+
+/* ================================
+   ✨ ANIMACIONES
+================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   📱 ADAPTABILIDAD
+================================== */
+@media (max-width: 600px) {
+  .agregar-pedido {
+    padding: 18px;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .producto-line {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .producto-qty-wrapper {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .btn-guardar {
+    width: 100%;
+  }
 }

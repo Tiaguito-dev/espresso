@@ -9,6 +9,7 @@ function FilaProducto({ producto, funcionCambiarEstado, funcionModificar, funcio
         >
             <td>{producto.id}</td>
             <td>{producto.nombre}</td>
+            <td>{producto.categoria?.nombre || "Sin categoría"}</td>
             <td>{producto.descripcion}</td>
             <td>${producto.precio}</td>
             <td>
@@ -16,8 +17,10 @@ function FilaProducto({ producto, funcionCambiarEstado, funcionModificar, funcio
                     {producto.disponible ? "Disponible" : "No disponible"}
                 </span>
             </td>
+            <td>
+                <BotonAccion productoId={producto.id} funcionCambiarEstado={funcionCambiarEstado} funcionModificar={funcionModificar} funcionEliminar={funcionEliminar}></BotonAccion>
+            </td>
 
-            <BotonAccion productoId={producto.id} funcionCambiarEstado={funcionCambiarEstado} funcionModificar={funcionModificar} funcionEliminar={funcionEliminar}></BotonAccion>
         </tr>
     );
 }

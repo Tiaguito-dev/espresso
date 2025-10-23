@@ -1,0 +1,235 @@
+/* ======================================= */
+/* 1. ESTILOS BASE             */
+/* ======================================= */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f5f0; /* Color de fondo cálido */
+    margin: 0;
+    padding: 0;
+}
+
+/* Container */
+.container {
+    padding: 20px;
+}
+
+/* ======================================= */
+/* 2. FILTROS Y BOTONES TOP        */
+/* ======================================= */
+
+/* Botón Filtros (Toggle) */
+.toggle-filtros {
+    background: #a97457; /* Marrón principal */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.toggle-filtros:hover {
+    background: #8a5d44;
+}
+
+/* Contenedor de Inputs de Búsqueda */
+.filtros {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.filtros input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* Estados y Botón Agregar (Contenedor superior) */
+.filtros-estado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Contenedor de los Filtros de Estado */
+.estados {
+    display: flex;
+    gap: 20px; /* Separación entre los filtros (los spans) */
+    font-weight: bold;
+}
+
+/* Estilo base para el filtro NO SELECCIONADO */
+.filtro-inactivo {
+    cursor: pointer;
+    color: #5a3e2b; /* Color marrón base del texto */
+    padding: 6px 10px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+/* Estilo para el filtro SELECCIONADO */
+.filtro-activo {
+    background-color: #a97457; /* Marrón principal de tu tema */
+    color: white; 
+    border-color: #a97457;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.filtro-inactivo:hover {
+    color: #a97457;
+    background-color: #f0ebe6; 
+}
+
+
+/* Botón agregar */
+.btn-agregar {
+    background-color: #24c924; /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-agregar:hover {
+    background-color: #1ea31e;
+}
+
+
+/* ======================================= */
+/* 3. TABLA Y CELDAS           */
+/* ======================================= */
+
+/* Tabla */
+.tabla { /* Usamos .tabla en lugar de 'table' para ser más específicos */
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabla th,
+.tabla td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.tabla th {
+    background-color: #d7ccc8; /* Color de cabecera de tabla */
+    font-weight: bold;
+    color: #5a3e2b; /* Texto marrón */
+}
+
+/* Filas alternas para mejor legibilidad */
+.tabla tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+
+/* ======================================= */
+/* 4. ETIQUETAS DE ESTADO         */
+/* ======================================= */
+
+/* Clase base para la etiqueta de estado dentro de <td> */
+.estado-label {
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    min-width: 90px; /* Asegura un ancho mínimo para que se vea bien */
+}
+
+.estado-Pendiente {
+    background-color: #ffecb3; /* Amarillo claro */
+    color: #8d6e63; /* Marrón */
+}
+
+.estado-Listo {
+    background-color: #c8e6c9; /* Verde claro */
+    color: #2e7d32; /* Verde oscuro */
+}
+
+.estado-Finalizado {
+    background-color: #b2dfdb; /* Turquesa claro */
+    color: #00695c; /* Turquesa oscuro */
+}
+
+.estado-Cancelado {
+    background-color: #ffcdd2; /* Rojo claro */
+    color: #c62828; /* Rojo oscuro */
+}
+
+
+/* ======================================= */
+/* 5. BOTONES DE ACCIÓN          */
+/* ======================================= */
+
+/* Contenedor de botones en la celda 'Acciones' */
+.acciones-container {
+    display: flex;
+    gap: 5px; /* Espacio entre botones */
+    justify-content: center;
+    flex-wrap: wrap; /* Permite que los botones salten de línea si la pantalla es pequeña */
+}
+
+/* Clase base para los botones de acción de la fila */
+.btn-fila-accion {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: bold;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+/* Estilo para botones deshabilitados (Finalizado/Cancelado) */
+.btn-fila-accion:disabled {
+    background-color: #e0e0e0 !important; 
+    color: #757575 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+
+/* 1. Botón de CAMBIO DE ESTADO (Pasar a Listo / Finalizado) */
+.btn-cambio-estado {
+    background-color: #90caf9; /* Azul claro */
+    color: #333; 
+}
+.btn-cambio-estado:hover {
+    background-color: #64b5f6;
+}
+
+/* 2. Botón MODIFICAR */
+.btn-modificar-fila {
+    background-color: #ffe082; /* Amarillo claro */
+    color: #5a3e2b; /* Marrón */
+}
+.btn-modificar-fila:hover {
+    background-color: #ffca28;
+}
+
+/* 3. Botón CANCELAR / BAJA */
+.btn-cancelar-fila {
+    background-color: #ef9a9a; /* Rojo claro */
+    color: white; 
+}
+.btn-cancelar-fila:hover {
+    background-color: #e57373;
+}
+
