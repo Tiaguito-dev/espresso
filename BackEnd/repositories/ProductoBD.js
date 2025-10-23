@@ -7,6 +7,7 @@ const insertProducto = 'INSERT INTO producto (id, precio, nombre, descripcion, i
 const selectUltimoCodigo = 'SELECT MAX(id) FROM producto';
 const deleteProductoPorId = 'DELETE FROM producto WHERE id = $1';
 const selectProductoPorNombre = 'SELECT * FROM producto WHERE nombre = $1';
+const updateProductoPorId = 'UPDATE producto SET precio = $2, nombre = $3, descripcion = $4, id_categoria = $5 WHERE id = $1';
 
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES ===
 exports.obtenerProductos = async () => {
@@ -18,6 +19,7 @@ exports.obtenerProductos = async () => {
     }
 };
 
+// Esto en realidad sería por codigo, pero en la bd lo puse id
 exports.obtenerProductoPorId = async (cod_producto) => {
     try {
         const productos = await Gateway.ejecutarQuery({ text: selectProductoPorId, values: [cod_producto] });
@@ -60,8 +62,19 @@ exports.obtenerUltimoCodigo = async () => {
     }
 };
 
+exports.modificarProducto = async (id, datosActualizados) => {
+    const { precio, nombre, descripcion, id_categoria } = datosActualizados;
+
+    try {
+        await Gateway.ejecutarQuery({ text: updateProductoPorId, values: [id, precio, nombre, descripcion, id_categoria] });
+        // TODO: Acá deberíamos manejar una respuesta como devolver el id de producto o un mensaje de éxito
+    } catch (error) {
+        throw new Error(`Error al modificar el producto ${id} desde la base de datos: ${error.message}`);
+    }
+};
+
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES DE VALIDACIÓN ===
-// TODO: Hay que implementar esto porque el nombre de un producto lo puse como unique
+// TODO: Hay que implementar esto en la Producto porque el nombre de un producto lo puse como unique
 exports.existeNombreProducto = async (nombre) => {
     try {
         const productos = await Gateway.ejecutarQuery({ text: selectProductoPorNombre, values: [nombre] });

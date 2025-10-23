@@ -2,30 +2,36 @@ const Producto = require('./Producto');
 const Categoria = require('./Categoria');
 
 class Menu {
-    constructor (){
+    constructor() {
         this.productos = [];
         this.categorias = [];
     }
-    
-    obtenerOCrearCategoria(nombreCategoria){
-        if (!nombreCategoria || typeof nombreCategoria !== 'string'){
+
+    existeNombreCategoria(nombreCategoria) {
+        if (!nombreCategoria || typeof nombreCategoria !== 'string') {
+            // No es un nombre válido
+            // TODO: En otro lugar de este archivo debería haber un validar nombre, no un return null
             return null;
         }
-        
+
         const nombreMinusculas = nombreCategoria.trim().toLowerCase();
 
         const categoriaExistente = this.categorias.find(
             cat => cat.nombre.toLowerCase() === nombreMinusculas
         );
-        
-        if (categoriaExistente){
-            return categoriaExistente;
 
+        if (categoriaExistente) {
+            // Existe la categoría
+            return true;
         }
+        return false; // No existe la categoría
 
-        const nuevaCategoria = new Categoria({ nombre: nombreCategoria.trim()});
+        /*
+        PARA MI NO DEBERÍA ENCARGARSE DE CREARLA, SINO QUE DEBERÍA LLAMAR A OTRA FUNCIÓN
+        const nuevaCategoria = new Categoria({ nombre: nombreCategoria.trim() });
         this.categorias.push(nuevaCategoria);
         return nuevaCategoria;
+        */
     }
 
     cargarProductos(productosData) {
@@ -34,7 +40,7 @@ class Menu {
 
             const categoriaObj = this.obtenerOCrearCategoria(nombreCategoria);
 
-            const dataProducto ={
+            const dataProducto = {
                 ...producto,
                 categoria: categoriaObj
             };
@@ -52,19 +58,19 @@ class Menu {
         return null;
     }
 
-    getProductos(){
+    getProductos() {
         return this.productos;
     }
 
-    buscarProductoPorNombre(nombre) {   
+    buscarProductoPorNombre(nombre) {
         return this.productos.find(prod => prod.getNombre() === nombre);
     }
 
-    buscarProductoPorId(id){
+    buscarProductoPorId(id) {
         return this.productos.find(prod => prod.id === id)
     }
 
-    eliminarProductoPorId(id){
+    eliminarProductoPorId(id) {
         const i = this.productos.findIndex(p => p.id === id);
         if (i !== -1) {
             this.productos.splice(i, 1);

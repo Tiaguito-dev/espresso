@@ -4,17 +4,48 @@ const ProductoBD = require('../repositories/ProductoBD');
 const CategoriaBD = require('../repositories/CategoriaBD');
 const { json } = require('express');
 
-const menu = new Menu();
-
-function guardarCategoria(categoria) {
-    try {
-        CategoriaBD.crearCategoria(categoria);
-    } catch (error) {
-        console.error('Error guardando la categoría:', error);
+// Crea la categoría si no existe y retorna
+const obtenerOCrearCategoria = async (categoriaNombre) => {
+    const existe = menu.existeNombreCategoria(categoriaNombre);
+    if (existe) {
+        throw new Error('La categoría ya existe');
     }
-}
+
+    try {
+        // La agrega a la BD
+        await CategoriaBD.crearCategoria(categoriaNombre);
+    } catch (error) {
+        throw new Error('Error al agregar la categoría a la base de datos: ' + error.message);
+    }
+    // La agrega al menú en memoria
+    const categoriaObj = new Categoria({ nombre: categoriaNombre });
+    menu.agregarCategoria(categoriaObj);
+    return categoriaObj;
+};
+
+const crearProducto = async (dataProducto) => {
+    const existe = await ProductoBD.existeNombreProducto(dataProducto.nombre);
+    if (existe) {
+        throw new Error('El nombre del producto ya existe');
+    }
+
+    try {
+        // Lo agrega a la BD
+        await ProductoBD.crearProducto(dataProducto);
+    } catch (error) {
+        throw new Error('Error al agregar el producto a la base de datos: ' + error.message);
+    }
+
+    // Lo agrega al menú en memoria
+    const nuevoProducto = new Producto(dataProducto);
+    const productoAgregado = menu.agregarProducto(nuevoProducto);
+    return productoAgregado;
+};
+
 
 async function inicializarMenu() {
+    // Lo pongo aquí para que se ejecute solo una vez al iniciar el servidor
+    const menu = new Menu();
     try {
         const productos = await ProductoBD.obtenerProductos();
         menu.cargarProductos(productos);
@@ -58,40 +89,38 @@ exports.obtenerProductoPorId = async (req, res) => {
     */
 };
 
-exports.crearProducto = (req, res) => {
-
-    console.log(req.body);
-
+exports.crearProducto = async (req, res) => {
     const { nombre, descripcion, precio, categoria } = req.body;
 
-    const ultimoId = ProductoBD.obtenerUltimoCodigo();
+    try {
+        // Obtiene o crea categoría
+        const categoriaObj = await obtenerOCrearCategoria(categoria);
 
-    if (ProductoBD.existeNombreProducto(nombre)) {
-        res.status(400).json({ message: 'El nombre del producto ya existe' });
-    };
+        // Calcula el nuevo código de producto
+        const codigoUltimoProducto = await ProductoBD.obtenerUltimoCodigo();
 
-    // TENEMOS QUE GUARDAR LA CATEGORÍA EN LA BD
-    const categoriaObj = menu.obtenerOCrearCategoria(categoria);
+        // Arma los datos del producto
+        const datosDeProducto = {
+            id: codigoUltimoProducto + 1,
+            nombre,
+            descripcion,
+            precio,
+            id_categoria: categoriaObj.id, // <- lo correcto es usar el ID, no el objeto completo
+        };
 
-    guardarCategoria(categoriaObj);
+        // Crea el producto (en BD y en memoria)
+        const productoAgregado = await crearProducto(datosDeProducto);
 
-    const idCategoria = categoriaObj.id;
+        // Responde con éxito
+        return res.status(201).json(productoAgregado);
 
-    const datosDeProducto = {
-        id: ultimoId + 1,
-        precio: precio,
-        nombre: nombre,
-        descripcion: descripcion,
-        id_categoria: idCategoria,
-    };
-
-    const nuevoProducto = new Producto(datosDeProducto);
-
-    const productoAgregado = menu.agregarProducto(nuevoProducto);
-
-    res.status(201).json(productoAgregado); // Responde con status 201 (Created)
+    } catch (error) {
+        // Captura cualquier error de las funciones auxiliares
+        return res.status(500).json({ message: error.message });
+    }
 };
 
+// TODO: FALTA ESTO
 exports.modificarProducto = (req, res) => {
     const { id } = req.params;
     const datosModificados = req.body;
