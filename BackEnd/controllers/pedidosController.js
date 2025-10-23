@@ -1,5 +1,5 @@
 // controllers/pedidosController.js
-import FormPedido from './pages/pedidos/FormPedido';
+
 // Array para simular la base de datos de pedidos
 let pedidos = [
   {
@@ -44,41 +44,111 @@ let pedidos = [
   },
 ];
 
+
+
+// ===============================================
+// CRUD BÁSICO
+// ===============================================
+
 exports.obtenerPedidos = (req, res) => {
-  res.json(pedidos);
+    res.json(pedidos);
 };
 
 exports.crearPedido = (req, res) => {
-  const nuevoPedido = { ...req.body, id: Date.now().toString() };
-  pedidos.push(nuevoPedido);
-  res.status(201).json(nuevoPedido);
+    // Aseguramos que el ID se genere y se mantengan los datos del body
+    const nuevoPedido = { 
+        ...req.body, 
+        id: Date.now().toString(),
+        estado: req.body.estado || "Pendiente", // Aseguramos un estado inicial
+    };
+    pedidos.push(nuevoPedido);
+    res.status(201).json(nuevoPedido);
 };
 
-exports.actualizarPedido = (req, res) => {
-  const { id } = req.params;
-  // Se espera que el frontend envíe { nuevoEstado: "..." } para cambio específico.
-  const { nuevoEstado } = req.body;
-  const pedidoIndex = pedidos.findIndex((p) => p.id === id);
+// ===============================================
+// 1. OBTENER POR ID (AÑADIDO - Soluciona el error 404 al cargar el formulario)
+// ===============================================
+exports.obtenerPedidoPorId = (req, res) => {
+    const { id } = req.params;
 
-  if (pedidoIndex === -1) {
-    return res.status(404).json({ message: "Pedido no encontrado" });
-  }
+    const pedido = pedidos.find((p) => p.id === id);
 
-  const pedido = pedidos[pedidoIndex];
-  let estadoFinal = pedido.estado;
-
-  // 1. Lógica cuando se envía un estado específico (como "Cancelado")
-  if (nuevoEstado) {
-    const estadoActualLower = pedido.estado.toLowerCase();
-
-    // No permitir cambio si ya está en estado terminal, a menos que el nuevo estado sea el mismo.
-    if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") &&
-      nuevoEstado.toLowerCase() !== estadoActualLower) {
-      return res.status(400).json({ message: "No se puede cambiar un pedido finalizado o cancelado" });
+    if (!pedido) {
+        return res.status(404).json({ message: "Pedido no encontrado" });
     }
-    estadoFinal = nuevoEstado;
-  }
 
-  pedidos[pedidoIndex] = { ...pedido, estado: estadoFinal };
-  res.json({ message: `Pedido actualizado a ${estadoFinal}`, pedido: pedidos[pedidoIndex] });
+    // Devuelve el pedido completo, incluyendo productos y total
+    res.json(pedido);
+};
+
+
+// ===============================================
+// 2. ACTUALIZAR PEDIDO (UNIFICADA - Maneja Edición completa y Cambio de Estado)
+// ===============================================
+exports.actualizarPedido = (req, res) => {
+    const { id } = req.params;
+    
+    // Capturamos TODOS los posibles datos que el frontend puede enviar (estado O edición completa)
+    const { nuevoEstado, mesa, mozo, productos, total } = req.body; 
+
+    const pedidoIndex = pedidos.findIndex((p) => p.id === id);
+
+    if (pedidoIndex === -1) {
+        return res.status(404).json({ message: "Pedido no encontrado" });
+    }
+
+    const pedidoActual = pedidos[pedidoIndex];
+
+    // -----------------------------------------------------
+    // A. Lógica de CAMBIO DE ESTADO (Desde PedidosLista)
+    // -----------------------------------------------------
+    if (nuevoEstado && Object.keys(req.body).length === 1) { // Si solo viene 'nuevoEstado'
+        const estadoActualLower = pedidoActual.estado.toLowerCase();
+        const nuevoEstadoLower = nuevoEstado.toLowerCase();
+
+        // Evitar cambios si ya está en estado terminal (Finalizado o Cancelado)
+        if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") &&
+            nuevoEstadoLower !== estadoActualLower) {
+            return res.status(400).json({ message: "No se puede cambiar un pedido finalizado o cancelado" });
+        }
+        
+        // Aplica solo el cambio de estado
+        pedidos[pedidoIndex] = { ...pedidoActual, estado: nuevoEstado };
+        const estadoFinal = pedidos[pedidoIndex].estado;
+
+        return res.json({ 
+            message: `Estado del pedido ${id} actualizado a ${estadoFinal}`, 
+            pedido: pedidos[pedidoIndex] 
+        });
+    }
+
+    // -----------------------------------------------------
+    // B. Lógica de EDICIÓN COMPLETA (Desde FormPedido)
+    // -----------------------------------------------------
+    // Si viene mesa, mozo, productos y total, asumimos edición completa
+    if (mesa !== undefined && mozo !== undefined && productos !== undefined && total !== undefined) {
+        
+        // Los pedidos en estado Finalizado o Cancelado NO se pueden editar completamente
+        const estadoLower = pedidoActual.estado.toLowerCase();
+        if (estadoLower === "finalizado" || estadoLower === "cancelado") {
+             return res.status(400).json({ message: "No se puede editar un pedido finalizado o cancelado" });
+        }
+
+        // Aplicamos la actualización completa
+        pedidos[pedidoIndex] = {
+            ...pedidoActual, // Mantenemos ID, estado actual, fecha, etc.
+            mesa: mesa,
+            mozo: mozo,
+            productos: productos,
+            total: total,
+        };
+        
+        return res.json({ 
+            message: `Pedido ${id} modificado completamente`, 
+            pedido: pedidos[pedidoIndex] 
+        });
+    }
+
+    // Respuesta si la solicitud no contiene datos válidos
+    res.status(400).json({ message: "Datos de actualización inválidos o incompletos." });
 };

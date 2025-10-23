@@ -7,6 +7,7 @@ console.log(' Iniciando servidor...');
 // Importar rutas
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
+const mesasRoutes = require('./routes/mesasRoutes');
 
 // Middlewares
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use('/api', (req, res, next) => {
 // Registrar rutas
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/productos', productosRoutes);
+app.use('/api/mesas', mesasRoutes);
 console.log(' /api/productos registrado');
 
 const PORT = 3001;

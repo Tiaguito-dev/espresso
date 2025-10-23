@@ -3,13 +3,15 @@ const express = require('express');
 const router = express.Router();
 const pedidosController = require('../controllers/pedidosController');
 
-// Ruta para obtener todos los pedidos
+// 1. OBTENER TODOS
 router.get('/', pedidosController.obtenerPedidos);
 
-// Ruta para crear un nuevo pedido
-router.post('/', pedidosController.crearPedido);
+// 2. OBTENER POR ID (¡Necesario para la edición!)
+router.get('/:id', pedidosController.obtenerPedidoPorId); 
 
-// Ruta para actualizar un pedido
+// 3. ACTUALIZAR (Maneja tanto estado como edición completa)
 router.put('/:id', pedidosController.actualizarPedido);
 
+// 4. CREAR NUEVO
+router.post('/', pedidosController.crearPedido);
 module.exports = router;
