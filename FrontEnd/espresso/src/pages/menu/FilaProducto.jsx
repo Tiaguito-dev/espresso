@@ -17,15 +17,10 @@ function FilaProducto({ producto, funcionCambiarEstado, funcionModificar, funcio
                     {producto.disponible ? "Disponible" : "No disponible"}
                 </span>
             </td>
-<<<<<<< HEAD
-
-            <BotonAccion productoId={producto.id} funcionCambiarEstado={funcionCambiarEstado} funcionModificar={funcionModificar} funcionEliminar={funcionEliminar}></BotonAccion>
-=======
             <td>
                 <BotonAccion productoId={producto.id} funcionCambiarEstado={funcionCambiarEstado} funcionModificar={funcionModificar} funcionEliminar={funcionEliminar}></BotonAccion>
-            </td>    
+            </td>
 
->>>>>>> avi-rama
         </tr>
     );
 }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 // Asegúrate de que updatePedido esté correctamente exportado aquí
-import { getPedidos, updatePedido, deletePedido } from "../../services/pedidosService"; 
+import { getPedidos, updatePedido, deletePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
 import "./Pedidos.css";
 
@@ -19,69 +19,16 @@ export default function PedidosLista() {
     useEffect(() => {
         fetchPedidos();
     }, []);
-
-<<<<<<< HEAD
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  const [estadoFiltro, setEstadoFiltro] = useState("todos");
-  const navigate = useNavigate();
-
-  // Usamos useEffect para cargar los pedidos del back-end al inicio
-  useEffect(() => {
-    fetchPedidos();
-  }, []);
-
-  const fetchPedidos = async () => {
-    try {
-      const data = await getPedidos();
-      setPedidos(data);
-      console.log(data);
-    } catch (error) {
-      console.error("Error al obtener los pedidos:", error);
-    }
-  };
-
-  const toggleFiltros = () => {
-    setMostrarFiltros(!mostrarFiltros);
-  };
-
-  const filtrarEstado = (estado) => {
-    setEstadoFiltro(estado);
-  };
-
-     const cambiarEstado = async (id, nuevoEstadoFijo = null) => {
-    try {
-      const pedidoActual = pedidos.find((p) => p.id === id);
-      if (!pedidoActual) return;
-
-      let estadoAEnviar = nuevoEstadoFijo;
-      let bodyData = {};
-
-      // Si se especificó un estado fijo (ej: 'Cancelado')
-      if (nuevoEstadoFijo) {
-        bodyData = { nuevoEstado: estadoAEnviar };
-      } 
-      // Si se requiere avance automático (sin estado fijo)
-      else {
-        let siguienteEstado;
-        if (pedidoActual.estado === "Pendiente") {
-          siguienteEstado = "Listo";
-        } else if (pedidoActual.estado === "Listo") {
-          siguienteEstado = "Finalizado";
-        } else {
-          alert(`El pedido ${id} ya está ${pedidoActual.estado} y no se puede avanzar.`);
-          return;
-=======
     const fetchPedidos = async () => {
         try {
             const data = await getPedidos();
             setPedidos(data);
         } catch (error) {
             console.error("Error al obtener los pedidos:", error);
->>>>>>> jere
         }
     };
 
-    // 🎚️ Mostrar/Ocultar filtros
+    // Mostrar/Ocultar filtros
     const toggleFiltros = () => {
         setMostrarFiltros(!mostrarFiltros);
     };
@@ -121,8 +68,8 @@ export default function PedidosLista() {
             try {
                 // Llamada al servicio para actualizar el estado
                 await updatePedido(id, { nuevoEstado: "Cancelado" });
-                
-                fetchPedidos(); 
+
+                fetchPedidos();
                 alert("Pedido cancelado correctamente.");
             } catch (error) {
                 console.error("Error al cancelar el pedido:", error);
@@ -133,9 +80,9 @@ export default function PedidosLista() {
 
     //Navegar a modificar pedido
     const navegarAModificar = (id) => {
-    // 🎯 La ruta debe incluir el ID del pedido
-     navigate(`/pedidos/modificar/${id}`); 
-   };
+        // 🎯 La ruta debe incluir el ID del pedido
+        navigate(`/pedidos/modificar/${id}`);
+    };
 
     // Filtrar por estado
     const pedidosFiltrados = (() => {
@@ -152,7 +99,7 @@ export default function PedidosLista() {
                 return pedidos;
         }
     })();
-    
+
     //Definimos los campos de la tabla
     const arrayCampos = ["ID", "Mesa", "Mozo", "Fecha", "Estado", "Total", "Acciones"];
 
@@ -173,21 +120,21 @@ export default function PedidosLista() {
 
             {/* Estados + botón agregar */}
             <div className="filtros-estado">
-                    <div className="estados"> 
-                        
-                        <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
-                        <Filtro estadoActual={estadoFiltro} estadoValor="pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
-                        <Filtro estadoActual={estadoFiltro} estadoValor="listo" nombreFiltro="Listo" onClick={filtrarEstado} />
-                        <Filtro estadoActual={estadoFiltro} estadoValor="finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
-                        <Filtro estadoActual={estadoFiltro} estadoValor="cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
-                    </div>
-                <button 
-            className="btn-agregar" 
-            // Ruta para crear un nuevo pedido (normalmente sin ID)
-            onClick={() => navigate("/pedidos/agregar")}
-            >
-               + Agregar Pedido
-          </button>
+                <div className="estados">
+
+                    <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="listo" nombreFiltro="Listo" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
+                </div>
+                <button
+                    className="btn-agregar"
+                    // Ruta para crear un nuevo pedido (normalmente sin ID)
+                    onClick={() => navigate("/pedidos/agregar")}
+                >
+                    + Agregar Pedido
+                </button>
             </div>
 
             {/* Uso del componente TablaPedidos, que ahora maneja el renderizado */}
@@ -196,7 +143,7 @@ export default function PedidosLista() {
                 arrayCampos={arrayCampos} // Pasamos los encabezados
                 funcionCambiarEstado={cambiarEstado}
                 funcionModificar={navegarAModificar}
-                funcionEliminar={cancelarPedido} 
+                funcionEliminar={cancelarPedido}
             />
         </div>
     );

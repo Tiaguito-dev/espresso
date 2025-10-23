@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { createProducto, updateProducto, buscarPorId, obtenerCategorias } from "../../services/productosService"; 
+import { createProducto, updateProducto, buscarPorId, obtenerCategorias } from "../../services/productosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/AgregarPedido.css";
 
@@ -15,19 +15,16 @@ function FormProducto() {
         disponible: true
     });
 
-    const [categorias, setCategorias] = useState([]);
-    const [nuevaCategoria, setNuevaCategoria] = useState("");
-    const [usarNuevaCategoria, setUsarNuevaCategoria] = useState(false);
-        
+    const [categorias, setCategorias] = useState([]); const [nuevaCategoria, setNuevaCategoria] = useState(""); const [usarNuevaCategoria, setUsarNuevaCategoria] = useState(false);
     const navigate = useNavigate();
     const existeId = Boolean(id);
 
-    
+
 
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
-                const data = await obtenerCategorias(); 
+                const data = await obtenerCategorias();
                 setCategorias(data || []);
             } catch (error) {
                 console.error("Error al traer categorías:", error);
