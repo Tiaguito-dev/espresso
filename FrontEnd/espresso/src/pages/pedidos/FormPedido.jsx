@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { createPedido, updatePedido, buscarPedidoPorId } from "../../services/pedidosService"; 
-import "./AgregarPedido.css"; // Usa el mismo CSS
+import "./AgregarPedido.css"; 
 
 // ===========================================
 // MOCKS: Reemplaza esto con tu lista de productos real
@@ -33,7 +33,7 @@ const calcularTotal = (productosArray) => {
 };
 
 // ===========================================
-// COMPONENTE PRINCIPAL
+// COMPONENTE PRINCIPAL (Aquí se define handleSubmit)
 // ===========================================
 
 function FormPedido() {
@@ -44,13 +44,13 @@ function FormPedido() {
     const navigate = useNavigate();
 
     const existeId = Boolean(id);
+    const titulo = existeId ? "Modificar Pedido" : "Agregar Pedido";
     
-    // 1. 📋 Cargar datos del pedido si estamos en modo edición
+    // 1. Cargar datos del pedido si estamos en modo edición
     useEffect(() => {
         if (existeId) {
             buscarPedidoPorId(id)
                 .then((data) => {
-                    // Cargar la información relevante. Asegúrate de que los productos tengan 'cantidad'.
                     setPedido({
                         mesa: data.mesa || "",
                         mozo: data.mozo || "",
@@ -59,7 +59,6 @@ function FormPedido() {
                     });
                 })
                 .catch(error => {
-                    // Esto maneja el error 404/500 que te sale al intentar buscar.
                     console.error("Error al buscar el pedido:", error);
                     alert("No se pudo cargar el pedido para modificar. Revisa la API y el ID.");
                 });
@@ -106,11 +105,11 @@ function FormPedido() {
         ...pedido,
         productos: nuevosProductos,
         total: nuevoTotal,
-    });
+        });
 
-    // 🎯 CLAVE: Resetear la cantidad a 1 y el selector al primer ítem
-    setCantidad(1); 
-    setProductoSeleccionado(PRODUCTOS_MOCK[0] ? PRODUCTOS_MOCK[0].id : ""); 
+        // Resetear la cantidad a 1 y el selector al primer ítem
+        setCantidad(1); 
+        setProductoSeleccionado(PRODUCTOS_MOCK[0] ? PRODUCTOS_MOCK[0].id : ""); 
 
     };
 
@@ -128,6 +127,7 @@ function FormPedido() {
 
 
     // 4. 📝 Manejar el envío del formulario (Crear o Actualizar)
+    // 🚨 ESTA ES LA FUNCIÓN QUE FALTABA O ESTABA FUERA DE ÁMBITO 🚨
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -136,8 +136,7 @@ function FormPedido() {
             mesa: Number(pedido.mesa),
             mozo: pedido.mozo,
             productos: pedido.productos, 
-            total: pedido.total, // El total es calculado en el frontend y se envía.
-            // NOTA: Si necesitas enviar el 'estado' o 'fecha' del pedido, agrégalos aquí.
+            total: pedido.total, 
         };
 
         // Validaciones básicas antes de enviar
@@ -149,7 +148,7 @@ function FormPedido() {
         try {
             if (existeId) {
                 // Modo Edición
-                await updatePedido(id, pedidoData); // 🎯 Llama a tu servicio de PUT
+                await updatePedido(id, pedidoData); 
                 alert('Pedido actualizado correctamente');
             } else {
                 // Modo Creación
@@ -168,28 +167,30 @@ function FormPedido() {
     };
 
     return (
-        <div className="agregar-pedido container"> {/* Usamos la clase container para centrar */}
-            <h2>{existeId ? "Modificar Pedido" : "Agregar Pedido"}</h2>
+        <div className="pedido-form-container"> 
+            <h2 className="form-title">{titulo}</h2>
+            {/* 🚨 Aquí se referencia handleSubmit 🚨 */}
             <form onSubmit={handleSubmit} className="form-pedido">
                 
                 {/* ID (Solo lectura en modo edición) */}
                 {existeId && (
-                    <div className="form-field">
+                    <div className="form-group">
                         <label>ID del Pedido</label>
                         <input
                             type="text"
                             value={id}
-                            readOnly={true}
-                            className="readonly-field"
+                            readOnly
+                            className="form-control read-only"
                         />
                     </div>
                 )}
                 
                 <div className="form-row">
                     {/* Campo Mesa */}
-                    <div className="form-field">
-                        <label>Mesa</label>
+                    <div className="form-group">
+                        <label htmlFor="mesa">Mesa</label>
                         <input
+                            id="mesa"
                             type="number"
                             name="mesa" 
                             value={pedido.mesa}
@@ -197,39 +198,40 @@ function FormPedido() {
                             placeholder="Número de mesa"
                             required
                             min="1"
+                            className="form-control"
                         />
                     </div>
                     
                     {/* Campo Mozo */}
-                    <div className="form-field">
-                        <label>Mozo</label>
+                    <div className="form-group">
+                        <label htmlFor="mozo">Mozo</label>
                         <input
+                            id="mozo"
                             type="text"
                             name="mozo" 
                             value={pedido.mozo}
                             onChange={handleChange}
                             placeholder="Nombre del Mozo"
                             required
+                            className="form-control"
                         />
                     </div>
-                </div>
-
-                {/* ======================================= */}
-                {/* SECCIÓN DE PRODUCTOS (CARRITO)          */}
-                {/* ======================================= */}
+                </div> 
                 
-                <div className="productos-section">
+                {/* SECCIÓN DE PRODUCTOS (CARRITO) */} 
+                <div className="productos-card">
                     <h3>Detalle del Pedido</h3>
                     
                     {/* Selector para AGREGAR Productos */}
-                    <div className="agregar-producto-row">
+                    <div className="add-item-row">
                         <select 
                             value={productoSeleccionado} 
                             onChange={(e) => setProductoSeleccionado(e.target.value)}
+                            className="form-control select-producto"
                         >
                             {PRODUCTOS_MOCK.map(p => (
                                 <option key={p.id} value={p.id}>
-                                    {p.nombre} - ${p.precio}
+                                    {p.nombre} - ${p.precio.toFixed(2)}
                                 </option>
                             ))}
                         </select>
@@ -239,48 +241,48 @@ function FormPedido() {
                             onChange={(e) => setCantidad(Math.max(1, Number(e.target.value)))}
                             min="1"
                             placeholder="Cant."
-                            className="input-cantidad"
+                            className="form-control input-qty"
                         />
-                        <button type="button" onClick={handleAgregarProducto} className="btn-agregar-item">
+                        <button type="button" onClick={handleAgregarProducto} className="btn-add">
                             + Agregar
                         </button>
                     </div>
 
                     {/* Lista de Productos Agregados */}
-                    {pedido.productos.length > 0 && (
-                        <ul className="lista-productos-agregados">
+                    {pedido.productos.length > 0 ? (
+                        <ul className="product-list">
                             {pedido.productos.map(item => (
-                                <li key={item.id}>
+                                <li key={item.id} className="product-item">
                                     <span>{item.cantidad} x {item.nombre}</span>
-                                    <span>${(item.precio * item.cantidad).toFixed(2)}</span>
+                                    <span className="item-price">${(item.precio * item.cantidad).toFixed(2)}</span>
                                     <button 
                                         type="button" 
                                         onClick={() => handleEliminarProducto(item.id)}
-                                        className="btn-eliminar-item"
+                                        className="btn-remove"
                                     >
-                                        X
+                                        &times;
                                     </button>
                                 </li>
                             ))}
                         </ul>
+                    ) : (
+                        <p className="no-items-msg">Aún no hay productos en el pedido.</p>
                     )}
                 </div>
                 
-                <hr/>
-                
                 {/* Total (Campo de solo lectura) */}
-                <div className="form-field total-field">
+                <div className="total-summary">
                     <label>Total del Pedido</label>
                     <input
                         type="text"
                         value={`$${pedido.total.toFixed(2)}`}
-                        readOnly={true}
-                        className="readonly-field input-total"
+                        readOnly
+                        className="form-control read-only total-display"
                     />
                 </div>
                 
                 {/* Botón de Envío */}
-                <button className="btn-guardar" type="submit"> 
+                <button className="btn-submit" type="submit"> 
                     {existeId ? "Guardar cambios" : "Crear Pedido"} 
                 </button>
                 
