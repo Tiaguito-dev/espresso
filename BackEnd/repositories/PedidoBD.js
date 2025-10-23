@@ -85,14 +85,18 @@ exports.obtenerUltimoNroPedido = async () => {
 // === SECCIÓN DE EJECUCIÓN DE LINEAS DE PEDIDO ===
 // TODO: Hay que ver cómo manejamos esto porque tendría que primero crearse el pedido y luego las líneas por el tema del id
 exports.crearLineaPedido = async (datosDeLineaPedido) => {
-    // TODO: Hay que pasarle el monto también
-    const { idPedido, idProducto, cantidad, monto, nombreProducto } = datosDeLineaPedido;
+    // TODO: Hay que pasarle el monto porque lo registramos como variable
+    const { nro_pedido, idProducto, cantidad, monto, nombreProducto } = datosDeLineaPedido;
 
     try {
-        await Gateway.ejecutarQuery({ text: insertLineaPedido, values: [idPedido, idProducto, cantidad, monto, nombreProducto] });
+        await Gateway.ejecutarQuery({
+            text: insertLineaPedido,
+            values: [nro_pedido, idProducto, cantidad, monto, nombreProducto]
+        });
+
         return {
             success: true,
-            message: `La línea del pedido ${idPedido} se creó correctamente.`
+            message: `La línea del pedido ${nro_pedido} se creó correctamente.`
         };
     } catch (error) {
         throw new Error('Error al crear una línea de pedido desde la base de datos: ' + error.message);
