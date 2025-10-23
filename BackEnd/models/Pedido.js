@@ -21,9 +21,10 @@ const validarDataPedido = (data) => {
     //PREGUUNTAR si habria que validar que fecha sea Date
 
     if (data.estadoPedido) {
-        const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado'];
-        if (!estadosValidos.includes(data.estadoPedido)) {
-            errores.push(`El estado del pedido debe ser uno de los siguientes: ${estadosValidos.join(', ')}`);
+        const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado', 'pagado'];
+        const estadoRecibido = data.estadoPedido.toLowerCase();
+        if (!estadosValidos.includes(estadoRecibido)) {
+            errores.push(`Estado de pedido no válido. Recibido: '${data.estadoPedido}'. Válidos: ${estadosValidos.join(', ')}`);
         }
     }
 

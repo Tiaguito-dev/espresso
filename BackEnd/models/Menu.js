@@ -99,7 +99,7 @@ class Menu {
     }
 
     async getProductos() {
-        const productos = ProductoBD.obtenerProductos();
+        const productos = await ProductoBD.obtenerProductos();
         return this.convertirProductoBD(productos);
     }
 
@@ -117,12 +117,12 @@ class Menu {
         if (!producto){
             return null;
         }
-        const productoObj = await this.convertirProductoBD(producto);
+        const productoObj = await this.convertirProductoBD([producto]);
         return productoObj[0]; 
     }
 
     async eliminarProductoPorId(id) {
-        await ProductoBD.eliminarProductoPorId(id);
+        await ProductoBD.eliminarProducto(id);
         return true;
     }
 
@@ -150,3 +150,5 @@ class Menu {
         return this.buscarProductoPorId(id);
     }
 }
+
+module.exports = Menu;
