@@ -30,7 +30,7 @@ exports.crearCategoria = async (nombreCategoria) => {
 exports.obtenerCategorias = async () => {
     try {
         const categorias = await Gateway.ejecutarQuery(selectCategorias);
-        return categorias;
+        return categorias || [];
     } catch (error) {
         throw new Error('Error al obtener categorías desde la base de datos: ' + error.message);
     }

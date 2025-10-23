@@ -13,7 +13,7 @@ const updateProductoPorId = 'UPDATE producto SET precio = $2, nombre = $3, descr
 exports.obtenerProductos = async () => {
     try {
         const productos = await Gateway.ejecutarQuery(selectProductos);
-        return productos;
+        return productos || [];
     } catch (error) {
         throw new Error('Error al obtener productos desde la base de datos: ' + error.message);
     }
@@ -24,7 +24,7 @@ exports.obtenerProductoPorId = async (cod_producto) => {
     try {
         const productos = await Gateway.ejecutarQuery({ text: selectProductoPorId, values: [cod_producto] });
         //HAY QUE DEFINIR SI LO VA A BUSCAR POR NOMBRE O POR CODIGO, Porque de eso depende también que sea unique o no
-        return productos[0]; // Retornar el primer producto encontrado
+        return productos[0] || null; // Retornar el primer producto encontrado
     } catch (error) {
         throw new Error(`Error al obtener producto ${cod_producto} desde la base de datos: ${error.message}`);
     }
@@ -62,7 +62,7 @@ exports.eliminarProducto = async (id) => {
 exports.obtenerUltimoCodigo = async () => {
     try {
         const resultado = await Gateway.ejecutarQuery(selectUltimoCodigo);
-        return resultado[0]; // Retornar el último código
+        return resultado[0]?.max || 0; // Retornar el último código
     } catch (error) {
         throw new Error('Error al obtener el último código desde la base de datos: ' + error.message);
     }

@@ -15,7 +15,7 @@ const TestCategoriaBD = require('./Test/TestCategoriaBD');
 // TestPedidoBD.runTests();
 // TestProductoBD.runTests();
 // TestMesaBD.runTests();
-TestCategoriaBD.runTests();
+// TestCategoriaBD.runTests();
 
 
 // Middlewares

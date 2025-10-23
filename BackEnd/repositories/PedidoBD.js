@@ -37,7 +37,7 @@ exports.obtenerPedidosFecha = async (fecha) => {
 exports.obtenerPedidoPorNro = async (nroPedido) => {
     try {
         const pedidos = await Gateway.ejecutarQuery({ text: selectPedidoPorId, values: [nroPedido] });
-        return pedidos[0]; // Retornar el primer pedido encontrado
+        return pedidos[0] || null; // Retornar el primer pedido encontrado
     } catch (error) {
         throw new Error(`Error al obtener pedido ${nroPedido} desde la base de datos: ${error.message}`);
     }
@@ -76,7 +76,7 @@ exports.modificarEstadoPedido = async (nroPedido, nuevoEstado) => {
 exports.obtenerUltimoNroPedido = async () => {
     try {
         const resultado = await Gateway.ejecutarQuery(selectUltimoNroPedido);
-        return resultado[0].max; // Retornar el último número de pedido
+        return resultado[0]?.max || 0; // Retornar el último número de pedido
     } catch (error) {
         throw new Error('Error al obtener el último número de pedido desde la base de datos: ' + error.message);
     }

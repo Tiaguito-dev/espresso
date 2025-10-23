@@ -13,7 +13,7 @@ const selectMesaPorNumero = 'SELECT * FROM mesa WHERE nro_mesa = $1';
 exports.obtenerMesas = async () => {
     try {
         const mesas = await Gateway.ejecutarQuery(selectMesas);
-        return mesas;
+        return mesas || [];
     } catch (error) {
         throw new Error('Error al obtener mesas desde la base de datos: ' + error.message);
     }
@@ -22,7 +22,7 @@ exports.obtenerMesas = async () => {
 exports.obtenerMesaPorNumero = async (nroMesa) => {
     try {
         const mesas = await Gateway.ejecutarQuery({ text: selectMesaPorNumero, values: [nroMesa] });
-        return mesas[0];
+        return mesas[0] || null;
     } catch (error) {
         throw new Error(`Error al obtener mesa ${nroMesa} desde la base de datos: ${error.message}`);
     }
@@ -57,7 +57,7 @@ exports.eliminarMesa = async (nroMesa) => {
 exports.obtenerUltimoNumeroMesa = async () => {
     try {
         const resultado = await Gateway.ejecutarQuery(selectUltimoCodigo);
-        return resultado[0].max; // Retornar el último número de mesa
+        return resultado[0]?.max || 0; // Retornar el último número de mesa
     } catch (error) {
         throw new Error('Error al obtener el último número de mesa desde la base de datos: ' + error.message);
     }
