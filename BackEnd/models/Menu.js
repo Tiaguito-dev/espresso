@@ -7,10 +7,8 @@ class Menu {
         this.categorias = [];
     }
 
-    existeNombreCategoria(nombreCategoria) {
+    obtenerOCrearCategoria(nombreCategoria) {
         if (!nombreCategoria || typeof nombreCategoria !== 'string') {
-            // No es un nombre válido
-            // TODO: En otro lugar de este archivo debería haber un validar nombre, no un return null
             return null;
         }
 
@@ -21,17 +19,13 @@ class Menu {
         );
 
         if (categoriaExistente) {
-            // Existe la categoría
-            return true;
-        }
-        return false; // No existe la categoría
+            return categoriaExistente;
 
-        /*
-        PARA MI NO DEBERÍA ENCARGARSE DE CREARLA, SINO QUE DEBERÍA LLAMAR A OTRA FUNCIÓN
+        }
+
         const nuevaCategoria = new Categoria({ nombre: nombreCategoria.trim() });
         this.categorias.push(nuevaCategoria);
         return nuevaCategoria;
-        */
     }
 
     cargarProductos(productosData) {
