@@ -63,7 +63,7 @@ export default function PedidosLista() {
         }
     };
 
-    // ❌ Función para CANCELAR el pedido (usa updatePedido)
+    // Función para CANCELAR el pedido (usa updatePedido)
     const cancelarPedido = async (id) => {
         if (window.confirm("¿Seguro que desea CANCELAR el pedido? El estado pasará a 'Cancelado'.")) {
             try {

@@ -1,98 +1,133 @@
 import React, { useState, useEffect } from "react";
+import { getMesas, updateMesa, deleteMesa } from "../../services/mesasService";
 import { useNavigate } from "react-router-dom";
-import "./../pedidos/Pedidos.css";
+import "./Mesas.css";
+
+import Filtro from "../menu/Filtro";
+import TablaMesas from "./TablaMesas"; // tabla separada
 
 export default function MesasLista() {
-  const [mesas, setMesas] = useState([]);
-  const navigate = useNavigate();
+    const [mesas, setMesas] = useState([]);
+    const [mostrarFiltros, setMostrarFiltros] = useState(false);
+    const [estadoFiltro, setEstadoFiltro] = useState("todas");
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    // Simulamos una carga inicial de datos
-    const mesasSimuladas = [
-      { id: 1, numero: 1, estado: "Disponible" },
-      { id: 2, numero: 2, estado: "Ocupada" },
-      { id: 3, numero: 3, estado: "No disponible" },
-      { id: 4, numero: 4, estado: "Disponible" },
-    ];
-    setMesas(mesasSimuladas);
-  }, []);
+    // 🔄 Cargar mesas al iniciar
+    useEffect(() => {
+        fetchMesas();
+    }, []);
 
-  const cambiarEstado = (id) => {
-    setMesas((prev) =>
-      prev.map((m) =>
-        m.id === id
-          ? {
-              ...m,
-              estado: m.estado === "Disponible" ? "Ocupada" : "Disponible",
+    const fetchMesas = async () => {
+        try {
+            const data = await getMesas();
+            setMesas(data);
+        } catch (error) {
+            console.error("Error al obtener las mesas:", error);
+        }
+    };
+
+    // 🎚️ Mostrar/Ocultar filtros
+    const toggleFiltros = () => {
+        setMostrarFiltros(!mostrarFiltros);
+    };
+
+    const filtrarEstado = (estado) => {
+        setEstadoFiltro(estado);
+    };
+
+    // 🔄 Cambiar estado (ejemplo: Disponible → Ocupada → Listo Para Ordenar → Listo Para Cobrar)
+    const cambiarEstado = async (id) => {
+    try {
+        const mesaActual = mesas.find((m) => m.id === id);
+        if (!mesaActual) return;
+
+        // ... (Lógica para determinar 'siguiente' estado) ...
+        const estados = ["Disponible", "Ocupada", "Listo-Para-Ordenar", "Listo-Para-Cobrar"];
+        const indice = estados.indexOf(mesaActual.estado);
+        const siguiente = estados[(indice + 1) % estados.length];
+
+        // 🎯 CLAVE: Cambiar 'estado: siguiente' a 'nuevoEstado: siguiente'
+        await updateMesa(id, { nuevoEstado: siguiente }); 
+        
+        fetchMesas();
+    } catch (error) {
+        // ...
+    }
+};
+
+    // 🗑️ Eliminar mesa
+    const eliminarMesa = async (id) => {
+        if (window.confirm("¿Seguro que desea eliminar esta mesa?")) {
+            try {
+                await deleteMesa(id);
+                fetchMesas();
+            } catch (error) {
+                console.error("Error al eliminar la mesa:", error);
+                alert("No se pudo eliminar la mesa.");
             }
-          : m
-      )
+        }
+    };
+
+    // ✏️ Navegar a modificar
+    const navegarAModificar = (id) => {
+        navigate(`/mesas/modificar/${id}`);
+    };
+
+    // Filtrar por estado
+    const mesasFiltradas = (() => {
+        switch (estadoFiltro) {
+            case "disponible":
+                return mesas.filter((m) => m.estado === "Disponible");
+            case "ocupada":
+                return mesas.filter((m) => m.estado === "Ocupada");
+            case "Listo-Para-Ordenar":
+                return mesas.filter((m) => m.estado === "Listo Para Ordenar");
+            case "Listo-Para-Cobrar":
+                return mesas.filter((m) => m.estado === "Listo Para Cobrar");
+            default:
+                return mesas;
+        }
+    })();
+
+    // Campos de la tabla
+    const arrayCampos = ["ID", "Número", "Mozo a cargo", "Estado", "Acciones"];
+
+    return (
+        <div className="container">
+            <button className="toggle-filtros" onClick={toggleFiltros}>
+                Filtros
+            </button>
+
+            {mostrarFiltros && (
+                <div className="filtros">
+                    <input type="text" placeholder="Buscar por número" />
+                    <input type="text" placeholder="Buscar por estado" />
+                </div>
+            )}
+
+            {/* Estados + botón agregar */}
+            <div className="filtros-estado">
+                <div className="estados">
+                    <Filtro estadoActual={estadoFiltro} estadoValor="todas" nombreFiltro="Todas" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="disponible" nombreFiltro="Disponible" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="ocupada" nombreFiltro="Ocupada" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="Listo-Para-Ordenar" nombreFiltro="Listo Para Ordenar" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="Listo-Para-Cobrar" nombreFiltro="Listo Para Cobrar" onClick={filtrarEstado} />
+                </div>
+
+                <button className="btn-agregar" onClick={() => navigate("/mesas/FormMesas")}>
+                    + Agregar Mesa
+                </button>
+            </div>
+
+            {/* Tabla de Mesas */}
+            <TablaMesas
+                mesas={mesasFiltradas}
+                arrayCampos={arrayCampos}
+                funcionCambiarEstado={cambiarEstado}
+                funcionModificar={navegarAModificar}
+                funcionEliminar={eliminarMesa}
+            />
+        </div>
     );
-  };
-
-  const darDeBaja = (id) => {
-    setMesas((prev) =>
-      prev.map((m) =>
-        m.id === id ? { ...m, estado: "No disponible" } : m
-      )
-    );
-  };
-
-  return (
-    <div className="container">
-      <div className="filtros-estado">
-        <h2>Mesas</h2>
-        <button className="btn-agregar" onClick={() => navigate("/mesas/agregar")}>
-          + Agregar Mesa
-        </button>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>N° Mesa</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {mesas.map((mesa) => (
-            <tr key={mesa.id} data-estado={mesa.estado}>
-              <td>{mesa.numero}</td>
-              <td>
-                <span className={`estado ${mesa.estado?.toLowerCase().replace(" ", "-")}`}>
-                  {mesa.estado}
-                </span>
-              </td>
-              <td className="acciones">
-                <button
-                  className="modificar"
-                  onClick={() => cambiarEstado(mesa.id)}
-                  disabled={mesa.estado === "No disponible"}
-                >
-                  {mesa.estado === "Disponible"
-                    ? "Marcar Ocupada"
-                    : mesa.estado === "Ocupada"
-                    ? "Marcar Disponible"
-                    : "No disponible"}
-                </button>
-
-                <button
-                  className="baja"
-                  onClick={() => darDeBaja(mesa.id)}
-                  disabled={mesa.estado === "No disponible"}
-                >
-                  Dar de Baja
-                </button>
-
-                <button className="info" onClick={() => alert("Modificar aún no implementado")}>
-                  Modificar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
 }

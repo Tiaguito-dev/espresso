@@ -8,6 +8,7 @@ import FormProducto from "./pages/menu/FormProducto.jsx";
 import MesasLista from "./pages/mesas/MesasLista.jsx";
 import FormPedido from "./pages/pedidos/FormPedido.jsx";
 
+
 function App() {
   return (
     <Router>
@@ -19,7 +20,6 @@ function App() {
           <Route path="/pedidos/agregar" element={<AgregarPedido />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/mesas" element={<MesasLista />} />
-          {/* Se pone ? para que el indicar que el parámetro sea opcional */}
           <Route path="/pedidos/modificar/:id" element={<FormPedido />} />
         </Routes>
       </div>
