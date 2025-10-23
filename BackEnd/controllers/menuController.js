@@ -45,10 +45,10 @@ exports.crearProducto = (req, res) => {
     const productoAgregado = menu.agregarProducto(nuevoProducto);
     const respuestaConFormatoCorrecto = {
         ...productoAgregado,
-        categoria: { nombre: productoAgregado.categoria.nombre } 
+        categoria: { nombre: productoAgregado.categoria.nombre }
     };
 
-    res.status(201).json(respuestaConFormatoCorrecto); 
+    res.status(201).json(respuestaConFormatoCorrecto);
 
     //res.status(201).json(productoAgregado); // Responde con status 201 (Created)
 };
@@ -75,9 +75,9 @@ exports.modificarProducto = (req, res) => {
 
     const respuestaConFormatoCorrecto = {
         ...productoParaModificar,
-        categoria: { nombre: productoParaModificar.categoria.nombre } 
+        categoria: { nombre: productoParaModificar.categoria.nombre }
     };
-    
+
     res.status(200).json(respuestaConFormatoCorrecto);
 
 };

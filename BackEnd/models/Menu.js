@@ -41,7 +41,7 @@ class Menu {
             };
 
             const nuevoProducto = new Producto(dataProducto);
-    
+
             this.productos.push(nuevoProducto)
 
         });
@@ -59,15 +59,11 @@ class Menu {
         return this.productos;
     }
 
-<<<<<<< HEAD
-    buscarProductoPorNombre(nombre) {
-=======
-    getCategorias(){
+    getCategorias() {
         return this.categorias;
     }
 
-    buscarProductoPorNombre(nombre) {   
->>>>>>> avi-rama
+    buscarProductoPorNombre(nombre) {
         return this.productos.find(prod => prod.getNombre() === nombre);
     }
 
