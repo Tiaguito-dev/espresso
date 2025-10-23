@@ -1,7 +1,6 @@
 const Gateway = require('../DB/Gateway');
 
 // === SECCIÓN DE QUERYS ===
-const selectIdCategoriaPorNombre = 'SELECT id FROM categoria WHERE nombre = $1';
 const insertCategoria = 'INSERT INTO categoria (nombre) VALUES ($1)';
 const selectCategorias = 'SELECT * FROM categoria';
 const selectCategoriaPorNombre = 'SELECT * FROM categoria WHERE nombre = $1';
@@ -9,7 +8,7 @@ const selectCategoriaPorNombre = 'SELECT * FROM categoria WHERE nombre = $1';
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES ===
 exports.obtenerIdCategoriaPorNombre = async (nombreCategoria) => {
     try {
-        const resultado = await Gateway.ejecutarQuery({ text: selectIdCategoriaPorNombre, values: [nombreCategoria] });
+        const resultado = await Gateway.ejecutarQuery({ text: selectCategoriaPorNombre, values: [nombreCategoria] });
         return resultado[0].id; // Retornar el id de la categoría
     } catch (error) {
         throw new Error(`Error al obtener el id de la categoría ${nombreCategoria} desde la base de datos: ${error.message}`);
@@ -38,7 +37,7 @@ exports.obtenerCategorias = async () => {
 // TODO: Hay que implementar esto porque el nombre de un producto lo puse como unique
 exports.existeNombreCategoria = async (nombre) => {
     try {
-        const categorias = await Gateway.ejecutarQuery({ text: selectCategoriasPorNombre, values: [nombre] });
+        const categorias = await Gateway.ejecutarQuery({ text: selectCategoriaPorNombre, values: [nombre] });
         if (!categorias || categorias.length === 0) {
             return true; // No se encontró ninguna categoría con ese nombre
         }

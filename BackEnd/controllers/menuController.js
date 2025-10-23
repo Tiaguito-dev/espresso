@@ -1,88 +1,36 @@
 const Menu = require('../models/Menu');
 const Producto = require('../models/Producto');
-const ProductoBD = require('../repositories/ProductoBD');
-const CategoriaBD = require('../repositories/CategoriaBD');
+const productosIniciales = require('../DB/productos.json');
 const { json } = require('express');
 
 const menu = new Menu();
+menu.cargarProductos(productosIniciales);
 
-function guardarCategoria(categoria) {
-    try {
-        CategoriaBD.crearCategoria(categoria);
-    } catch (error) {
-        console.error('Error guardando la categoría:', error);
-    }
-}
-
-async function inicializarMenu() {
-    try {
-        const productos = await ProductoBD.obtenerProductos();
-        menu.cargarProductos(productos);
-        console.log(`${productos.length} productos cargados en el menú`);
-    } catch (error) {
-        console.error('Error cargando los productos en el Menú:', error);
-    }
-}
-
-// INICIALIZACIÓN DEL MENÚ UNA SOLA VEZ
-inicializarMenu();
-
-exports.obtenerProductos = async (req, res) => {
-    try {
-        res.json(menu.getProductos());
-    } catch (error) {
-        console.error('Error al obtener productos:', error);
-        res.status(500).json({ message: 'Error al obtener productos' });
-    }
+exports.obtenerProductos = (req, res) => {
+    res.json(menu.getProductos());
 };
 
-exports.obtenerProductoPorId = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const producto = await ProductoBD.obtenerProductoPorId(4); // Acá lo unico que hice fue probarlo
-
-        if (!producto) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
-        }
-
-        res.json(producto);
-    } catch (error) {
-        console.error('Error al obtener producto:', error);
-        res.status(500).json({ message: 'Error interno del servidor' });
+exports.obtenerProductoPorId = (req, res) => {
+    // Tiene que devolver un solo producto con ese ID en particular
+    const { id } = req.params;
+    const producto = menu.buscarProductoPorId(id);
+    if (!producto) {
+        return res.status(404).json({ message: 'Producto no encontrado' });
     }
-    // ESTO NO VA A FUNCIONAR PORQUE LO DEVUELVE EN RESPUESTA ANTES DE QUE LLEGUE LA CONSULTA
-    /*
     res.json(producto);
     console.log('Devolviendo el producto con ID:', id);
     console.log(producto);
-    */
 };
 
 exports.crearProducto = (req, res) => {
-
-    console.log(req.body);
-
-    const { nombre, descripcion, precio, categoria } = req.body;
-
-    const ultimoId = ProductoBD.obtenerUltimoCodigo();
-
-    if (ProductoBD.existeNombreProducto(nombre)) {
-        res.status(400).json({ message: 'El nombre del producto ya existe' });
-    };
-
-    // TENEMOS QUE GUARDAR LA CATEGORÍA EN LA BD
-    const categoriaObj = menu.obtenerOCrearCategoria(categoria);
-
-    guardarCategoria(categoriaObj);
-
-    const idCategoria = categoriaObj.id;
+    const { nombre, descripcion, precio, disponible } = req.body;
 
     const datosDeProducto = {
-        id: ultimoId + 1,
-        precio: precio,
+        id: Date.now.toString(), // Id temporal (lo mismo q antes)
         nombre: nombre,
         descripcion: descripcion,
-        id_categoria: idCategoria,
+        precio: precio,
+        disponible: disponible
     };
 
     const nuevoProducto = new Producto(datosDeProducto);
