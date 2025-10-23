@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const AdministradorPedidos = require('../models/AdministradorPedidos');
 const Pedido = require('../models/Pedido');
 const LineaPedido = require('../models/LineaPedido');
@@ -10,6 +11,53 @@ const pedidosIniciales = require('../DB/pedidos.json');
 
 const administradorPedidos = new AdministradorPedidos();
 administradorPedidos.cargarPedidos(pedidosIniciales, menu, mesas)
+=======
+// controllers/pedidosController.js
+import FormPedido from './pages/pedidos/FormPedido';
+// Array para simular la base de datos de pedidos
+let pedidos = [
+  {
+    id: '001',
+    mesa: 5,
+    mozo: 'Juan',
+
+    total: 800,
+    estado: 'Listo',
+  },
+  {
+    id: '002',
+    mesa: 3,
+    mozo: 'María',
+    productos: [
+      { id: "hamburguesa", nombre: "Hamburguesa", precio: 1500, cantidad: 1 },
+      { id: "agua", nombre: "Agua", precio: 500, cantidad: 1 },
+    ],
+    total: 2000,
+    estado: 'Pendiente',
+  },
+  {
+    id: '003',
+    mesa: 10,
+    mozo: 'Pedro',
+    productos: [
+      { id: "te", nombre: "Té", precio: 250, cantidad: 1 },
+    ],
+    total: 250,
+    estado: 'Finalizado',
+  },
+  {
+    id: '004',
+    mesa: 8,
+    mozo: 'Ana',
+    productos: [
+      { id: "sandwich", nombre: "Sándwich", precio: 800, cantidad: 1 },
+      { id: "jugo", nombre: "Jugo", precio: 600, cantidad: 1 },
+    ],
+    total: 1400,
+    estado: 'Listo',
+  },
+];
+>>>>>>> jere
 
 exports.obtenerPedidos = (req, res) => {
     console.log("Datos a enviar de pedidos:", administradorPedidos.pedidos);
@@ -106,4 +154,13 @@ exports.actualizarPedido = (req, res) => {
     } catch (error){
         res.status(400).json({ message: error.message });
     }
+<<<<<<< HEAD
 }
+=======
+    estadoFinal = nuevoEstado;
+  }
+
+  pedidos[pedidoIndex] = { ...pedido, estado: estadoFinal };
+  res.json({ message: `Pedido actualizado a ${estadoFinal}`, pedido: pedidos[pedidoIndex] });
+};
+>>>>>>> jere

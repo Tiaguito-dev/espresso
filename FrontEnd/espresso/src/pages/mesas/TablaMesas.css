@@ -1,0 +1,72 @@
+.tabla-container {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tabla th {
+  background-color: #a97457;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.tabla td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.estado {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: white;
+}
+
+/* Colores de estado */
+.estado.disponible { background-color: #4caf50; }
+.estado.ocupada { background-color: #f44336; }
+.estado.lista-para-ordenar { background-color: #ff9800; }
+.estado.lista-para-pagar { background-color: #2196f3; }
+
+/* Botones */
+.acciones {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-estado,
+.btn-modificar,
+.btn-eliminar {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: white;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-estado {
+  background-color: #4caf50;
+}
+
+.btn-modificar {
+  background-color: #42a5f5;
+}
+
+.btn-eliminar {
+  background-color: #ef5350;
+}
+
+.btn-estado:hover { background-color: #4caf50; transform: scale(1.05); }
+.btn-modificar:hover { background-color: #42a5f5; transform: scale(1.05); }
+.btn-eliminar:hover { background-color: #ef5350; transform: scale(1.05); }

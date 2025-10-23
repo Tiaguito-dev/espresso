@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import CabeceraTabla from "./CabeceraTabla";
+import CabeceraTabla from "../pedidos/CabeceraTabla";
 import FilaProducto from "./FilaProducto";
 
 function TablaProducto({ productos, arrayCampos, funcionCambiarEstado, funcionModificar, funcionEliminar}) {
