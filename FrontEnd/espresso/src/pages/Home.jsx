@@ -30,6 +30,10 @@ function Home() {
           ruta="/cocina"
           texto="Gestion de Cocina"
         ></BotonHome>
+        <BotonHome
+          ruta="/mesas"
+          texto="Gestion mesas"
+        ></BotonHome>
       </div>
     </div>
   );

@@ -1,0 +1,34 @@
+[
+  {
+        "id": "001",
+        "nombre": "Medialuna",
+        "descripcion": "Dulce o salada, vos elegís",
+        "precio": "800",
+        "disponible": true,
+        "categoria": "Dulces"
+    },
+    {
+        "id": "002",
+        "nombre": "Café americano",
+        "descripcion": "Para comenzar el día con todo",
+        "precio": 1600,
+        "disponible": true,
+        "categoria": "Bebidas calientes"    
+    },
+    {
+        "id": "003",
+        "nombre": "Submarino",
+        "descripcion": "Con una barra de chocolate águila",
+        "precio": 4000,
+        "disponible": true,
+        "categoria": "Bebidas calientes"
+    },
+    {
+        "id": "004",
+        "nombre": "Tostado jyq",
+        "descripcion": "Jamón y queso, clásico entre los clásicos",
+        "precio": 3500,
+        "disponible": false,
+        "categoria": "Salados"
+    }
+]

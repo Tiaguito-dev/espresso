@@ -7,6 +7,9 @@ import Menu from "./pages/menu/Menu.jsx";
 import FormProducto from "./pages/menu/FormProducto.jsx";
 import GestionCaja from "./pages/caja/GestionCaja.jsx";
 import GestionCocina from "./pages/cocina/GestionCocina.jsx";
+import MenuCliente from "./pages/menu/ClienteMenu.jsx";
+import MesasLista from "./pages/mesas/MesasLista.jsx";
+import FormPedido from "./pages/pedidos/FormPedido.jsx";
 
 function App() {
   return (
@@ -20,8 +23,11 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           {/* Se pone ? para que el indicar que el parámetro sea opcional */}
           <Route path="/menu/productos/:id?" element={<FormProducto />} />
-          <Route path="/caja" element={<GestionCaja/>} />
-          <Route path="/cocina" element={<GestionCocina/>} />
+          <Route path="/caja" element={<GestionCaja />} />
+          <Route path="/cocina" element={<GestionCocina />} />
+          <Route path="/menu/menuEspresso" element={<MenuCliente />} />
+          <Route path="/mesas" element={<MesasLista />} />
+          <Route path="/pedidos/modificar/:id" element={<FormPedido />} />
         </Routes>
       </div>
     </Router>

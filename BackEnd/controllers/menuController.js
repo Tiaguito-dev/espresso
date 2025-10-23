@@ -1,86 +1,96 @@
-// Array para simular la base de datos de productos
-let productos = [
-    {
-        id: '001',
-        nombre: 'Medialuna',
-        descripcion: 'Dulce o salada, vos elegís',
-        precio: 800,
-        disponible: true,
-    },
-    {
-        id: '002',
-        nombre: 'Café americano',
-        descripcion: 'Para comenzar el día con todo',
-        precio: 1600,
-        disponible: true,
-    },
-    {
-        id: '003',
-        nombre: 'Submarino',
-        descripcion: 'Con una barra de chocoloate águila',
-        precio: 4000,
-        disponible: true,
-    },
-    {
-        id: '004',
-        nombre: 'Tostado jyq',
-        descripcion: 'Jamón y queso, clásico entre los clásicos',
-        precio: 3500,
-        disponible: false,
-    },
-];
+const Menu = require('../models/Menu');
+const Producto = require('../models/Producto');
+const productosIniciales = require('../DB/productos.json');
+const { json } = require('express');
+
+const menu = new Menu();
+menu.cargarProductos(productosIniciales);
 
 exports.obtenerProductos = (req, res) => {
-    res.json(productos); // Devuelve TODOS los productos como JSON
+    res.json(menu.getProductos());
+};
+
+exports.obtenerCategoria = (req, res) => {
+    res.json(menu.getCategorias());
 };
 
 exports.obtenerProductoPorId = (req, res) => {
     // Tiene que devolver un solo producto con ese ID en particular
     const { id } = req.params;
-    const producto = productos.find((p) => p.id === id);
+    const producto = menu.buscarProductoPorId(id);
     if (!producto) {
         return res.status(404).json({ message: 'Producto no encontrado' });
     }
-    res.json(productos); // Devuelve TODOS los productos como JSON
-    console.log('./controllers/menuController.js \n devolviendo el producto con ID:', id);
+    res.json(producto);
+    console.log('Devolviendo el producto con ID:', id);
     console.log(producto);
 };
 
 exports.crearProducto = (req, res) => {
-    const nuevoProducto = { ...req.body, id: Date.now().toString() }; // Esto es meramente temporal, ya que después lo va a manejar la base de datos
-    productos.push(nuevoProducto); // Agrega al array de producto que antes se definió
-    res.status(201).json(nuevoProducto); // Responde con status 201 (Created)
+
+    const { nombre, categoria, descripcion, precio, disponible } = req.body;
+    const categoriaObj = menu.obtenerOCrearCategoria(categoria);
+
+    const datosDeProducto = {
+        id: Date.now().toString(), // Id temporal (lo mismo q antes)
+        nombre: nombre,
+        categoria: categoriaObj,
+        descripcion: descripcion,
+        precio: precio,
+        disponible: disponible
+    };
+
+    const nuevoProducto = new Producto(datosDeProducto);
+
+    const productoAgregado = menu.agregarProducto(nuevoProducto);
+    const respuestaConFormatoCorrecto = {
+        ...productoAgregado,
+        categoria: { nombre: productoAgregado.categoria.nombre }
+    };
+
+    res.status(201).json(respuestaConFormatoCorrecto);
+
+    //res.status(201).json(productoAgregado); // Responde con status 201 (Created)
 };
 
-exports.actualizarProducto = (req, res) => {
+exports.modificarProducto = (req, res) => {
     const { id } = req.params;
-    const { ...resto } = req.body;
-    const productoIndex = productos.findIndex((p) => p.id === id);
+    const datosModificados = req.body;
 
-    // El -1 significa que no lo encontró y es una respuesta automática de findIndex
-    if (productoIndex !== -1) {
-        productos[productoIndex] = {
-            ...productos[productoIndex],
-            ...resto,
-        };
-        res.json(productos[productoIndex]);
-    } else {
-        res.status(404).json({ message: 'Producto no encontrado' });
+    const productoParaModificar = menu.buscarProductoPorId(id);
+
+    if (!productoParaModificar) {
+        return res.status(404), json({ message: 'Producto para modificar no encontrado' });
     }
+
+    productoParaModificar.nombre = datosModificados.nombre ?? productoParaModificar.nombre;
+    productoParaModificar.descripcion = datosModificados.descripcion ?? productoParaModificar.descripcion;
+    productoParaModificar.precio = datosModificados.precio ?? productoParaModificar.precio;
+    productoParaModificar.disponible = datosModificados.disponible ?? productoParaModificar.disponible;
+
+    if (datosModificados.categoria !== undefined) {
+        const nuevaCategoriaObj = menu.obtenerOCrearCategoria(datosModificados.categoria);
+        productoParaModificar.categoria = nuevaCategoriaObj;
+    }
+
+    const respuestaConFormatoCorrecto = {
+        ...productoParaModificar,
+        categoria: { nombre: productoParaModificar.categoria.nombre }
+    };
+
+    res.status(200).json(respuestaConFormatoCorrecto);
+
 };
 
 exports.eliminarProducto = (req, res) => {
-    const { id } = req.params;  
-    const idAComparar = String(id);
-    const productoIndex = productos.findIndex((producto) => String(producto.id) === idAComparar); 
+    const { id } = req.params;
+    const exito = menu.eliminarProductoPorId(id);
 
-    console.log(`Resultado de findIndex: ${productoIndex}`); // <-- Mira si esto es 0 o -1
-
-    if (productoIndex !== -1){
-        productos.splice(productoIndex, 1);
+    if (exito) {
         res.status(200).json({ message: `El producto ${id} fue eliminado exitosamente` });
     } else {
-        console.error(`ERROR 404: No se pudo encontrar el producto con ID ${id}`); 
-        res.status(404).json({message:`No fue posible elminar el producto ${id}`});
+        res.status(404).json({ message: `No fue posible elminar el producto ${id}` });
     }
 };
+
+module.exports.menu = menu;
