@@ -1,8 +1,9 @@
+//http://localhost:3001/api/pedidos
+
 const AdministradorPedidos = require('../models/AdministradorPedidos');
 const Pedido = require('../models/Pedido');
 const LineaPedido = require('../models/LineaPedido');
 const Mesa = require('../models/Mesa');
-//http://localhost:3001/api/pedidos
 
 const { menu } = require('./menuController');
 const { mesas } = require('./mesasController');
@@ -23,14 +24,14 @@ exports.crearPedido = (req, res) => {
 
         const mesaObj = mesas.buscarMesaPorNumero(mesa);
 
-        if (!lineas || !Array.isArray(lineas) || lineas.length === 0) {
+        if (!lineas || !Array.isArray(lineas) || lineas.length === 0){
             throw new Error('Se requiere al menos una inea de pedido');
         }
 
         const lineasPedidoObj = lineas.map(linea => {
             const productoObj = menu.buscarProductoPorId(linea.idProducto);
 
-            if (!productoObj) {
+            if (!productoObj){
                 throw new Error(`Producto con id ${linea.idProducto} no encontrado.`)
             }
 
@@ -38,7 +39,7 @@ exports.crearPedido = (req, res) => {
                 producto: productoObj,
                 cantidad: linea.cantidad
             })
-
+            
         })
 
         const datosPedido = {
@@ -53,27 +54,27 @@ exports.crearPedido = (req, res) => {
         administradorPedidos.agregarPedido(nuevoPedido);
 
         res.status(201).json(nuevoPedido);
-    } catch (error) {
+    } catch(error) {
         res.status(400).json({ message: error.message });
     }
 }
 
 exports.actualizarPedido = (req, res) => {
-    try {
+    try{
         const { id } = req.params;
         const nroPedido = parseInt(id, 10);
         const { nuevoEstado } = req.body;
 
         const pedido = administradorPedidos.buscarPedidoPorNumero(nroPedido);
-        if (!pedido) {
-            return res.status(404).json({ message: "Pedido no encontrado." });
+        if (!pedido){
+            return res.status(404).json({ message: "Pedido no encontrado."});
         }
 
         const estadoActual = pedido.getEstadoPedido();
         const estadoActualLower = estadoActual.toLowerCase();
         let estadoFinal = estadoActual;
 
-        if (nuevoEstado) {
+        if (nuevoEstado){
             const nuevoEstadoLower = nuevoEstado.toLowerCase();
 
             if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") && nuevoEstadoLower !== estadoActualLower) {
@@ -81,13 +82,13 @@ exports.actualizarPedido = (req, res) => {
             }
 
             const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado'];
-            if (!estadosValidos.includes(nuevoEstadoLower)) {
+            if (!estadosValidos.includes(nuevoEstadoLower)){
                 throw new Error(`Estado '${nuevoEstado}' no es válido`);
             }
 
             estadoFinal = nuevoEstado;
-        } else {
-            switch (estadoActualLower) {
+        } else{
+            switch (estadoActualLower){
                 case "pendiente":
                     estadoFinal = "listo";
                     break;
@@ -99,12 +100,12 @@ exports.actualizarPedido = (req, res) => {
             }
         }
 
-        if (estadoFinal !== estadoActual) {
+        if (estadoFinal !== estadoActual){
             administradorPedidos.modificarEstadoPedido(nroPedido, estadoFinal);
 
             res.json({ message: `Pedido actualizado a ${estadoFinal}`, pedido: pedido });
         }
-    } catch (error) {
+    } catch (error){
         res.status(400).json({ message: error.message });
     }
 }
