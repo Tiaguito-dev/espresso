@@ -6,7 +6,7 @@ const selectPedidoPorId = 'SELECT * FROM pedido WHERE nro_pedido = $1'; // En la
 const insertPedido = 'INSERT INTO pedido (nro_pedido, fecha_registro, observacion, monto, id_mozo, id_mesa) VALUES ($1, $2, $3, $4, $5, $6)';
 const selectUltimoNroPedido = 'SELECT MAX(nro_pedido) FROM pedido';
 const updateEstadoPedidoPorId = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
-const insertLineaPedido = 'INSERT INTO linea_pedido (nro_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ($1, $2, $3, $4, $5)';
+const insertLineaPedido = 'INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ($1, $2, $3, $4, $5)';
 // TODO: FALTA HACER ESTO
 const selectPedidoPorMozo = 'SELECT * FROM pedido WHERE nombre = $1';
 
@@ -86,17 +86,17 @@ exports.obtenerUltimoNroPedido = async () => {
 // TODO: Hay que ver cómo manejamos esto porque tendría que primero crearse el pedido y luego las líneas por el tema del id
 exports.crearLineaPedido = async (datosDeLineaPedido) => {
     // TODO: Hay que pasarle el monto porque lo registramos como variable
-    const { nro_pedido, idProducto, cantidad, monto, nombreProducto } = datosDeLineaPedido;
+    const { idPedido, idProducto, cantidad, monto, nombreProducto } = datosDeLineaPedido;
 
     try {
         await Gateway.ejecutarQuery({
             text: insertLineaPedido,
-            values: [nro_pedido, idProducto, cantidad, monto, nombreProducto]
+            values: [idPedido, idProducto, cantidad, monto, nombreProducto]
         });
 
         return {
             success: true,
-            message: `La línea del pedido ${nro_pedido} se creó correctamente.`
+            message: `La línea del pedido ${idPedido} se creó correctamente.`
         };
     } catch (error) {
         throw new Error('Error al crear una línea de pedido desde la base de datos: ' + error.message);
