@@ -59,21 +59,19 @@ export default function MenuCliente() {
                                 categoriaActiva={activa}
                             />
 
-                            {activa && (
-                                <div className="lista-productos desplegado">
-                                    {productosDeCategoria.length > 0 ? (
-                                        productosDeCategoria.map(productoItem => (
-                                            <div key={productoItem.id} className="producto">
-                                                <h3>{productoItem.nombre}</h3>
-                                                <p>{productoItem.descripcion}</p>
-                                                <span>${productoItem.precio}</span>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p>No hay productos disponibles en {categoriaItem}.</p>
-                                    )}
-                                </div>
-                            )}
+                            <div className={`lista-productos ${activa ? 'desplegado' : ''}`}>
+                            {productosDeCategoria.length > 0 ? (
+                                    productosDeCategoria.map(productoItem => (
+                                    <div key={productoItem.id} className="producto">
+                                    <h3>{productoItem.nombre}</h3>
+                                    <p>{productoItem.descripcion}</p>
+                                    <span>${productoItem.precio}</span>
+                                    </div>
+                                    ))
+                                ) : (
+                                <p>No hay productos disponibles en {categoriaItem}.</p>
+                                )}
+                            </div>
                         </div>
                     );
                 })}
