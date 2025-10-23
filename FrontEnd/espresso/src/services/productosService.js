@@ -43,3 +43,31 @@ export const updateProducto = async (id, productoData) => {
     }
     return response.json();
 };
+
+export const deleteProducto = async (id) => {
+    console.log('Eliminando producto con ID:', id);
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+    });
+    if (!response.ok) {
+
+        throw new Error(`No se pudo eliminar el producto con ID ${id}`);
+    }
+    return response.json();
+};
+
+export const obtenerCategorias = async () => {
+    try {
+        const response = await fetch(`${API_URL}/categoria`);
+        if (!response.ok) {
+            console.error('Error al obtener categorías:', response.statusText);
+            return []; 
+        }
+        const data = await response.json();
+        return data; 
+        
+    } catch (error) {
+        console.error("Error de red al obtener categorías:", error);
+        return [];
+    }
+};

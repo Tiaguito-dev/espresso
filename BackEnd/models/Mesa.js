@@ -15,6 +15,8 @@ const validarDataMesa = (data) => {
             errores.push(`El estado de la mesa debe ser uno de los siguientes: ${estadosValidos.join(', ')}`);
         }
     }
+
+    return errores;
 }
 
 class Mesa {
@@ -27,4 +29,11 @@ class Mesa {
         this.nroMesa = data.nroMesa;
         this.estadoMesa = data.estadoMesa || 'disponible'; //si no tiene estado, lo inicializa en disponible
     }
+
+    cambiarEstadoMesa (nuevoEstado){
+        this.estadoMesa = nuevoEstado; 
+    }
+
 }
+
+module.exports = Mesa;

@@ -19,6 +19,7 @@ const validarDataProducto = (data) => {
     if (data.categoria && !(data.categoria instanceof Categoria)) {
         errores.push('La categoría debe ser una instancia de la clase Categoria');
     }
+    return errores;
 }
 
 class Producto {
@@ -27,6 +28,7 @@ class Producto {
         if (errores.length > 0) {
             throw new Error(`Errores de validacion: ${errores.join(', ')}`);
         }
+        this.id = data.id;
         this.nombre = data.nombre;
         this.descripcion = data.descripcion || ''; //si no tiene descripcion, la inicializa en cadena vacia
         this.precio = data.precio || 0; //si no tiene precio, lo inicializa en 0
@@ -49,3 +51,5 @@ class Producto {
     }
 
 }
+
+module.exports = Producto;

@@ -13,6 +13,9 @@ router.get('/:id', menuController.obtenerProductoPorId);
 router.post('/', menuController.crearProducto);
 
 // Ruta para actualizar un producto
-router.put('/:id', menuController.actualizarProducto);
+router.put('/:id', menuController.modificarProducto);
+
+// ruta para eliminar un producto
+router.delete('/:id', menuController.eliminarProducto);
 
 module.exports = router;

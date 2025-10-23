@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getProductos, updateProducto } from "../../services/productosService";
+import { getProductos, updateProducto, deleteProducto } from "../../services/productosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
+import "../menu/ClienteMenu.css";
+
+import Filtro from "./Filtro";
+import TablaProducto from "./TablaProducto";
 
 export default function Menu() {
     const [productos, setProductos] = useState([]);
@@ -61,12 +65,39 @@ export default function Menu() {
         }
     })();
 
+    //elimino un producto    
+    const eliminarProducto = async (id) => {
+        if(window.confirm("¿Seguro que desea eliminar el producto?")) {
+            try{
+                await deleteProducto(id);
+                alert("Producto eliminado correctamente");
+                setProductos(prevProductos => 
+                prevProductos.filter(p => String(p.id) !== String(id))
+            );
+            } catch (error) {
+                console.error("Error al eliminar el producto");
+                alert("No se pudo eliminar el producto");
+            };
+
+        };
+    };
+
+    const navegarAModificar = (idProducto) => {
+        navigate(`/menu/productos/${idProducto}`);
+    };
+
+
     return (
         <div className="container">
             {/* Botón filtros */}
             <button className="toggle-filtros" onClick={toggleFiltros}>
                 Filtros
             </button>
+
+            <button className="btn-ver-menu"onClick={() => navigate("/menu/menuEspresso/")}>
+                Ver menú Espresso
+            </button>
+
             {mostrarFiltros && (
                 <div className="filtros">
                     <input type="text" placeholder="Buscar por código" />
@@ -77,25 +108,12 @@ export default function Menu() {
             {/* Estados + agregar producto */}
             <div className="filtros-estado">
                 <div className="estados">
-                    <span
-                        className={estadoFiltro === "todos" ? "activo" : ""}
-                        onClick={() => filtrarEstado("todos")}
-                    >
-                        Todos
-                    </span>
-                    <span
-                        className={estadoFiltro === "disponibles" ? "activo" : ""}
-                        onClick={() => filtrarEstado("disponibles")}
-                    >
-                        Disponibles
-                    </span>
-                    <span
-                        className={estadoFiltro === "no-disponibles" ? "activo" : ""}
-                        onClick={() => filtrarEstado("no-disponibles")}
-                    >
-                        No disponibles
-                    </span>
+                    <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="disponible" nombreFiltro="Disponible" onClick={filtrarEstado} />
+                    <Filtro estadoActual={estadoFiltro} estadoValor="no-disponible" nombreFiltro="No Disponible" onClick={filtrarEstado} />
                 </div>
+
+
                 <button
                     className="btn-agregar"
                     onClick={() => navigate("/menu/productos/")}
@@ -104,42 +122,15 @@ export default function Menu() {
                 </button>
             </div>
 
-            {/* Tabla */}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Precio</th>
-                        <th>Disponible</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {productosFiltrados.map((producto) => (
-                        <tr
-                            key={producto.id}
-                            data-estado={producto.disponible ? 'disponible' : 'no-disponible'}
-                        >
-                            <td>{producto.id}</td>
-                            <td>{producto.nombre}</td>
-                            <td>{producto.descripcion}</td>
-                            <td>${producto.precio}</td>
-                            <td>
-                                <span className={`disponibilidad ${producto.disponible ? 'disponible' : 'no-disponible'}`}>
-                                    {producto.disponible ? "Disponible" : "No disponible"}
-                                </span>
-                            </td>
-                            <td className="acciones">
-                                <button className="info" onClick={() => cambiarEstado(producto.id)}>ℹ️ Disponibilidad</button>
-                                <button className="modificar" onClick={() => navigate(`/menu/productos/${producto.id}`)}> ✏️ Modificar </button>
-                                <button className="baja">🗑️ Baja</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            
+            <TablaProducto 
+                productos={productosFiltrados}
+                arrayCampos={["Codigo", "Nombre", "Categoria", "Descripcion", "Precio", "Disponible", "Acciones"]}
+                funcionCambiarEstado={cambiarEstado}
+                funcionModificar={navegarAModificar}
+                funcionEliminar={eliminarProducto}
+            ></TablaProducto>
         </div>
+        
     );
 }

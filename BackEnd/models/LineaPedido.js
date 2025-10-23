@@ -1,4 +1,4 @@
-const {Producto} = require('./Producto');
+const Producto = require('./Producto');
 
 const validarDataLineaPedido = (data) => {
     const errores = []; 
@@ -17,6 +17,7 @@ const validarDataLineaPedido = (data) => {
     if (!data.cantidad || typeof data.cantidad !== 'number' || data.cantidad <= 0) {
         errores.push('La cantidad es obligatoria, debe ser un numero positivo');
     }
+    return errores;
 }
 
 
@@ -27,11 +28,13 @@ class LineaPedido {
             throw new Error(`Errores de validacion: ${errores.join(', ')}`);
         }
         this.cantidad = data.cantidad;
-        this.nombreProducto = getNombreProducto(data.producto);
-        this.precioUnitario = getPrecio(data.producto);
+        this.nombreProducto = data.producto.getNombre();
+        this.precioUnitario = data.producto.getPrecio();
     }
 
     getSubTotal() {
         return this.cantidad * this.precioUnitario;
     }
 }
+
+module.exports = LineaPedido;
