@@ -44,7 +44,7 @@ exports.crearPedido = (req, res) => {
 
         const datosPedido = {
             nroPedido: Date.now(), //temporal
-            fecha: new Date(),
+            fecha: new Date(), // Fecha y hora
             mesa: mesaObj,
             lineasPedido: lineasPedidoObj,
         };

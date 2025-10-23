@@ -4,8 +4,11 @@ const app = express();
 const cors = require('cors');
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
+const TestPedidoBD = require('./Test/TestPedidoBD');
 
-console.log(' Iniciando servidor...');
+// Esto es para testear la conexión a la base de datos y las funciones
+// CUANDO QUIERAN DEJAR DE TESTEAR, COMENTAR ESTO
+TestPedidoBD.runTests();
 
 // Middlewares
 app.use(express.json());

@@ -29,12 +29,12 @@ class Producto {
             throw new Error(`Errores de validacion: ${errores.join(', ')}`);
         }
         this.id = data.id;
+        // TODO: VERIFICAR QUE NO EXISTA OTRO PRODUCTO CON ESE NOMBRE
         this.nombre = data.nombre;
         this.descripcion = data.descripcion || ''; //si no tiene descripcion, la inicializa en cadena vacia
         this.precio = data.precio || 0; //si no tiene precio, lo inicializa en 0
         this.disponible = data.disponible || false; //si no tiene disponible, lo inicializa en false (no disponible)
         this.categoria = data.categoria || null; //si no tiene categoria, lo inicializa en null
-
     }
 
     getNombre() {
