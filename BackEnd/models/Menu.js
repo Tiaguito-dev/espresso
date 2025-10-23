@@ -17,7 +17,7 @@ class Menu {
         const recorroCategorias = new Map();
         categorias.forEach(cat => {
             recorroCategorias.set(cat.id, new Categoria(cat));
-        }) //consultar
+        })
 
         return productos.map(prod => {
             const categoriaObj = recorroCategorias.get(prod.id_categoria);
@@ -118,7 +118,7 @@ class Menu {
             return null;
         }
         const productoObj = await this.convertirProductoBD(producto);
-        return productoObj[0]; //consultar
+        return productoObj[0]; 
     }
 
     async eliminarProductoPorId(id) {
@@ -150,5 +150,3 @@ class Menu {
         return this.buscarProductoPorId(id);
     }
 }
-
-module.exports = Menu;
