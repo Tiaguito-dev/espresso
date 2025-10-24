@@ -16,7 +16,22 @@ class AdministradorPedidos {
         const pedidosObj = [];
         for (const pedido of pedidos){
             const mesaObj = await this.mesas.buscarMesaPorNumero(pedido.id_mesa);
+
+            const lineasBD = await PedidoBD.obtenerLineasPorNroPedido(pedido.nro_pedido);
             const lineasObj = [];
+
+            for (const linea of lineasBD) {
+                const productoObj = await this.menu.buscarProductoPorId(linea.id_producto);
+
+                if (productoObj){
+                    lineasObj.push(new LineaPedido({
+                        producto: productoObj,
+                        cantidad: linea.cantidad
+                    }));
+                }else{
+                    console.warn(`El producto con ID ${linea.id_producto} del pedido ${pedido.nro_pedido} ya no existe.`); //CASO MUY EXTRAÑO
+                }
+            }
 
             pedidosObj.push(new Pedido({
                 nroPedido: pedido.nro_pedido,
@@ -67,10 +82,11 @@ class AdministradorPedidos {
 
             const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
             const nroPedido = (ultimoNro ? ultimoNro : 0) + 1;
+            const fecha = Date.now()
 
             const datosPedido = {
-                nroPedido: nuevoNro,
-                fecha: fecha,
+                nroPedido: nroPedido,
+                fecha: fecha, //toISOString().split('T')[0], //chequear q funque
                 mesa: mesaObj,
                 lineasPedido: lineasObj
             };
@@ -88,14 +104,16 @@ class AdministradorPedidos {
                 observacion: observacion || null,
                 monto: montoTotal,
                 idMozo: 1,
-                id_mesa: mesaObj.nroMesa
+                idMesa: mesaObj.nroMesa,
             });
+
             for (const lineaBD of lineasBD){
                 await PedidoBD.crearLineaPedido({
                     idPedido: nroPedido,
                     ...lineaBD
                 });
             }
+
             return nuevoPedido;
         }
     }
