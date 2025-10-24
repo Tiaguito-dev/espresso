@@ -12,7 +12,7 @@ const TestCategoriaBD = require('./Test/TestCategoriaBD');
 
 // Esto es para testear la conexión a la base de datos y las funciones
 // CUANDO QUIERAN DEJAR DE TESTEAR, COMENTAR ESTO
-// TestPedidoBD.runTests();
+TestPedidoBD.runTests();
 // TestProductoBD.runTests();
 // TestMesaBD.runTests();
 // TestCategoriaBD.runTests();

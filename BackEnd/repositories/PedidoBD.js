@@ -3,7 +3,7 @@ const Gateway = require('../DB/Gateway');
 // === SECCIÓN DE QUERYS ===
 const selectPedidosFecha = 'SELECT * FROM pedido WHERE date(fecha_registro)= date($1)';
 const selectPedidoPorNro = 'SELECT * FROM pedido WHERE nro_pedido = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
-const insertPedido = 'INSERT INTO pedido (nro_pedido, fecha_registro, observacion, monto, id_mozo, id_mesa) VALUES ($1, $2, $3, $4, $5, $6)';
+const insertPedido = 'INSERT INTO pedido (nro_pedido, observacion, monto, id_mozo, id_mesa) VALUES ($1, $2, $3, $4, $5)';
 const selectUltimoNroPedido = 'SELECT MAX(nro_pedido) FROM pedido';
 const updateEstadoPedidoPorId = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
 const insertLineaPedido = 'INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ($1, $2, $3, $4, $5)';
@@ -49,10 +49,10 @@ exports.obtenerPedidoPorNro = async (nroPedido) => {
 exports.crearPedido = async (datosDePedido) => {
 
     // TODO: En el controller tengo que hacer una función para obtener el último y para obtener el id de la categoria
-    const { nroPedido, fecha, observacion, monto, idMozo, idMesa } = datosDePedido;
+    const { nroPedido, observacion, monto, idMozo, idMesa } = datosDePedido;
 
     try {
-        await Gateway.ejecutarQuery({ text: insertPedido, values: [nroPedido, fecha, observacion, monto, idMozo, idMesa] });
+        await Gateway.ejecutarQuery({ text: insertPedido, values: [nroPedido, observacion, monto, idMozo, idMesa] });
         return {
             success: true,
             message: `El pedido ${nroPedido} se creó correctamente.`
