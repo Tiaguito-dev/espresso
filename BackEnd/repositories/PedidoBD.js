@@ -6,7 +6,7 @@ const selectPedidoPorNro = 'SELECT * FROM pedido WHERE nro_pedido = $1'; // En l
 const insertPedido = 'INSERT INTO pedido (nro_pedido, observacion, monto, id_mozo, id_mesa) VALUES ($1, $2, $3, $4, $5)';
 const selectUltimoNroPedido = 'SELECT MAX(nro_pedido) FROM pedido';
 const updateEstadoPedidoPorId = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
-const insertLineaPedido = 'INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ($1, $2, $3, $4, $5)';
+const insertLineaPedido = 'INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ((SELECT id_pedido FROM pedido WHERE nro_pedido = $1),(SELECT id_producto FROM producto WHERE id = $2), $3, $4, $5);';
 const selectLineasPorNroPedido = ("SELECT linea.id_linea_pedido, linea.cantidad, linea.monto, producto.nombre, linea.id_pedido FROM pedido JOIN linea_pedido AS linea ON pedido.id_pedido = linea.id_pedido JOIN producto ON linea.id_producto = producto.id_producto WHERE pedido.nro_pedido = $1;");
 
 // TODO: FALTA HACER ESTO

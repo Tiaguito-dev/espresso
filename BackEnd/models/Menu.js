@@ -8,20 +8,24 @@ class Menu {
 
     }
 
-    async convertirProductoBD(productos){
-        if (!productos || productos.length === 0){
+    async convertirProductoBD(productos) {
+        if (!productos || productos.length === 0) {
             return [];
         }
 
         const categorias = await CategoriaBD.obtenerCategorias();
-        console.log(categorias);
+        // LO HACE BIEN console.log('CATEGORIAS EN MENU:', categorias);
         const recorroCategorias = new Map();
         categorias.forEach(cat => {
-            recorroCategorias.set(cat.id, new Categoria(cat));
+            recorroCategorias.set(cat.id_categoria, new Categoria(cat));
+            // LO HACE BIEN console.log('Mapeando categoria:', cat);
+            // LO HACE BIEN console.log('IMPRIMO EL TIPO DEL id:', cat.id_categoria, typeof cat.id_categoria);
         })
 
         return productos.map(prod => {
             const categoriaObj = recorroCategorias.get(prod.id_categoria);
+            // LO HACE BIEN console.log('PRODUCTO EN MENU:', prod);
+            // LO HACE BIEN console.log('CATEGORIA DEL PRODUCTO:', categoriaObj);
             return new Producto({
                 ...prod,
                 disponible: prod.disponible,
@@ -34,32 +38,32 @@ class Menu {
         try {
             const id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
             return id;
-        } catch(error){
+        } catch (error) {
             console.log('Categoria no encontrada, creando:', nombreCategoria);
             await CategoriaBD.crearCategoria(nombreCategoria);
             return await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
         }
     }
-        
 
- /*   cargarProductos(productosData) {
-        productosData.forEach(producto => {
-            const nombreCategoria = producto.categoria;
 
-            const categoriaObj = this.obtenerOCrearCategoria(nombreCategoria);
-
-            const dataProducto = {
-                ...producto,
-                categoria: categoriaObj
-            };
-
-            const nuevoProducto = new Producto(dataProducto);
-
-            this.productos.push(nuevoProducto)
-
-        });
-    }
-*/
+    /*   cargarProductos(productosData) {
+           productosData.forEach(producto => {
+               const nombreCategoria = producto.categoria;
+   
+               const categoriaObj = this.obtenerOCrearCategoria(nombreCategoria);
+   
+               const dataProducto = {
+                   ...producto,
+                   categoria: categoriaObj
+               };
+   
+               const nuevoProducto = new Producto(dataProducto);
+   
+               this.productos.push(nuevoProducto)
+   
+           });
+       }
+   */
     async agregarProducto(datosProducto) {
         const { nombre, categoria: nombreCategoria, descripcion, precio, disponible } = datosProducto;
 
@@ -71,12 +75,12 @@ class Menu {
 
         const categoriaObj = new Categoria({ nombre: nombreCategoria });
         try {
-            new Producto({ 
+            new Producto({
                 ...datosProducto,
                 id: id,
                 categoria: categoriaObj
             });
-        } catch(error){
+        } catch (error) {
             throw new Error(`Datos de producto inváidos: ${error.message}`);
         }
         const datosBD = {
@@ -88,7 +92,7 @@ class Menu {
         }
 
         await ProductoBD.crearProducto(datosBD);
-        
+
         return new Producto({
             id: id,
             nombre,
@@ -101,6 +105,7 @@ class Menu {
 
     async getProductos() {
         const productos = await ProductoBD.obtenerProductos();
+        // LO HACE BIEN console.log('PRODUCTOS EN MENU:', productos);
         return this.convertirProductoBD(productos);
     }
 
@@ -111,17 +116,17 @@ class Menu {
         return categorias.map(cat => new Categoria(cat));
     }
 
-/*    buscarProductoPorNombre(nombre) {
-        return this.productos.find(prod => prod.getNombre() === nombre);
-    }
-*/
+    /*    buscarProductoPorNombre(nombre) {
+            return this.productos.find(prod => prod.getNombre() === nombre);
+        }
+    */
     async buscarProductoPorId(id) {
         const producto = await ProductoBD.obtenerProductoPorId(id);
-        if (!producto){
+        if (!producto) {
             return null;
         }
         const productoObj = await this.convertirProductoBD([producto]);
-        return productoObj[0]; 
+        return productoObj[0];
     }
 
     async eliminarProductoPorId(id) {
@@ -129,12 +134,12 @@ class Menu {
         return true;
     }
 
-    async modificarProducto(id, datosModificados){
+    async modificarProducto(id, datosModificados) {
         const { precio, nombre, descripcion, id_categoria } = datosModificados;
         //validaciones
 
         const productoActualBD = await ProductoBD.obtenerProductoPorId(id);
-        if (!productoActualBD){
+        if (!productoActualBD) {
             throw new Error('Producto no encontrado');
         }
         if (datosModificados.precio !== undefined && typeof datosModificados.precio !== 'number') {
@@ -145,7 +150,7 @@ class Menu {
         }
 
         let idCategoria = productoActualBD.id_categoria;
-        if (datosModificados.categoria){
+        if (datosModificados.categoria) {
             idCategoria = await this.obtenerOCrearCategoria(datosModificados.categoria);
         }
 
