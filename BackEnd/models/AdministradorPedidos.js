@@ -35,6 +35,7 @@ class AdministradorPedidos {
 
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
+                        id: id, //esto es id producto
                         producto: productoObj,
                         cantidad: linea.cantidad
                     }));
@@ -43,9 +44,11 @@ class AdministradorPedidos {
                 }
             }
 
+
             pedidosObj.push(new Pedido({
                 nroPedido: pedido.nro_pedido,
-                fecha: pedido.fecha_registro,
+                fecha: pedido.fecha_registro, //.slice(0, 10),
+                total: pedido.monto,
                 estadoPedido: pedido.estado,
                 mesa: mesaObj,
                 lineasPedido: lineasObj
@@ -96,11 +99,15 @@ class AdministradorPedidos {
             const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
             console.log(ultimoNro);
             const nroPedido = (ultimoNro ? ultimoNro : 0) + 1;
-            const fecha = Date.now()
+
+            const now = new Date();
+            const fecha = now.toISOString().replace('T', ' ').replace('Z', '+00');
+            console.log(fecha);
+
 
             const datosPedido = {
                 nroPedido: nroPedido,
-                fecha: fecha.toISOString().split('T')[0], //chequear q funque
+                fecha: fecha, //chequear q funque
                 mesa: mesaObj,
                 lineasPedido: lineasObj
             };
