@@ -50,9 +50,20 @@ class Pedido {
         this.fecha = data.fecha;
         this.estadoPedido = data.estadoPedido || 'pendiente'; //si no tiene estado, lo inicializa en pendiente
         this.mesa = data.mesa;
+        this.total = data.total;
 
         this.lineasPedido = data.lineasPedido || []; // inicializar como un array vacío si no contiene las lineas de pedido NOTA: A DEFINIR UCANDO SE HACE ESTO
     }
+    toJSON() {
+        return {
+            nroPedido: this.nroPedido,
+            fecha: this.fecha,
+            total: this.total,
+            estadoPedido: this.estadoPedido,
+            mesa: this.mesa,
+            lineasPedido: this.lineasPedido
+    };
+}
 
     agregarLineaPedido() {
         const lineaPedido = new LineaPedido();

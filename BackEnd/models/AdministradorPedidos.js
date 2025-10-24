@@ -14,8 +14,7 @@ class AdministradorPedidos {
 
     async convertirPedidoBD(pedidos) {
         const pedidosObj = [];
-        // imprimo todos los pedidos recibidos de la BD para verificar
-        console.log('Pedidos recibidos de BD:', pedidos);
+        // ESTO LO HACE BIEN console.log('Pedidos recibidos de BD:', pedidos);
         for (const pedido of pedidos) {
             const mesaObj = await this.mesas.buscarMesaPorNumero(pedido.id_mesa);
 
@@ -28,17 +27,15 @@ class AdministradorPedidos {
             for (const linea of lineasBD) {
                 const productoObj = await this.menu.buscarProductoPorId(linea.id_producto);
 
-                console.log('LINEA DE PEDIDO DE LA BD:', linea);
-                console.log('NUMERO DE LINEA DE PEDIDO Y SU TIPO:', linea.id_linea_pedido, typeof linea.id_linea_pedido);
-
-                console.log(`Producto encontrado para la línea del pedido ${pedido.nro_pedido}:`, productoObj);
+                // console.log(`Producto obtenido para la línea de pedido ${linea.id_producto}:`, productoObj);
 
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
-                        id: id, //esto es id producto
+                        //id: productoObj.id, //TODO: VER SI ESTO ANDA BIEN
                         producto: productoObj,
                         cantidad: linea.cantidad
                     }));
+                    //console.log(`Producto Numero ${productoObj.id} agregado a la línea de pedido ${pedido.nro_pedido}:`);
                 } else {
                     console.warn(`El producto con ID ${linea.id_producto} del pedido ${pedido.nro_pedido} ya no existe.`); //CASO MUY EXTRAÑO
                 }
@@ -54,7 +51,8 @@ class AdministradorPedidos {
                 lineasPedido: lineasObj
             }));
         }
-        // Imprimo las lineas de pedido para verificar console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
+        // Imprimo las lineas de pedido para verificar 
+        console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
         return pedidosObj;
     }
 

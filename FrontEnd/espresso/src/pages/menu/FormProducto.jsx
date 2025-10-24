@@ -4,6 +4,9 @@ import { createProducto, updateProducto, buscarPorId, obtenerCategorias } from "
 import { useNavigate } from "react-router-dom";
 import "../pedidos/AgregarPedido.css";
 
+//este import es de ClienteMenu para obtener los produtps
+import { getProductos } from '../../services/productosService';
+
 function FormProducto() {
     const { id } = useParams();
     const [producto, setProducto] = useState({
@@ -21,6 +24,29 @@ function FormProducto() {
     const navigate = useNavigate();
     const existeId = Boolean(id);
 
+    //aca arranca lo recuperar los productos y las categoruas para poder deplegarlas cuando agrego un producto. 
+    const [productos, setProductos] = useState([]);
+
+
+    const categoriasNuevo = ["Todos los productos",
+        ...Array.from(
+        new Set(productos.map(p => p.categoria.nombre.trim()))
+        ),
+    ];
+
+    useEffect(() => {
+        const fetchProductos = async () => {
+            try {
+                const data = await getProductos();
+                setProductos(data.filter(productoItem => productoItem.disponible));
+            } catch (error) {
+                console.error("Error al obtener el menú:", error);
+            }
+        };
+        fetchProductos();
+    }, []);
+    //fin    
+    
 
 
     useEffect(() => {
@@ -136,7 +162,7 @@ function FormProducto() {
                                 }}
                             >
                                 <option value="">Seleccione categoría</option>
-                                {categorias.map((categoriaItem, index) => (
+                                {categoriasNuevo.map((categoriaItem, index) => (
                                     <option key={index} value={categoriaItem}>{categoriaItem}</option>
                                 ))}
                                 <option value="nueva">Agregar nueva...</option>

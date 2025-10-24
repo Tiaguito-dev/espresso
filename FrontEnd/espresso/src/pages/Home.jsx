@@ -22,6 +22,8 @@ function Home() {
           ruta="/menu"
           texto="Gestion de Menu"
         ></BotonHome>
+      </div>
+      <div className="home-container">
         <BotonHome
           ruta="/caja"
           texto="Gestion de Caja"

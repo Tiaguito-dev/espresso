@@ -28,10 +28,17 @@ class LineaPedido {
             throw new Error(`Errores de validacion: ${errores.join(', ')}`);
         }
         this.cantidad = data.cantidad;
-        this.nombreProducto = data.producto.getNombre();
-        this.precioUnitario = data.producto.getPrecio();
+        this.producto = data.producto;
     }
 
+    toJSON(){
+        return{
+            idProducto: this.producto.id,
+            cantidad: this.cantidad,
+            nombreProducto: this.producto.getNombre(),
+            precioUnitario: this.producto.getPrecio()
+        }
+    }
     getSubTotal() {
         return this.cantidad * this.precioUnitario;
     }

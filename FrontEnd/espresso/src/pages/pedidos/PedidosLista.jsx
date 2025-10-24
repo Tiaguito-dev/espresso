@@ -44,12 +44,12 @@ export default function PedidosLista() {
             if (!pedidoActual) return;
 
             let siguienteEstado;
-            if (pedidoActual.estado === "Pendiente") {
+            if (pedidoActual.estadoPedido === "Pendiente") {
                 siguienteEstado = "Listo";
-            } else if (pedidoActual.estado === "Listo") {
+            } else if (pedidoActual.estadoPedido === "Listo") {
                 siguienteEstado = "Finalizado";
             } else {
-                alert(`El pedido ya está ${pedidoActual.estado} y no se puede avanzar.`);
+                alert(`El pedido ya está ${pedidoActual.estadoPedido} y no se puede avanzar.`);
                 return;
             }
 
@@ -88,13 +88,13 @@ export default function PedidosLista() {
     const pedidosFiltrados = (() => {
         switch (estadoFiltro) {
             case "pendiente":
-                return pedidos.filter((p) => p.estado === "Pendiente");
+                return pedidos.filter((p) => p.estadoPedido === "Pendiente");
             case "listo":
-                return pedidos.filter((p) => p.estado === "Listo");
+                return pedidos.filter((p) => p.estadoPedido === "Listo");
             case "finalizado":
-                return pedidos.filter((p) => p.estado === "Finalizado");
+                return pedidos.filter((p) => p.estadoPedido === "Finalizado");
             case "cancelado":
-                return pedidos.filter((p) => p.estado === "Cancelado");
+                return pedidos.filter((p) => p.estadoPedido === "Cancelado");
             default:
                 return pedidos;
         }

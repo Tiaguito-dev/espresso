@@ -22,15 +22,15 @@ export const createPedido = async (pedidoData) => {
 };
 
 export const updatePedido = async (id, pedidoData) => {
- const response = await fetch(`${API_URL}/${id}`, {
-  method: 'PUT',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(pedidoData),
- });
- if (!response.ok) {
-  throw new Error('No se pudo actualizar el pedido');
- }
- return response.json();
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pedidoData),
+    });
+    if (!response.ok) {
+        throw new Error('No se pudo actualizar el pedido');
+    }
+    return response.json();
 };
 
 export const deletePedido = async (id) => {
@@ -39,11 +39,11 @@ export const deletePedido = async (id) => {
 };
 
 export const buscarPedidoPorId = async (id) => {
- const response = await fetch(`${API_URL}/${id}`);
+    const response = await fetch(`${API_URL}/${id}`);
  
  if (!response.ok) {
-  // Si el pedido no existe o hay un error de servidor
-  throw new Error(`Pedido no encontrado o error del servidor: ${response.statusText}`);
+    // Si el pedido no existe o hay un error de servidor
+    throw new Error(`Pedido no encontrado o error del servidor: ${response.statusText}`);
  }
  
  return response.json();

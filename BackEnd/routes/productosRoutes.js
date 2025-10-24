@@ -14,6 +14,8 @@ router.get('/', menuController.obtenerCategorias);
 // Ruta para crear un nuevo producto
 router.post('/', menuController.crearProducto);
 
+router.get('/', menuController.obtenerCategorias);
+
 // Ruta para actualizar un producto
 router.put('/:id', menuController.modificarProducto);
 
