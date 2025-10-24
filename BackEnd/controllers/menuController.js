@@ -14,7 +14,7 @@ exports.obtenerProductos = async (req, res) => {
     }
 };
 
-exports.obtenerCategoria = async (req, res) => {
+exports.obtenerCategorias = async (req, res) => {
     try {
         const categorias = await menu.getCategorias();
         res.json(categorias);
