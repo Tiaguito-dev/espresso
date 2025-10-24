@@ -39,6 +39,7 @@ exports.obtenerPedidosFecha = async (fecha) => {
 exports.obtenerPedidoPorNro = async (nroPedido) => {
     try {
         const pedidos = await Gateway.ejecutarQuery({ text: selectPedidoPorNro, values: [nroPedido] });
+        console.log("ESTOYY EN PEDIDO BD", pedidos);
         return pedidos[0] || null; // Retornar el primer pedido encontrado
     } catch (error) {
         throw new Error(`Error al obtener pedido ${nroPedido} desde la base de datos: ${error.message}`);

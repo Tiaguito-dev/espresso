@@ -14,18 +14,13 @@ class Menu {
         }
 
         const categorias = await CategoriaBD.obtenerCategorias();
-        // LO HACE BIEN console.log('CATEGORIAS EN MENU:', categorias);
         const recorroCategorias = new Map();
         categorias.forEach(cat => {
             recorroCategorias.set(cat.id_categoria, new Categoria(cat));
-            // LO HACE BIEN console.log('Mapeando categoria:', cat);
-            // LO HACE BIEN console.log('IMPRIMO EL TIPO DEL id:', cat.id_categoria, typeof cat.id_categoria);
         })
 
         return productos.map(prod => {
             const categoriaObj = recorroCategorias.get(prod.id_categoria);
-            // LO HACE BIEN console.log('PRODUCTO EN MENU:', prod);
-            // LO HACE BIEN console.log('CATEGORIA DEL PRODUCTO:', categoriaObj);
             return new Producto({
                 ...prod,
                 disponible: prod.disponible,
@@ -39,7 +34,6 @@ class Menu {
             const id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
             return id;
         } catch (error) {
-            console.log('Categoria no encontrada, creando:', nombreCategoria);
             await CategoriaBD.crearCategoria(nombreCategoria);
             return await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
         }
@@ -71,8 +65,6 @@ class Menu {
 
         const id = await ProductoBD.obtenerUltimoCodigo() + 1;
 
-        console.log("ID CATEGORIA EN MENU:", id_categoria);
-        console.log("ID NUEVO PRODUCTO EN MENU:", id);
 
         const categoriaObj = new Categoria({ nombre: nombreCategoria });
         try {
@@ -106,14 +98,12 @@ class Menu {
 
     async getProductos() {
         const productos = await ProductoBD.obtenerProductos();
-        // LO HACE BIEN console.log('PRODUCTOS EN MENU:', productos);
         return this.convertirProductoBD(productos);
     }
 
     async getCategorias() {
 
         const categorias = await CategoriaBD.obtenerCategorias();
-        console.log(categorias);
         return categorias.map(cat => new Categoria(cat));
     }
 

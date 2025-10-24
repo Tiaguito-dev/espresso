@@ -37,25 +37,19 @@ exports.runTests = async () => {
     } catch (error) {
         console.error('Error al obtener el pedido nro 1:', error);
     }
-    */
-
+    
     try {
         const lineasPedido = await PedidoBD.obtenerLineasPorNroPedido(1);
-        console.log('Líneas del pedido nro 1:', lineasPedido);
     } catch (error) {
         console.error('Error al obtener las líneas del pedido nro 1:', error);
     }
+    */
 
     /*
     try {
         const resultado = await PedidoBD.crearLineaPedido({
-<<<<<<< HEAD
-            idPedido: 1,           
-            idProducto: 4,         
-=======
             idPedido: 5,           
             idProducto: 1,         
->>>>>>> d12776b2e53d522053f57bace663ef1791140e2a
             cantidad: 3,
             monto: 4500,           
             nombreProducto: 'Milanesa a caballo'
