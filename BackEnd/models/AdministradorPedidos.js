@@ -59,6 +59,7 @@ class AdministradorPedidos {
         const pedido = this.buscarPedidoPorNumero(nroPedido);  
         if (pedido) {
             pedido.estadoPedido = nuevoEstado;
+            console.log("actualiza bien");
             return true;
         }
         return false;

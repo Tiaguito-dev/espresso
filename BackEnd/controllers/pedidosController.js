@@ -66,6 +66,7 @@ exports.actualizarPedido = (req, res) => {
 
         const pedido = administradorPedidos.buscarPedidoPorNumero(nroPedido);
         if (!pedido) {
+            console.log("problema en pedido");
             return res.status(404).json({ message: "Pedido no encontrado." });
         }
 
@@ -77,11 +78,13 @@ exports.actualizarPedido = (req, res) => {
             const nuevoEstadoLower = nuevoEstado.toLowerCase();
 
             if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") && nuevoEstadoLower !== estadoActualLower) {
+                console.log("problema en validacion finalizado o cancelado");
                 throw new Error("No se puede cambiar un pedidp finalizado o cancelado");
             }
 
             const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado'];
             if (!estadosValidos.includes(nuevoEstadoLower)) {
+                console.log("problema en validacion tipos pedido");
                 throw new Error(`Estado '${nuevoEstado}' no es válido`);
             }
 
@@ -101,7 +104,7 @@ exports.actualizarPedido = (req, res) => {
 
         if (estadoFinal !== estadoActual) {
             administradorPedidos.modificarEstadoPedido(nroPedido, estadoFinal);
-
+            console.log("la cagada se la manda el admin pedidos");
             res.json({ message: `Pedido actualizado a ${estadoFinal}`, pedido: pedido });
         }
     } catch (error) {
