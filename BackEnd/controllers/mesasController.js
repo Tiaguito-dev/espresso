@@ -1,74 +1,70 @@
-const Mesa = require('../models/Mesa');
 const AdministradorMesas = require('../models/AdministradorMesas');
-const mesasIniciales = require('../DB/mesas.json');
 
 const { json } = require('express');
 
 const administradorMesas = new AdministradorMesas();
-administradorMesas.cargarMesas(mesasIniciales);
 
-exports.obtenerMesas = (req, res) => {
-    res.json(administradorMesas.getMesas());
+exports.obtenerMesas = async (req, res) => {
+    try {
+        const mesas = await administradorMesas.getMesas();
+        res.json(mesas);
+    }catch(error){
+        res.status(500).json({ message: 'Error al obtener mesas', error: error.message });
+    }
 };
 
-exports.obtenerMesaPorNumero = (req, res) => {
-    const { nroMesa } = req.params;
-    const mesa = administradorMesas.buscarMesaPorNumero(parseInt(nroMesa));
-    if (!mesa) {
-        return res.status(404).json({ message: 'Mesa no encontrada' });
+exports.obtenerMesaPorNumero = async (req, res) => {
+    try {
+        const { nroMesa } = req.params;
+        const mesa =  await administradorMesas.buscarMesaPorNumero(parseInt(nroMesa));
+        if (!mesa) {
+            return res.status(404).json({ message: 'Mesa no encontrada' });
+        }
+        res.json(mesa);
+    }catch(error){
+        res.status(500).json({ message: 'Error al buscar mesa', error: error.message });
     }
-    res.json(mesa);
-    console.log('Devolviendo la mesa con numero: ', nroMesa);
-    console.log(mesa);
 };
 
-exports.crearMesa = (req, res) => {
-    const { nroMesa, estado } = req.body;
+exports.crearMesa = async (req, res) => {
+    try {
+        const datosMesa = {
+            nroMesa: req.body.nroMesa,
+            estadoMesa: req.body.estado
+        };
 
-    const mesaExistente = administradorMesas.buscarMesaPorNumero(nroMesa);
-    if (mesaExistente) {
-        console.log(`Mesa con número ${nroMesa} ya existente.`)
-        return mesaExistente;
+    const nuevaMesa = await administradorMesas.crearMesa(datosMesa);
+    res.status(201).json(nuevaMesa);
+    }catch(error){
+        res.status(400).json({ message: error.message });
     }
-
-    const datosMesa = {
-        nroMesa: nroMesa,
-        estadoMesa: estado
-    }
-
-    const nuevaMesa = new Mesa(datosMesa);
-
-    const mesaAgregada = administradorMesas.agregarMesa(nuevaMesa);
-
-    res.status(201).json(mesaAgregada);
 };
 
-exports.cambiarEstadoMesa = (req, res) => {
-    const { nroMesa } = req.params;
-    const nuevoEstado = req.body;
+exports.cambiarEstadoMesa = async (req, res) => {
+    try{
+        const { nroMesa } = req.params;
+        const { estado } = req.body;
 
-    const mesaAModificar = administradorMesas.buscarMesaPorNumero(nroMesa);
-
-    if (!mesaAModificar) {
-        return res.status(404), json({ message: `Mesa para modificar no encontrada` });
+        if (!estado){
+            return res.status(400).json({ message: ' Se requiere el nuevo estado de la mesa en el body'});
+        }
+        const mesaAModificar = await administradorMesas.cambiarEstadoMesa(parseInt(nroMesa), estado);
+        res.status(200).json(mesaAModificar);
+    }catch(error){
+        if (error.message.includes('encontrada')) {
+            return res.status(404).json({ message: error.message });
+        }
+        res.status(400).json({ message: error.message });
     }
 
-    mesaAModificar.cambiarEstadoMesa(nuevoEstado);
-
-    res.status(200).json(mesaAModificar);
 }
 
-exports.eliminarMesa = (req, res) => {
-    // TODO: si se elimina una mesa tenemos que poner cascade o algun valor por defecto
-    const { nroMesa } = req.params;
-    const exito = administradorMesas.eliminarMesaPorNumero(nroMesa);
-
-    if (exito) {
+exports.eliminarMesa = async (req, res) => {
+    try {
+        const { nroMesa } = req.params;
+        await administradorMesas.eliminarMesaPorNumero(parseInt(nroMesa));
         res.status(200).json({ message: `'La mesa ${nroMesa} fue eliminada correctamente.` });
-    } else {
-        res.status(404).json({ message: `No fue posible eliminar la mesa ${nroMesa}` });
+    }catch(error){
+            res.status(404).json({ message: `No fue posible eliminar la mesa ${nroMesa}` });
     }
 }
-
-
-module.exports.mesas = administradorMesas;
