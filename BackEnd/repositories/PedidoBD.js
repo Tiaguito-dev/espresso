@@ -2,11 +2,13 @@ const Gateway = require('../DB/Gateway');
 
 // === SECCIÓN DE QUERYS ===
 const selectPedidosFecha = 'SELECT * FROM pedido WHERE date(fecha_registro)= date($1)';
-const selectPedidoPorId = 'SELECT * FROM pedido WHERE nro_pedido = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
-const insertPedido = 'INSERT INTO pedido (nro_pedido, fecha_registro, observacion, monto, id_mozo, id_mesa) VALUES ($1, $2, $3, $4, $5, $6)';
+const selectPedidoPorNro = 'SELECT * FROM pedido WHERE nro_pedido = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
+const insertPedido = 'INSERT INTO pedido (nro_pedido, observacion, monto, id_mozo, id_mesa) VALUES ($1, $2, $3, $4, $5)';
 const selectUltimoNroPedido = 'SELECT MAX(nro_pedido) FROM pedido';
 const updateEstadoPedidoPorId = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
-const insertLineaPedido = 'INSERT INTO linea_pedido (nro_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ($1, $2, $3, $4, $5)';
+const insertLineaPedido = 'INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ((SELECT id_pedido FROM pedido WHERE nro_pedido = $1),(SELECT id_producto FROM producto WHERE id = $2), $3, $4, $5);';
+const selectLineasPorNroPedido = ("SELECT linea.id_linea_pedido, linea.cantidad, linea.monto, producto.nombre, linea.id_pedido, linea.id_producto FROM pedido JOIN linea_pedido AS linea ON pedido.id_pedido = linea.id_pedido JOIN producto ON linea.id_producto = producto.id_producto WHERE pedido.nro_pedido = $1;");
+
 // TODO: FALTA HACER ESTO
 const selectPedidoPorMozo = 'SELECT * FROM pedido WHERE nombre = $1';
 
@@ -36,8 +38,8 @@ exports.obtenerPedidosFecha = async (fecha) => {
 // Le paso un nro de pedido, y me devuelve un pedido
 exports.obtenerPedidoPorNro = async (nroPedido) => {
     try {
-        const pedidos = await Gateway.ejecutarQuery({ text: selectPedidoPorId, values: [nroPedido] });
-        return pedidos[0]; // Retornar el primer pedido encontrado
+        const pedidos = await Gateway.ejecutarQuery({ text: selectPedidoPorNro, values: [nroPedido] });
+        return pedidos[0] || null; // Retornar el primer pedido encontrado
     } catch (error) {
         throw new Error(`Error al obtener pedido ${nroPedido} desde la base de datos: ${error.message}`);
     }
@@ -47,10 +49,10 @@ exports.obtenerPedidoPorNro = async (nroPedido) => {
 exports.crearPedido = async (datosDePedido) => {
 
     // TODO: En el controller tengo que hacer una función para obtener el último y para obtener el id de la categoria
-    const { nroPedido, fecha, observacion, monto, idMozo, idMesa } = datosDePedido;
+    const { nroPedido, observacion, monto, idMozo, idMesa } = datosDePedido;
 
     try {
-        await Gateway.ejecutarQuery({ text: insertPedido, values: [nroPedido, fecha, observacion, monto, idMozo, idMesa] });
+        await Gateway.ejecutarQuery({ text: insertPedido, values: [nroPedido, observacion, monto, idMozo, idMesa] });
         return {
             success: true,
             message: `El pedido ${nroPedido} se creó correctamente.`
@@ -76,7 +78,7 @@ exports.modificarEstadoPedido = async (nroPedido, nuevoEstado) => {
 exports.obtenerUltimoNroPedido = async () => {
     try {
         const resultado = await Gateway.ejecutarQuery(selectUltimoNroPedido);
-        return resultado[0].max; // Retornar el último número de pedido
+        return resultado[0]?.max || 0; // Retornar el último número de pedido
     } catch (error) {
         throw new Error('Error al obtener el último número de pedido desde la base de datos: ' + error.message);
     }
@@ -85,17 +87,30 @@ exports.obtenerUltimoNroPedido = async () => {
 // === SECCIÓN DE EJECUCIÓN DE LINEAS DE PEDIDO ===
 // TODO: Hay que ver cómo manejamos esto porque tendría que primero crearse el pedido y luego las líneas por el tema del id
 exports.crearLineaPedido = async (datosDeLineaPedido) => {
-    // TODO: Hay que pasarle el monto también
+    // TODO: Hay que pasarle el monto porque lo registramos como variable
     const { idPedido, idProducto, cantidad, monto, nombreProducto } = datosDeLineaPedido;
 
     try {
-        await Gateway.ejecutarQuery({ text: insertLineaPedido, values: [idPedido, idProducto, cantidad, monto, nombreProducto] });
+        await Gateway.ejecutarQuery({
+            text: insertLineaPedido,
+            values: [idPedido, idProducto, cantidad, monto, nombreProducto]
+        });
+
         return {
             success: true,
             message: `La línea del pedido ${idPedido} se creó correctamente.`
         };
     } catch (error) {
         throw new Error('Error al crear una línea de pedido desde la base de datos: ' + error.message);
+    }
+};
+
+exports.obtenerLineasPorNroPedido = async (nroPedido) => {
+    try {
+        const lineas = await Gateway.ejecutarQuery({ text: selectLineasPorNroPedido, values: [nroPedido] });
+        return lineas || [];
+    } catch (error) {
+        throw new Error(`Error al obtener líneas del pedido ${nroPedido} desde la base de datos: ${error.message}`);
     }
 };
 

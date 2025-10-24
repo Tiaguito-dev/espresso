@@ -2,7 +2,8 @@ const Gateway = require('../DB/Gateway');
 
 // === SECCIÓN DE QUERYS ===
 const selectProductos = 'SELECT * FROM producto';
-const selectProductoPorId = 'SELECT * FROM producto WHERE id = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
+// TODO: ESTÁ BUSCANDO POR id_producto PERO DEBERÍA SER POR ID, hay que cambiar cómo se construye la línea de pedidos ya que no puede almacenar OID
+const selectProductoPorId = 'SELECT * FROM producto WHERE id_producto = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
 const insertProducto = 'INSERT INTO producto (id, precio, nombre, descripcion, id_categoria) VALUES ($1, $2, $3, $4, $5)';
 const selectUltimoCodigo = 'SELECT MAX(id) FROM producto';
 const deleteProductoPorId = 'DELETE FROM producto WHERE id = $1';
@@ -13,7 +14,7 @@ const updateProductoPorId = 'UPDATE producto SET precio = $2, nombre = $3, descr
 exports.obtenerProductos = async () => {
     try {
         const productos = await Gateway.ejecutarQuery(selectProductos);
-        return productos;
+        return productos || [];
     } catch (error) {
         throw new Error('Error al obtener productos desde la base de datos: ' + error.message);
     }
@@ -24,7 +25,7 @@ exports.obtenerProductoPorId = async (cod_producto) => {
     try {
         const productos = await Gateway.ejecutarQuery({ text: selectProductoPorId, values: [cod_producto] });
         //HAY QUE DEFINIR SI LO VA A BUSCAR POR NOMBRE O POR CODIGO, Porque de eso depende también que sea unique o no
-        return productos[0]; // Retornar el primer producto encontrado
+        return productos[0] || null; // Retornar el primer producto encontrado
     } catch (error) {
         throw new Error(`Error al obtener producto ${cod_producto} desde la base de datos: ${error.message}`);
     }
@@ -62,7 +63,7 @@ exports.eliminarProducto = async (id) => {
 exports.obtenerUltimoCodigo = async () => {
     try {
         const resultado = await Gateway.ejecutarQuery(selectUltimoCodigo);
-        return resultado[0]; // Retornar el último código
+        return resultado[0]?.max || 0; // Retornar el último código
     } catch (error) {
         throw new Error('Error al obtener el último código desde la base de datos: ' + error.message);
     }

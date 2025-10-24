@@ -38,6 +38,22 @@ exports.runTests = async () => {
     }
 
     /*
+    try {
+        const resultado = await PedidoBD.crearLineaPedido({
+            idPedido: 5,           
+            idProducto: 1,         
+            cantidad: 3,
+            monto: 4500,           
+            nombreProducto: 'Milanesa a caballo'
+        });
+        
+        console.log('Resultado de crear línea de pedido:', resultado.message);
+    } catch (error) {
+        console.error('Error al crear la línea de pedido:', error);
+    }
+    
+    */
+    /*
     PedidoBD.crearPedido({
         nroPedido: 5,
         fecha: new Date(),

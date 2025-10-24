@@ -1,11 +1,25 @@
 const Mesa = require('./Mesa');
+const MesaBD = require('../repositories/MesaBD');
 
 class AdministradorMesas {
-    constructor() {
-        this.mesas = [];
+    constructor() {}
+
+    convertirMesaBD(mesas){
+        if (!mesas) return null;
+        if (Array.isArray(mesas)){
+            return mesas.map(m => new Mesa({
+                nroMesa: m.nro_mesa,
+                estadoMesa: m.estado
+            }));
+        }
+
+        return new Mesa({
+            nroMesa: mesas.nro_mesa,
+            estadoMesa: mesas.estado
+        });
     }
 
-    cargarMesas(mesasData) {
+/*    cargarMesas(mesasData) {
         try {
                 mesasData.forEach(dataMesa => {
                     const nuevaMesa = new Mesa(dataMesa);
@@ -21,22 +35,61 @@ class AdministradorMesas {
             this.mesas.push(mesa);
         }
     }
-
-    getMesas() {
-        return this.mesas;
+*/
+    async getMesas() {
+        const mesas = await MesaBD.obtenerMesas();
+        return this.convertirMesaBD(mesas);
     }
 
-    buscarMesaPorNumero(nroMesa) {
-        return this.mesas.find(mesa => mesa.nroMesa === nroMesa);
-    }
-
-    eliminarMesaPorNumero(nroMesa){
-        const i = this.mesas.findIndex(m => m.nroMesa === nroMesa);
-        if (i !== -1) {
-            this.mesas.splice(i, 1);
-            return true;
+    async buscarMesaPorNumero(nroMesa) {
+        const mesas = await MesaBD.obtenerMesaPorNumero(nroMesa);
+        if (!mesas){
+            return null;
         }
-        return false;
+        return this.convertirMesaBD(mesas);
+    }
+
+    async crearMesa(dataMesa){
+        const { nroMesa, estadoMesa } = dataMesa;
+        const mesaExistente = await this.buscarMesaPorNumero(nroMesa);
+        if (mesaExistente){
+            throw new Error (`Mesa con número ${nroMesa} ya existence.`)
+        }
+
+        const nuevaMesa = new Mesa({ nroMesa, estadoMesa });
+        
+        const mesaBD = {
+            nro_mesa: nuevaMesa.nroMesa,
+            estado: nuevaMesa.estadoMesa
+        };
+
+        await MesaBD.crearMesa(mesaBD);
+        return nuevaMesa;
+    }
+
+    async eliminarMesaPorNumero(nroMesa){
+        const mesa = await this.buscarMesaPorNumero(nroMesa);
+        if(!mesa){
+            throw new Error(`No fue posible eliminar la mesa ${nroMesa} porque no existe.`);
+        }
+        await MesaBD.eliminarMesaPorNumero(nroMesa);
+        return true;
+    }
+
+    async cambiarEstadoMesa(nroMesa, nuevoEstado){
+        const mesaAModificar = await this.buscarMesaPorNumero(nroMesa);
+        if(!mesaAModificar){
+            throw new Error(`Mesa para modificar no encontrada`);
+        }
+        
+        const estadosValidos = ['disponible', 'ocupada', 'fuera de servicio'];
+
+        if (!estadosValidos.includes(nuevoEstado)) {
+            throw new Error(`El estado '${nuevoEstado}' no es válido.`);
+        }
+        await MesaBD.modificarEstadoMesa(nroMesa, nuevoEstado);
+        mesaAModificar.estadoMesa = nuevoEstado;
+        return mesaAModificar;        
     }
 }
 
