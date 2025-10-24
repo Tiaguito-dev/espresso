@@ -9,6 +9,7 @@ administradorMesas.cargarMesas(mesasIniciales);
 
 exports.obtenerMesas = (req, res) => {
     res.json(administradorMesas.getMesas());
+    console.log("error en el obtener");
 };
 
 exports.obtenerMesaPorNumero = (req, res) => {
