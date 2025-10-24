@@ -14,11 +14,8 @@ class AdministradorPedidos {
 
     async convertirPedidoBD(pedidos) {
         const pedidosObj = [];
-<<<<<<< HEAD
-=======
         // imprimo todos los pedidos recibidos de la BD para verificar
         console.log('Pedidos recibidos de BD:', pedidos);
->>>>>>> d12776b2e53d522053f57bace663ef1791140e2a
         for (const pedido of pedidos) {
             const mesaObj = await this.mesas.buscarMesaPorNumero(pedido.id_mesa);
 
@@ -31,14 +28,11 @@ class AdministradorPedidos {
             for (const linea of lineasBD) {
                 const productoObj = await this.menu.buscarProductoPorId(linea.id_producto);
 
-<<<<<<< HEAD
-=======
                 console.log('LINEA DE PEDIDO DE LA BD:', linea);
                 console.log('NUMERO DE LINEA DE PEDIDO Y SU TIPO:', linea.id_linea_pedido, typeof linea.id_linea_pedido);
 
                 console.log(`Producto encontrado para la línea del pedido ${pedido.nro_pedido}:`, productoObj);
 
->>>>>>> d12776b2e53d522053f57bace663ef1791140e2a
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
                         id: id, //esto es id producto

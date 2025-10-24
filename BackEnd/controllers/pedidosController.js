@@ -1,10 +1,5 @@
-//http://localhost:3001/api/pedidos
-
 const AdministradorPedidos = require('../models/AdministradorPedidos');
-
 const administradorPedidos = new AdministradorPedidos();
-
-
 exports.obtenerPedidos = async (req, res) => {
     try {
         const pedidos = await administradorPedidos.getPedidos();
