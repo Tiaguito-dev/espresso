@@ -18,6 +18,7 @@ class AdministradorPedidos {
             const mesaObj = await this.mesas.buscarMesaPorNumero(pedido.id_mesa);
 
             const lineasBD = await PedidoBD.obtenerLineasPorNroPedido(pedido.nro_pedido);
+            console.log('LINEAS', lineasBD);
             const lineasObj = [];
 
             for (const linea of lineasBD) {
@@ -60,6 +61,8 @@ class AdministradorPedidos {
         const lineasBD = [];
         const lineasObj = [];
 
+        console.log(datosPedido)
+
         for (const linea of lineas) {
             const productoObj = await this.menu.buscarProductoPorId(linea.idProducto);
             if (!productoObj) {
@@ -81,12 +84,13 @@ class AdministradorPedidos {
             }));
 
             const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
+            console.log(ultimoNro);
             const nroPedido = (ultimoNro ? ultimoNro : 0) + 1;
             const fecha = Date.now()
 
             const datosPedido = {
                 nroPedido: nroPedido,
-                fecha: fecha, //toISOString().split('T')[0], //chequear q funque
+                fecha: fecha.toISOString().split('T')[0], //chequear q funque
                 mesa: mesaObj,
                 lineasPedido: lineasObj
             };
@@ -100,7 +104,16 @@ class AdministradorPedidos {
 
             const pruebaPedido = {
                 nroPedido: nroPedido,
-                fecha: fecha,
+                // fecha: fecha, no anda el campo fecha
+                observacion: observacion || null,
+                monto: montoTotal,
+                idMozo: 1,
+                idMesa: mesaObj.nroMesa,
+            }
+
+            /*const pruebaPedido = {
+                nroPedido: nroPedido,
+                //fecha: fecha,
                 observacion: observacion || null,
                 monto: montoTotal,
                 idMozo: 1,
@@ -109,9 +122,7 @@ class AdministradorPedidos {
 
             console.log('Creando pedido en BD:', pruebaPedido);
 
-            await PedidoBD.crearPedido(pruebaPedido);
-
-
+            await PedidoBD.crearPedido(pruebaPedido);*/
 
             for (const lineaBD of lineasBD) {
                 await PedidoBD.crearLineaPedido({
