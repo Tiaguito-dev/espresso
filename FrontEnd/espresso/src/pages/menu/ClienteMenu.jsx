@@ -8,14 +8,46 @@ import Categoria from './Categoria';
 export default function MenuCliente() {
     
     const [productos, setProductos] = useState([]);
+    //const [categorias, setCategorias] = useState([]);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null); 
+
+
+    //esta funcion era la nueva version del codigo, porque me faltaba el fetchCategorias. PERO con la version vieja funciona, lo dejor por las duda por si en un futuro lo llegamos a precisar 
+/*
+    useEffect(() => {
+        const fetchProductos = async () => {
+            try {
+                const data = await getProductos();
+                setProductos(data.filter(productoItem => productoItem.disponible));
+            } catch (error) {
+                console.error("Error al obtener el menú:", error);
+            }
+        };
+
+        const fetchCategorias = async () => {
+            try {
+                const data = await getCategorias();
+                setCategorias(data); 
+            } catch (error) {
+                console.error("Error al obtener las categorías:", error);
+            }
+        };
+        fetchProductos();
+        fetchCategorias();
+    }, []);
+
+    const categoriasDinamicas = ["Todos los productos",
+        ...categorias.map(c => c.nombre.trim())
+    ];
+*/
     
+
     const categoriasDinamicas = ["Todos los productos",
         ...Array.from(
         new Set(productos.map(p => p.categoria.nombre.trim()))
         ),
     ];
-    
+
     useEffect(() => {
         const fetchProductos = async () => {
             try {
@@ -27,6 +59,8 @@ export default function MenuCliente() {
         };
         fetchProductos();
     }, []);
+
+
     
     const handleCategoria = (categoria) => {
         setCategoriaSeleccionada(prev =>

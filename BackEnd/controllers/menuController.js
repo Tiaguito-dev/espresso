@@ -10,7 +10,7 @@ exports.obtenerProductos = (req, res) => {
     res.json(menu.getProductos());
 };
 
-exports.obtenerCategoria = (req, res) => {
+exports.obtenerCategorias = (req, res) => {
     res.json(menu.getCategorias());
 };
 
