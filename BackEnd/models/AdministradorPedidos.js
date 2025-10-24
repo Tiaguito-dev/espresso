@@ -10,26 +10,35 @@ class AdministradorPedidos {
     constructor() {
         this.menu = new Menu();
         this.mesas = new AdministradorMesas();
-    }   
+    }
 
-    async convertirPedidoBD(pedidos){
+    async convertirPedidoBD(pedidos) {
         const pedidosObj = [];
-        for (const pedido of pedidos){
+        // imprimo todos los pedidos recibidos de la BD para verificar
+        console.log('Pedidos recibidos de BD:', pedidos);
+        for (const pedido of pedidos) {
             const mesaObj = await this.mesas.buscarMesaPorNumero(pedido.id_mesa);
 
             const lineasBD = await PedidoBD.obtenerLineasPorNroPedido(pedido.nro_pedido);
-            console.log('LINEAS', lineasBD);
+
+            // ESTO LO HACE BIENconsole.log(`Líneas recibidas de BD para el pedido ${pedido.nro_pedido}:`, lineasBD);
+
             const lineasObj = [];
 
             for (const linea of lineasBD) {
                 const productoObj = await this.menu.buscarProductoPorId(linea.id_producto);
 
-                if (productoObj){
+                console.log('LINEA DE PEDIDO DE LA BD:', linea);
+                console.log('NUMERO DE LINEA DE PEDIDO Y SU TIPO:', linea.id_linea_pedido, typeof linea.id_linea_pedido);
+
+                console.log(`Producto encontrado para la línea del pedido ${pedido.nro_pedido}:`, productoObj);
+
+                if (productoObj) {
                     lineasObj.push(new LineaPedido({
                         producto: productoObj,
                         cantidad: linea.cantidad
                     }));
-                }else{
+                } else {
                     console.warn(`El producto con ID ${linea.id_producto} del pedido ${pedido.nro_pedido} ya no existe.`); //CASO MUY EXTRAÑO
                 }
             }
@@ -42,18 +51,19 @@ class AdministradorPedidos {
                 lineasPedido: lineasObj
             }));
         }
+        // Imprimo las lineas de pedido para verificar console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
         return pedidosObj;
     }
 
-    async crearPedido(datosPedido){
+    async crearPedido(datosPedido) {
         const { mesa: nroMesa, lineas, observacion } = datosPedido;
 
-        if (!lineas || !Array.isArray(lineas) || lineas.length === 0){
+        if (!lineas || !Array.isArray(lineas) || lineas.length === 0) {
             throw new Error('Se requier al menos una linea de pedido');
         }
 
         const mesaObj = await this.mesas.buscarMesaPorNumero(nroMesa);
-        if(!mesaObj){
+        if (!mesaObj) {
             throw new Error(`Mesa ${nroMesa} no encontrada`);
         }
 
@@ -62,10 +72,10 @@ class AdministradorPedidos {
         const lineasObj = [];
 
         console.log(datosPedido)
-        
-        for (const linea of lineas){
+
+        for (const linea of lineas) {
             const productoObj = await this.menu.buscarProductoPorId(linea.idProducto);
-            if (!productoObj){
+            if (!productoObj) {
                 throw new Error(`Producto con id ${linea.idProducto} no encontrado`);
             }
             const subtotal = productoObj.getPrecio() * linea.cantidad;
@@ -82,7 +92,7 @@ class AdministradorPedidos {
                 producto: productoObj,
                 cantidad: linea.cantidad
             }));
-            
+
             const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
             console.log(ultimoNro);
             const nroPedido = (ultimoNro ? ultimoNro : 0) + 1;
@@ -98,7 +108,7 @@ class AdministradorPedidos {
             let nuevoPedido;
             try {
                 nuevoPedido = new Pedido(datosPedido);
-            }catch(error){
+            } catch (error) {
                 throw new Error(`Error de vaidacion: ${error.message}`);
             }
 
@@ -124,7 +134,7 @@ class AdministradorPedidos {
 
             await PedidoBD.crearPedido(pruebaPedido);*/
 
-            for (const lineaBD of lineasBD){
+            for (const lineaBD of lineasBD) {
                 await PedidoBD.crearLineaPedido({
                     idPedido: nroPedido,
                     ...lineaBD
@@ -135,54 +145,54 @@ class AdministradorPedidos {
         }
     }
 
-    async getPedidos(){
+    async getPedidos() {
         const pedidos = await PedidoBD.obtenerPedidosHoy();
         return this.convertirPedidoBD(pedidos);
     }
-/*
-    cargarPedidos(pedidosData, menu, administradorMesas){
-        try {
-            pedidosData.forEach(dataPedido => {
-                const mesaObj = administradorMesas.buscarMesaPorNumero(dataPedido.mesa);
-                if (!mesaObj){
-                    throw new Error(`Mesa ${dataPedido.mesa} no encontrada`)
-                }
-                
-                const lineasPedidoObj = dataPedido.lineas.map(linea => {
-                    const productoObj = menu.buscarProductoPorId(linea.idProducto);
-                    if (!productoObj){
-                        throw new Error(`Producto ${linea.idProducto} no encontrado`);
+    /*
+        cargarPedidos(pedidosData, menu, administradorMesas){
+            try {
+                pedidosData.forEach(dataPedido => {
+                    const mesaObj = administradorMesas.buscarMesaPorNumero(dataPedido.mesa);
+                    if (!mesaObj){
+                        throw new Error(`Mesa ${dataPedido.mesa} no encontrada`)
                     }
-                    return new LineaPedido({
-                        producto: productoObj,
-                        cantidad: linea.cantidad                        
+                    
+                    const lineasPedidoObj = dataPedido.lineas.map(linea => {
+                        const productoObj = menu.buscarProductoPorId(linea.idProducto);
+                        if (!productoObj){
+                            throw new Error(`Producto ${linea.idProducto} no encontrado`);
+                        }
+                        return new LineaPedido({
+                            producto: productoObj,
+                            cantidad: linea.cantidad                        
+                        });
                     });
+    
+                    const datos ={
+                        nroPedido: dataPedido.nroPedido,
+                        fecha: new Date(dataPedido.fecha),
+                        mesa: mesaObj,
+                        estadoPedido: dataPedido.estadoPedido,
+                        lineasPedido: lineasPedidoObj
+                    };
+                    const nuevoPedido = new Pedido(datos);
+                    this.agregarPedido(nuevoPedido);
                 });
-
-                const datos ={
-                    nroPedido: dataPedido.nroPedido,
-                    fecha: new Date(dataPedido.fecha),
-                    mesa: mesaObj,
-                    estadoPedido: dataPedido.estadoPedido,
-                    lineasPedido: lineasPedidoObj
-                };
-                const nuevoPedido = new Pedido(datos);
-                this.agregarPedido(nuevoPedido);
-            });
-        } catch (error){
-            console.error('Error cargando pedidos iniciales:', error.message);
-        }        
-    }
-
-    agregarPedido(pedido) {
-        if (pedido instanceof Pedido) {
-            this.pedidos.push(pedido);
-        }   
-    }
-*/
+            } catch (error){
+                console.error('Error cargando pedidos iniciales:', error.message);
+            }        
+        }
+    
+        agregarPedido(pedido) {
+            if (pedido instanceof Pedido) {
+                this.pedidos.push(pedido);
+            }   
+        }
+    */
     async buscarPedidoPorNumero(nroPedido) {
         const pedido = await PedidoBD.obtenerPedidoPorNro(nroPedido);
-        if (!pedido){
+        if (!pedido) {
             return null;
         }
         const pedidoObj = await this.convertirPedidoBD([pedido]);
@@ -194,26 +204,26 @@ class AdministradorPedidos {
     }
 
     async modificarEstadoPedido(nroPedido, nuevoEstado) {
-        const pedido = await this.buscarPedidoPorNumero(nroPedido);  
+        const pedido = await this.buscarPedidoPorNumero(nroPedido);
         if (!pedido) {
             throw new Error("Pedido no encontrado.");
         }
         const estadoActual = pedido.getEstadoPedido();
         const estadoActualLower = estadoActual.toLowerCase();
         let estadoFinal = estadoActual;
-        if (nuevoEstado){
+        if (nuevoEstado) {
             const nuevoEstadoLower = nuevoEstado.toLowerCase();
-            if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") && nuevoEstadoLower !== estadoActualLower){
+            if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") && nuevoEstadoLower !== estadoActualLower) {
                 throw new Error("No se puede cambiar un pedido finalizado o cancelado");
-            } 
+            }
 
             const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado'];
-            if (!estadosValidos.includes(nuevoEstadoLower)){
+            if (!estadosValidos.includes(nuevoEstadoLower)) {
                 throw new Error(`Estado '${nuevoEstado}' no es válido`);
             }
             estadoFinal = nuevoEstado;
-        }else{
-            switch (estadoActualLower){
+        } else {
+            switch (estadoActualLower) {
                 case "pendiente":
                     estadoFinal = "listo";
                     break;
@@ -225,7 +235,7 @@ class AdministradorPedidos {
             }
         }
 
-        if (estadoFinal !== estadoActual){
+        if (estadoFinal !== estadoActual) {
             await PedidoBD.modificarEstadoPedido(nroPedido, estadoFinal);
             pedido.estadoPedido = estadoFinal;
         }
