@@ -2,11 +2,13 @@ const Gateway = require('../DB/Gateway');
 
 // === SECCIÓN DE QUERYS ===
 const selectPedidosFecha = 'SELECT * FROM pedido WHERE date(fecha_registro)= date($1)';
-const selectPedidoPorId = 'SELECT * FROM pedido WHERE nro_pedido = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
+const selectPedidoPorNro = 'SELECT * FROM pedido WHERE nro_pedido = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
 const insertPedido = 'INSERT INTO pedido (nro_pedido, fecha_registro, observacion, monto, id_mozo, id_mesa) VALUES ($1, $2, $3, $4, $5, $6)';
 const selectUltimoNroPedido = 'SELECT MAX(nro_pedido) FROM pedido';
 const updateEstadoPedidoPorId = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
 const insertLineaPedido = 'INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ($1, $2, $3, $4, $5)';
+const selectLineasPorNroPedido = ("SELECT linea.id_linea_pedido, linea.cantidad, linea.monto, producto.nombre, linea.id_pedido FROM pedido JOIN linea_pedido AS linea ON pedido.id_pedido = linea.id_pedido JOIN producto ON linea.id_producto = producto.id_producto WHERE pedido.nro_pedido = $1;");
+
 // TODO: FALTA HACER ESTO
 const selectPedidoPorMozo = 'SELECT * FROM pedido WHERE nombre = $1';
 
@@ -36,7 +38,7 @@ exports.obtenerPedidosFecha = async (fecha) => {
 // Le paso un nro de pedido, y me devuelve un pedido
 exports.obtenerPedidoPorNro = async (nroPedido) => {
     try {
-        const pedidos = await Gateway.ejecutarQuery({ text: selectPedidoPorId, values: [nroPedido] });
+        const pedidos = await Gateway.ejecutarQuery({ text: selectPedidoPorNro, values: [nroPedido] });
         return pedidos[0] || null; // Retornar el primer pedido encontrado
     } catch (error) {
         throw new Error(`Error al obtener pedido ${nroPedido} desde la base de datos: ${error.message}`);
@@ -100,6 +102,15 @@ exports.crearLineaPedido = async (datosDeLineaPedido) => {
         };
     } catch (error) {
         throw new Error('Error al crear una línea de pedido desde la base de datos: ' + error.message);
+    }
+};
+
+exports.obtenerLineasPorNroPedido = async (nroPedido) => {
+    try {
+        const lineas = await Gateway.ejecutarQuery({ text: selectLineasPorNroPedido, values: [nroPedido] });
+        return lineas || [];
+    } catch (error) {
+        throw new Error(`Error al obtener líneas del pedido ${nroPedido} desde la base de datos: ${error.message}`);
     }
 };
 
