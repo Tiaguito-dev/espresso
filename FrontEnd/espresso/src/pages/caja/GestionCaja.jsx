@@ -53,8 +53,8 @@ function GestionCaja() {
 
 //Funciones para cambios de estados fijos
 
-    const cambiarEstadoListo = async (id) => {
-        const nuevoEstado = "Listo";
+    const cambiarEstadoFinalizado = async (id) => {
+        const nuevoEstado = "Finalizado";
         if (!nuevoEstado) return;
 
         try {
@@ -125,7 +125,7 @@ function GestionCaja() {
                         <td>{pedido.nroPedido}</td>
                         <td>lionel</td>
                         <td>{pedido.mesa.nroMesa}</td>
-                        <td>$10000 tp</td>
+                        <td>{pedido.total}</td>
                         <td>
                             <span className={`estado ${pedido.estadoPedido.toLowerCase()}`}>
                                 {pedido.estadoPedido}
@@ -166,7 +166,7 @@ function GestionCaja() {
                                                 {pedidoDetalle.lineasPedido.map((producto) => (
                                                     <tr>
                                                         {/* id muestra un nombre pero deberia mostrar el id del producto */}
-                                                        <td>{producto.precioUnitario}</td>
+                                                        <td>{producto.idProducto}</td>
                                                         <td>{producto.nombreProducto}</td>
                                                         <td>{producto.cantidad}</td>
                                                     </tr>

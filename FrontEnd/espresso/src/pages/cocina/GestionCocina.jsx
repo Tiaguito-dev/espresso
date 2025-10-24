@@ -3,7 +3,6 @@ import { getPedidos, updatePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 import Filtro from "./../menu/Filtro";
-import DetallePedido from '../caja/DetallePedido';
 import Acordeon from "./Acordeon";
 
 
@@ -169,12 +168,6 @@ function GestionCocina() {
                         
                         <td className="acciones">
                             <button
-                                className="info"
-                                onClick={() => abrirDetalle(pedido)}
-                            >
-                                Ver detalle
-                            </button>
-                            <button
                                 className="modificar"
                                 onClick={() => cambiarEstado(pedido.nroPedido)}
                             >
@@ -186,33 +179,6 @@ function GestionCocina() {
                             >
                                 Marcar Listo
                             </button>
-
-                            <DetallePedido funcionAbrir={estadoDetalle} funcionCerrar={cerrarDetalle}>
-                                <h2>Detalle del Pedido #{idPedido}</h2>
-                                {pedidoDetalle && (
-                                    <>
-                                        <strong>Numero de Mesa: {pedidoDetalle.mesa.nroMesa}</strong>
-                                        <table>
-                                            <thead>
-                                                <th>id</th>
-                                                <th>Producto</th>
-                                                <th>Cantidad</th>
-                                            </thead>
-                                            <tbody>
-                                                {pedidoDetalle.lineasPedido.map((producto) => (
-                                                    <tr>
-                                                        {/* id muestra un nombre pero deberia mostrar el id del producto */}
-                                                        <td>{producto.precioUnitario}</td>
-                                                        <td>{producto.nombreProducto}</td>
-                                                        <td>{producto.cantidad}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </>
-                                )}
-                            </DetallePedido>
-                            
                         </td>
                     </tr>
                 ))}

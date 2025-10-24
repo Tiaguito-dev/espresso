@@ -39,8 +39,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
             <td><span className={claseEstado}>{pedido.estadoPedido}</span></td>
             
 
-            {/* <td>${pedido.total}</td> */}
-            <td>$1000 tp</td>
+            <td>${pedido.total}</td>
             
             {/* Columna de Acciones */}
             <td>

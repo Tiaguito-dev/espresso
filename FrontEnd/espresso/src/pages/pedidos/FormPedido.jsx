@@ -1,13 +1,9 @@
-// src/pages/pedidos/FormPedido.jsx
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { createPedido, updatePedido, buscarPedidoPorId } from "../../services/pedidosService"; 
 import "./AgregarPedido.css"; // Usa el mismo CSS
 
-// ===========================================
-// MOCKS: Reemplaza esto con tu lista de productos real
-// ===========================================
+
 const PRODUCTOS_MOCK = [
     { id: "P001", nombre: "Café Espresso", precio: 250 },
     { id: "P002", nombre: "Torta de Chocolate", precio: 800 },
