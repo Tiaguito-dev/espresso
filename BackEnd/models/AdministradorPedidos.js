@@ -31,12 +31,11 @@ class AdministradorPedidos {
 
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
-                        id: productoObj.id, //TODO: VER SI ESTO ANDA BIEN
+                        //id: productoObj.id, //TODO: VER SI ESTO ANDA BIEN
                         producto: productoObj,
                         cantidad: linea.cantidad
                     }));
-
-                    console.log(`Producto Numero ${productoObj.id} agregado a la línea de pedido ${pedido.nro_pedido}:`);
+                    //console.log(`Producto Numero ${productoObj.id} agregado a la línea de pedido ${pedido.nro_pedido}:`);
                 } else {
                     console.warn(`El producto con ID ${linea.id_producto} del pedido ${pedido.nro_pedido} ya no existe.`); //CASO MUY EXTRAÑO
                 }
@@ -52,7 +51,8 @@ class AdministradorPedidos {
                 lineasPedido: lineasObj
             }));
         }
-        // Imprimo las lineas de pedido para verificar console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
+        // Imprimo las lineas de pedido para verificar 
+        console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
         return pedidosObj;
     }
 
