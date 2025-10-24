@@ -69,9 +69,10 @@ class Menu {
 
         const id_categoria = await this.obtenerOCrearCategoria(nombreCategoria);
 
-        const ultimoCodigo = await ProductoBD.obtenerUltimoCodigo();
+        const id = await ProductoBD.obtenerUltimoCodigo() + 1;
 
-        const id = (ultimoCodigo && ultimoCodigo.max) ? ultimoCodigo.max + 1 : 1;
+        console.log("ID CATEGORIA EN MENU:", id_categoria);
+        console.log("ID NUEVO PRODUCTO EN MENU:", id);
 
         const categoriaObj = new Categoria({ nombre: nombreCategoria });
         try {
