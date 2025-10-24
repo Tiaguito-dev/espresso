@@ -1,17 +1,16 @@
-// routes/pedidosRoutes.js
+// BackEnd/routes/pedidosRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const pedidosController = require('../controllers/pedidosController');
 
-// 1. OBTENER TODOS
+// Rutas Generales
 router.get('/', pedidosController.obtenerPedidos);
-
-// 2. OBTENER POR ID (¡Necesario para la edición!)
-router.get('/:id', pedidosController.obtenerPedidoPorId); 
-
-// 3. ACTUALIZAR (Maneja tanto estado como edición completa)
-router.put('/:id', pedidosController.actualizarPedido);
-
-// 4. CREAR NUEVO
 router.post('/', pedidosController.crearPedido);
+
+// Rutas por ID (GET y PUT)
+router.get('/:id', pedidosController.obtenerPedidoPorId); // Para Modificar (traer datos)
+router.put('/:id', pedidosController.actualizarPedido);    // Para Cambiar Estado
+router.delete('/:id', pedidosController.eliminarPedido);  // Para Dar de Baja
+
 module.exports = router;

@@ -23,6 +23,14 @@ function Home() {
           texto="Gestion de Menu"
         ></BotonHome>
         <BotonHome
+          ruta="/caja"
+          texto="Gestion de Caja"
+        ></BotonHome>
+        <BotonHome
+          ruta="/cocina"
+          texto="Gestion de Cocina"
+        ></BotonHome>
+        <BotonHome
           ruta="/mesas"
           texto="Gestion mesas"
         ></BotonHome>

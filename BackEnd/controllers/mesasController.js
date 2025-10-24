@@ -1,139 +1,72 @@
-// controllers/mesasController.js
+const Mesa = require('../models/Mesa');
+const AdministradorMesas = require('../models/AdministradorMesas');
+const mesasIniciales = require('../DB/mesas.json');
+const express = require('express');
+const { json } = require('express');
 
-// Array para simular la base de datos de mesas
-let mesas = [
-  { id: 'M01', numero: 1, capacidad: 4, mozoACargo: 'Juan Pérez', estado: "Disponible" },
-  { id: 'M02', numero: 2, capacidad: 2, mozoACargo: 'María Gómez', estado: "Ocupada" },
-  { id: 'M03', numero: 3, capacidad: 6, mozoACargo: 'Juan Pérez', estado: "Listo Para Ordenar" },
-  { id: 'M04', numero: 4, capacidad: 4, mozoACargo: 'Pedro Ledesma', estado: "Listo Para Cobrar" },
-];
+const administradorMesas = new AdministradorMesas();
+administradorMesas.cargarMesas(mesasIniciales);
 
-// ===============================================
-// 1. OBTENER TODAS LAS MESAS
-// ===============================================
-exports.getMesas = (req, res) => {
-  res.json(mesas);
+exports.obtenerMesas = (req, res) => {
+    res.json(administradorMesas.getMesas());
 };
 
-// ===============================================
-// 2. OBTENER MESA POR ID (Para Modificar)
-// ===============================================
-exports.getMesaById = (req, res) => {
-  const { id } = req.params;
-  const mesa = mesas.find((m) => m.id === id);
-
-  if (!mesa) {
-    return res.status(404).json({ message: "Mesa no encontrada" });
-  }
-
-  res.json(mesa);
+exports.obtenerMesaPorNumero = (req, res) => {
+    const { nroMesa } = req.params;
+    const mesa = administradorMesas.buscarMesaPorNumero(parseInt(nroMesa));
+    if (!mesa) {
+        return res.status(404).json({ message: 'Mesa no encontrada' });
+    }
+    res.json(mesa);
+    console.log('Devolviendo la mesa con numero: ', nroMesa);
+    console.log(mesa);
 };
 
-// ===============================================
-// 3. CREAR NUEVA MESA
-// ===============================================
-exports.createMesa = (req, res) => {
-  const nuevaMesa = { 
-    ...req.body, 
-    id: 'M' + Date.now().toString().slice(-4), // ID simple de ejemplo
-    estado: req.body.estado || "Disponible", 
-  };
+exports.crearMesa = (req, res) => {
+    const { nroMesa, estado } = req.body;
 
-  // Validación simple para evitar duplicados en el número de mesa
-  if (mesas.find(m => m.numero === nuevaMesa.numero)) {
-    return res.status(400).json({ message: "El número de mesa ya existe" });
-  }
-
-  mesas.push(nuevaMesa);
-  res.status(201).json(nuevaMesa);
-};
-
-// ===============================================
-// 4. ACTUALIZAR MESA (Unificada: Estado o Edición)
-// ===============================================
-exports.updateMesa = (req, res) => {
-    const { id } = req.params;
-    
-    // Capturamos ambos posibles datos
-    const { nuevoEstado, numero, capacidad, mozoACargo } = req.body; 
-
-    const index = mesas.findIndex((m) => m.id === id);
-
-    if (index === -1) {
-        return res.status(404).json({ message: "Mesa no encontrada" });
+    const mesaExistente = administradorMesas.buscarMesaPorNumero(nroMesa);
+    if (mesaExistente) {
+        console.log(`Mesa con número ${nroMesa} ya existente.`)
+        return mesaExistente;
     }
 
-    let mesaActual = mesas[index];
-
-    // ==============================================================
-    // A. Lógica de CAMBIO DE ESTADO (Prioridad)
-    // ==============================================================
-    // Si 'nuevoEstado' está presente Y ningún campo de edición está presente,
-    // asumimos que es una solicitud de cambio de estado.
-    if (nuevoEstado !== undefined && 
-        numero === undefined && 
-        capacidad === undefined && 
-        mozoACargo === undefined) 
-    {
-        mesaActual.estado = nuevoEstado;
-
-        // Si la mesa se libera/vuelve a disponible, resetear el mozo
-        if (nuevoEstado === "Disponible") {
-            mesaActual.mozoACargo = ''; 
-        }
-
-        mesas[index] = mesaActual; // Actualizar el array en memoria
-        
-        return res.json({ 
-            message: `Estado de la mesa ${id} actualizado a ${nuevoEstado}`, 
-            mesa: mesaActual 
-        });
+    const datosMesa = {
+        nroMesa: nroMesa,
+        estadoMesa: estado
     }
 
-    // ==============================================================
-    // B. Lógica de EDICIÓN COMPLETA (Modificación)
-    // ==============================================================
-    // Asumimos edición si al menos un campo de edición está presente.
-    if (numero !== undefined || capacidad !== undefined || mozoACargo !== undefined) {
-        
-        // Aplicamos la actualización PARCIAL (solo los campos que vienen)
-        mesaActual = {
-            ...mesaActual,
-            numero: numero !== undefined ? Number(numero) : mesaActual.numero,
-            capacidad: capacidad !== undefined ? Number(capacidad) : mesaActual.capacidad,
-            mozoACargo: mozoACargo !== undefined ? mozoACargo : mesaActual.mozoACargo,
-            // NOTA: No actualizamos 'estado' desde aquí para evitar conflictos, 
-            // solo se hace en el paso A.
-        };
+    const nuevaMesa = new Mesa(datosMesa);
 
-        mesas[index] = mesaActual; // Actualizar el array en memoria
+    const mesaAgregada = administradorMesas.agregarMesa(nuevaMesa);
 
-        return res.json({ 
-            message: `Mesa ${id} modificada completamente`, 
-            mesa: mesaActual 
-        });
+    res.status(201).json(mesaAgregada);
+};
+
+exports.cambiarEstadoMesa = (req, res) => {
+    const { nroMesa } = req.params;
+    const nuevoEstado = req.body;
+
+    const mesaAModificar = administradorMesas.buscarMesaPorNumero(nroMesa);
+
+    if (!mesaAModificar) {
+        // 🚨 Aquí fallará si no has importado 'express' o 'json'
+        return res.status(404), res.json({ message: `Mesa para modificar no encontrada` }); 
     }
 
-    // ==============================================================
-    // C. RESPUESTA DE ERROR (Si no entra en A ni en B)
-    // ==============================================================
-    // Si la solicitud no contiene datos válidos (cuerpo vacío o solo datos irrelevantes)
-    res.status(400).json({ message: "Datos de actualización inválidos." });
+    // ...
 };
+exports.eliminarMesa = (req, res) => {
+    // TODO: si se elimina una mesa tenemos que poner cascade o algun valor por defecto
+    const { nroMesa } = req.params;
+    const exito = administradorMesas.eliminarMesaPorNumero(nroMesa);
 
-// ===============================================
-// 5. ELIMINAR/DAR DE BAJA MESA
-// ===============================================
-exports.deleteMesa = (req, res) => {
-  const { id } = req.params;
-  const initialLength = mesas.length;
-  
-  // Filtramos para eliminar la mesa
-  mesas = mesas.filter((m) => m.id !== id);
+    if (exito) {
+        res.status(200).json({ message: `'La mesa ${nroMesa} fue eliminada correctamente.` });
+    } else {
+        res.status(404).json({ message: `No fue posible eliminar la mesa ${nroMesa}` });
+    }
+}
 
-  if (mesas.length === initialLength) {
-    return res.status(404).json({ message: "Mesa no encontrada para eliminar" });
-  }
 
-  res.json({ message: `Mesa ${id} dada de baja correctamente.` });
-};
+module.exports.mesas = administradorMesas;

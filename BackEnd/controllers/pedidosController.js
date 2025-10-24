@@ -1,136 +1,194 @@
-// controllers/pedidosController.js
+// pedidosController.js
 
-// Array para simular la base de datos de pedidos
-let pedidos = [
-  {
-    id: '001',
-    mesa: 5,
-    mozo: 'Juan',
+const Pedido = require('../models/Pedido');
+const LineaPedido = require('../models/LineaPedido');
+const Mesa = require('../models/Mesa');
 
-    total: 800,
-    estado: 'Listo',
-  },
-  {
-    id: '002',
-    mesa: 3,
-    mozo: 'María',
-    productos: [
-      { id: "hamburguesa", nombre: "Hamburguesa", precio: 1500, cantidad: 1 },
-      { id: "agua", nombre: "Agua", precio: 500, cantidad: 1 },
-    ],
-    total: 2000,
-    estado: 'Pendiente',
-  },
-  {
-    id: '003',
-    mesa: 10,
-    mozo: 'Pedro',
-    productos: [
-      { id: "te", nombre: "Té", precio: 250, cantidad: 1 },
-    ],
-    total: 250,
-    estado: 'Finalizado',
-  },
-  {
-    id: '004',
-    mesa: 8,
-    mozo: 'Ana',
-    productos: [
-      { id: "sandwich", nombre: "Sándwich", precio: 800, cantidad: 1 },
-      { id: "jugo", nombre: "Jugo", precio: 600, cantidad: 1 },
-    ],
-    total: 1400,
-    estado: 'Listo',
-  },
-];
+// 💡 Importamos el módulo de base de datos (Asegúrate que la ruta sea correcta)
+const pedidoBD = require('../repositories/PedidoBD'); 
 
-exports.obtenerPedidos = (req, res) => {
-    res.json(pedidos);
-};
+const { menu } = require('./menuController');
+const { mesas } = require('./mesasController');
 
-exports.crearPedido = (req, res) => {
-    const nuevoPedido = { 
-        ...req.body, 
-        id: Date.now().toString(),
-        estado: req.body.estado || "Pendiente", // estado inicial
-    };
-    pedidos.push(nuevoPedido);
-    res.status(201).json(nuevoPedido);
-};
-
-exports.obtenerPedidoPorId = (req, res) => {
-    const { id } = req.params;
-
-    const pedido = pedidos.find((p) => p.id === id);
-
-    if (!pedido) {
-        return res.status(404).json({ message: "Pedido no encontrado" });
+// --- [ RUTA GENERAL: GET /api/pedidos ] ---
+exports.obtenerPedidos = async (req, res) => { 
+    try {
+        // 1. Obtener datos de la BD (asumimos que queremos los de hoy o todos)
+        const pedidosDB = await pedidoBD.obtenerPedidosHoy();
+        
+        console.log("Datos a enviar de pedidos:", pedidosDB);
+        res.json(pedidosDB);
+    } catch (error) {
+        console.error("Error al obtener pedidos:", error.message);
+        res.status(500).json({ message: "Error al obtener pedidos de la BD: " + error.message });
     }
-
-    // Devuelve el pedido completo, incluyendo productos y total
-    res.json(pedido);
 };
 
+// --- [ RUTA INDIVIDUAL: GET /api/pedidos/:id ] ---
+exports.obtenerPedidoPorId = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const nroPedido = parseInt(id, 10);
+        
+        // La función de BD devuelve un array de resultados
+        const resultadosDB = await pedidoBD.obtenerPedidoPorNro(nroPedido);
 
-exports.actualizarPedido = (req, res) => {
-    const { id } = req.params;
-    
-    // Capturamos TODOS los posibles datos que el frontend puede enviar (estado O edición completa)
-    const { nuevoEstado, mesa, mozo, productos, total } = req.body; 
-
-    const pedidoIndex = pedidos.findIndex((p) => p.id === id);
-
-    if (pedidoIndex === -1) {
-        return res.status(404).json({ message: "Pedido no encontrado" });
+        if (!resultadosDB || resultadosDB.length === 0) {
+            return res.status(404).json({ message: "Pedido no encontrado." });
+        }
+        // Retorna el primer resultado (el pedido)
+        res.json(resultadosDB[0]); 
+    } catch (error) {
+        console.error("Error al obtener pedido por ID:", error);
+        res.status(500).json({ message: "Error interno del servidor al buscar pedido." });
     }
+};
 
-    const pedidoActual = pedidos[pedidoIndex];
+// --- [ RUTA INDIVIDUAL: PUT /api/pedidos/:id ] ---
+exports.actualizarPedido = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const nroPedido = parseInt(id, 10);
+        const { nuevoEstado } = req.body;
 
-  
-    if (nuevoEstado && Object.keys(req.body).length === 1) { // Si solo viene 'nuevoEstado'
-        const estadoActualLower = pedidoActual.estado.toLowerCase();
-        const nuevoEstadoLower = nuevoEstado.toLowerCase();
-
-        // Evitar cambios si ya está en estado terminal (Finalizado o Cancelado)
-        if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") &&
-            nuevoEstadoLower !== estadoActualLower) {
-            return res.status(400).json({ message: "No se puede cambiar un pedido finalizado o cancelado" });
+        // 1. Obtener el estado actual de la BD
+        const resultadosDB = await pedidoBD.obtenerPedidoPorNro(nroPedido);
+        
+        // 🎯 CORRECCIÓN: Tomamos el primer elemento del array de resultados
+        const pedidoDB = resultadosDB && resultadosDB.length > 0 ? resultadosDB[0] : null; 
+        
+        if (!pedidoDB) {
+            return res.status(404).json({ message: "Pedido no encontrado." });
         }
         
-        // Aplica solo el cambio de estado
-        pedidos[pedidoIndex] = { ...pedidoActual, estado: nuevoEstado };
-        const estadoFinal = pedidos[pedidoIndex].estado;
+        // ⚠️ Asumimos que el campo de estado en la BD es 'estado'
+        const estadoActual = pedidoDB.estado || 'pendiente'; 
+        const estadoActualLower = estadoActual.toLowerCase();
+        let estadoFinal = estadoActual;
 
-        return res.json({ 
-            message: `Estado del pedido ${id} actualizado a ${estadoFinal}`, 
-            pedido: pedidos[pedidoIndex] 
+        // Lógica de validación de cambio de estado (se mantiene)
+        if (nuevoEstado) {
+            const nuevoEstadoLower = nuevoEstado.toLowerCase();
+
+            if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") && nuevoEstadoLower !== estadoActualLower) {
+                throw new Error("No se puede cambiar un pedido finalizado o cancelado");
+            }
+
+            const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado'];
+            if (!estadosValidos.includes(nuevoEstadoLower)) {
+                throw new Error(`Estado '${nuevoEstado}' no es válido`);
+            }
+
+            estadoFinal = nuevoEstado;
+        } else {
+            // Lógica para avanzar al siguiente estado (si no se especifica uno nuevo)
+            switch (estadoActualLower) {
+                case "pendiente":
+                    estadoFinal = "Listo";
+                    break;
+                case "listo":
+                    estadoFinal = 'Finalizado';
+                    break;
+                default:
+                    estadoFinal = estadoActual;
+            }
+        }
+
+        if (estadoFinal.toLowerCase() !== estadoActualLower) {
+            // 2. Actualizar estado en la BD
+            await pedidoBD.modificarEstadoPedido(nroPedido, estadoFinal); 
+
+            res.json({ 
+                message: `Pedido ${nroPedido} actualizado a ${estadoFinal}`, 
+                nroPedido: nroPedido,
+                nuevoEstado: estadoFinal
+            });
+        } else {
+            res.status(200).json({ message: `El pedido ${nroPedido} ya está en estado ${estadoActual}. No se realizaron cambios.` });
+        }
+    } catch (error) {
+        console.error("Error al actualizar pedido:", error.message);
+        res.status(400).json({ message: error.message });
+    }
+}
+
+// --- [ RUTA POST /api/pedidos ] ---
+exports.crearPedido = async (req, res) => { 
+    try {
+        const { mesa, lineas, observacion = '' } = req.body;
+
+        const mesaObj = mesas.buscarMesaPorNumero(mesa);
+        if (!mesaObj) throw new Error('Mesa no encontrada.');
+
+        if (!lineas || !Array.isArray(lineas) || lineas.length === 0) {
+            throw new Error('Se requiere al menos una línea de pedido');
+        }
+
+        let montoTotal = 0;
+        const lineasPedidoParaBD = lineas.map(linea => {
+            const productoObj = menu.buscarProductoPorId(linea.idProducto);
+
+            if (!productoObj) {
+                throw new Error(`Producto con id ${linea.idProducto} no encontrado.`)
+            }
+            
+            const montoLinea = productoObj.precio * linea.cantidad;
+            montoTotal += montoLinea;
+            
+            return {
+                idProducto: productoObj.id,
+                cantidad: linea.cantidad,
+                monto: montoLinea,
+                nombreProducto: productoObj.nombre
+            };
         });
-    }
 
-    // Si viene mesa, mozo, productos y total, asumimos edición completa
-    if (mesa !== undefined && mozo !== undefined && productos !== undefined && total !== undefined) {
+        // 1. Obtener el siguiente número de pedido
+        let ultimoNro = await pedidoBD.obtenerUltimoNroPedido();
+        const nroPedido = (ultimoNro ? parseInt(ultimoNro, 10) : 1000) + 1; 
+        const fechaActual = new Date(); 
         
-        // Los pedidos en estado Finalizado o Cancelado NO se pueden editar completamente
-        const estadoLower = pedidoActual.estado.toLowerCase();
-        if (estadoLower === "finalizado" || estadoLower === "cancelado") {
-             return res.status(400).json({ message: "No se puede editar un pedido finalizado o cancelado" });
-        }
-
-        // Aplicamos la actualización completa
-        pedidos[pedidoIndex] = {
-            ...pedidoActual, // Mantenemos ID, estado actual, fecha, etc.
-            mesa: mesa,
-            mozo: mozo,
-            productos: productos,
-            total: total,
+        const datosPedidoBD = {
+            nroPedido: nroPedido,
+            fecha: fechaActual, 
+            observacion: observacion,
+            monto: montoTotal,
+            idMozo: 1, // ⚠️ Placeholder
+            idMesa: mesaObj.nroMesa,
         };
-        
-        return res.json({ 
-            message: `Pedido ${id} modificado completamente`, 
-            pedido: pedidos[pedidoIndex] 
-        });
-    }
 
-    // Respuesta si la solicitud no contiene datos válidos
-    res.status(400).json({ message: "Datos de actualización inválidos o incompletos." });
+        // 2. Guardar el Pedido principal
+        await pedidoBD.crearPedido(datosPedidoBD); 
+
+        // 3. Guardar las líneas del pedido
+        for (const lineaData of lineasPedidoParaBD) { 
+            await pedidoBD.crearLineaPedido({
+                idPedido: nroPedido,
+                idProducto: lineaData.idProducto,
+                cantidad: lineaData.cantidad,
+                monto: lineaData.monto,
+                nombreProducto: lineaData.nombreProducto
+            });
+        }
+        
+        // Respuesta al cliente
+        res.status(201).json({ 
+            nroPedido, 
+            montoTotal, 
+            fecha: fechaActual, 
+            idMesa: mesaObj.nroMesa,
+            lineas: lineasPedidoParaBD 
+        }); 
+
+    } catch (error) {
+        console.error("Error al crear pedido:", error.message);
+        res.status(400).json({ message: error.message });
+    }
+}
+
+// --- [ Funciones no implementadas en este fragmento ] ---
+
+exports.eliminarPedido = async (req, res) => {
+    // ... Implementación de eliminarPedido ...
+    res.status(501).json({ message: "Eliminar pedido no implementado." });
 };

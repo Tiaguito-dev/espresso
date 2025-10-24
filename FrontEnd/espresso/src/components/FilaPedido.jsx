@@ -29,16 +29,16 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
 
     return (
         <tr>
-            <td>{pedido.id}</td>
-            <td>{pedido.mesa}</td>
-            <td>{pedido.mozo}</td>
+            <td>{pedido.id_pedido}</td>
+            <td>{pedido.id_mesa}</td>
+            <td>{pedido.id_mozo}</td>
             {/* Si fecha no viene, puedes mostrar un guión '-' */}
-            <td>{pedido.fecha ? pedido.fecha : '-'}</td> 
+            <td>{pedido.fecha_registro ? pedido.fecha_registro : '-'}</td> 
             
             {/* Celda del Estado con Color */}
             <td><span className={claseEstado}>{pedido.estado}</span></td>
             
-            <td>${pedido.total}</td>
+            <td>${pedido.monto}</td>
             
             {/* Columna de Acciones */}
             <td>
@@ -46,7 +46,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
                     
                     {/* Botón de CAMBIO DE ESTADO */}
                     <button 
-                        onClick={() => funcionCambiarEstado(pedido.id)}
+                        onClick={() => funcionCambiarEstado(pedido.id_pedido)}
                         className="btn-fila-accion btn-cambio-estado"
                         // Deshabilitar si ya terminó o se canceló
                         disabled={deshabilitarBotonEstado} 
@@ -58,7 +58,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
 
                     {/* Botón MODIFICAR */}
                     <button 
-                        onClick={() => funcionModificar(pedido.id)}
+                        onClick={() => funcionModificar(pedido.id_pedido)}
                         className="btn-fila-accion btn-modificar-fila" 
                         disabled={isFinishedOrCanceled}
                         style={{ opacity: isFinishedOrCanceled ? 0.6 : 1, 
@@ -69,7 +69,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
 
                     {/* Botón CANCELAR / BAJA (Solo si no está ya cancelado/finalizado) */}
                     <button 
-                        onClick={() => funcionEliminar(pedido.id)} // Llama a cancelarPedido
+                        onClick={() => funcionEliminar(pedido.id_pedido)} // Llama a cancelarPedido
                         className="btn-fila-accion btn-cancelar-fila" 
                         disabled={isFinishedOrCanceled}
                         style={{ opacity: isFinishedOrCanceled ? 0.6 : 1, 

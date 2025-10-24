@@ -1,0 +1,121 @@
+/*boton para ver el menu*/
+.btn-ver-menu{
+    background: #a97457;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.btn-ver-menu:hover {
+  background: #854a27;
+}
+
+.menu-container {
+  text-align: center;
+  font-family: 'Century Gothic', sans-serif;
+  padding: 20px;
+}
+
+h1 {
+  margin: 20px;
+  font-size: 50px;
+  color: black;
+}
+
+.contenedor-categorias {
+  margin: 0 auto;
+  max-width: 900px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-acordeon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  width: 100%; 
+}
+
+.btn-categoria {
+  font-family: inherit;
+  font-size: large;
+  border-radius: 10px;
+  background-color: #5d4037;
+  /*background-color: rgb(98, 54, 31);*/
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 350px; 
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  margin: 0 auto; 
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.btn-categoria:hover {
+  background-color: rgb(133, 74, 39);
+}
+
+
+.btn-categoria.activa {
+  background-color: rgb(133, 74, 39);
+  border-radius: 10px 10px 10px 10px;
+}
+
+
+.lista-productos {
+  background-color: #fcfcfc;
+  border-radius: 10px 10px 10px 10px;
+  width: 100%;
+  max-width: 800px;
+  margin: 8px 0 auto; 
+  text-align: center;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 15px;
+  box-sizing: border-box;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease;
+
+}
+
+.lista-productos.desplegado {
+  max-height: 1000px; 
+  padding-top: 15px; 
+  padding-bottom: 15px;
+}
+
+.producto {
+  padding: 8px 0;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.producto:last-child {
+  border-bottom: none;
+}
+
+.producto h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: rgb(98, 54, 31);
+}
+
+.producto p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+.producto span {
+  font-weight: bold;
+  color: rgb(98, 54, 31);
+}
