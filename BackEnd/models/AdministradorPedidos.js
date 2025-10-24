@@ -14,18 +14,34 @@ class AdministradorPedidos {
 
     async convertirPedidoBD(pedidos) {
         const pedidosObj = [];
+<<<<<<< HEAD
+=======
+        // imprimo todos los pedidos recibidos de la BD para verificar
+        console.log('Pedidos recibidos de BD:', pedidos);
+>>>>>>> d12776b2e53d522053f57bace663ef1791140e2a
         for (const pedido of pedidos) {
             const mesaObj = await this.mesas.buscarMesaPorNumero(pedido.id_mesa);
 
             const lineasBD = await PedidoBD.obtenerLineasPorNroPedido(pedido.nro_pedido);
-            console.log('LINEAS', lineasBD);
+
+            // ESTO LO HACE BIENconsole.log(`Líneas recibidas de BD para el pedido ${pedido.nro_pedido}:`, lineasBD);
+
             const lineasObj = [];
 
             for (const linea of lineasBD) {
                 const productoObj = await this.menu.buscarProductoPorId(linea.id_producto);
 
+<<<<<<< HEAD
+=======
+                console.log('LINEA DE PEDIDO DE LA BD:', linea);
+                console.log('NUMERO DE LINEA DE PEDIDO Y SU TIPO:', linea.id_linea_pedido, typeof linea.id_linea_pedido);
+
+                console.log(`Producto encontrado para la línea del pedido ${pedido.nro_pedido}:`, productoObj);
+
+>>>>>>> d12776b2e53d522053f57bace663ef1791140e2a
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
+                        id: id, //esto es id producto
                         producto: productoObj,
                         cantidad: linea.cantidad
                     }));
@@ -34,14 +50,17 @@ class AdministradorPedidos {
                 }
             }
 
+
             pedidosObj.push(new Pedido({
                 nroPedido: pedido.nro_pedido,
-                fecha: pedido.fecha_registro,
+                fecha: pedido.fecha_registro, //.slice(0, 10),
+                total: pedido.monto,
                 estadoPedido: pedido.estado,
                 mesa: mesaObj,
                 lineasPedido: lineasObj
             }));
         }
+        // Imprimo las lineas de pedido para verificar console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
         return pedidosObj;
     }
 
@@ -86,11 +105,15 @@ class AdministradorPedidos {
             const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
             console.log(ultimoNro);
             const nroPedido = (ultimoNro ? ultimoNro : 0) + 1;
-            const fecha = Date.now()
+
+            const now = new Date();
+            const fecha = now.toISOString().replace('T', ' ').replace('Z', '+00');
+            console.log(fecha);
+
 
             const datosPedido = {
                 nroPedido: nroPedido,
-                fecha: fecha.toISOString().split('T')[0], //chequear q funque
+                fecha: fecha, //chequear q funque
                 mesa: mesaObj,
                 lineasPedido: lineasObj
             };

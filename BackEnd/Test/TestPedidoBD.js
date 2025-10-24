@@ -49,11 +49,16 @@ exports.runTests = async () => {
     /*
     try {
         const resultado = await PedidoBD.crearLineaPedido({
+<<<<<<< HEAD
             idPedido: 1,           
             idProducto: 4,         
+=======
+            idPedido: 5,           
+            idProducto: 1,         
+>>>>>>> d12776b2e53d522053f57bace663ef1791140e2a
             cantidad: 3,
-            monto: 4500,           // Por ejemplo, precio * cantidad
-            nombreProducto: 'Cerveza Quilmes'
+            monto: 4500,           
+            nombreProducto: 'Milanesa a caballo'
         });
         
         console.log('Resultado de crear línea de pedido:', resultado.message);
