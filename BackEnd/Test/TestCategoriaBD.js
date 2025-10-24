@@ -10,10 +10,10 @@ exports.runTests = async () => {
     }
 
     try {
-        const idCategoria = await CategoriaBD.obtenerIdCategoriaPorNombre('Bebidas');
-        console.log('ID de la categoría "Bebidas":', idCategoria);
+        const idCategoria = await CategoriaBD.obtenerIdCategoriaPorNombre('Almuerzo');
+        console.log('ID de la categoría "Almuerzo":', idCategoria);
     } catch (error) {
-        console.error('Error al obtener el ID de la categoría "Bebidas":', error);
+        console.error('Error al obtener el ID de la categoría "Almuerzo":', error);
     }
 
     try {
