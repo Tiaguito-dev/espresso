@@ -14,6 +14,7 @@ class Menu {
         }
 
         const categorias = await CategoriaBD.obtenerCategorias();
+        console.log(categorias);
         const recorroCategorias = new Map();
         categorias.forEach(cat => {
             recorroCategorias.set(cat.id, new Categoria(cat));
@@ -78,7 +79,7 @@ class Menu {
         } catch(error){
             throw new Error(`Datos de producto inváidos: ${error.message}`);
         }
-         const datosBD = {
+        const datosBD = {
             id: id,
             precio,
             nombre,
@@ -104,7 +105,9 @@ class Menu {
     }
 
     async getCategorias() {
+
         const categorias = await CategoriaBD.obtenerCategorias();
+        console.log(categorias);
         return categorias.map(cat => new Categoria(cat));
     }
 
