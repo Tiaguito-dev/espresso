@@ -132,11 +132,11 @@ function GestionCocina() {
             </thead>
             <tbody>
                 {pedidosFiltrados.map((pedido) => (
-                    <tr key={pedido.id} data-estado={pedido.estado} className="fila-cocina">
+                    <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido} className="fila-cocina">
 
-                        <td>{pedido.id}</td>
+                        <td>{pedido.nroPedido}</td>
                         <td></td>
-                        <td>{pedido.mesa}</td>
+                        <td>{pedido.mesa.nroMesa}</td>
 
                         <td> 
                             <Acordeon> 
@@ -150,10 +150,10 @@ function GestionCocina() {
                                     </thead>
                                     <tbody>
                                         {/* Usar pedido.productos, NO pedidoAcordeon.productos */}
-                                        {pedido.productos.map((producto, index) => (
+                                        {pedido.lineasPedido.map((producto, index) => (
                                             <tr key={index} className="fila">
-                                                <td>{producto.id}</td>
-                                                <td>{producto.nombre}</td>
+                                                <td>{index}</td>
+                                                <td>{producto.nombreProducto}</td>
                                                 <td>{producto.cantidad}</td>
                                             </tr>
                                         ))}
@@ -163,57 +163,24 @@ function GestionCocina() {
                         </td>
 
                         <td>
-                            <span className={`estado ${pedido.estado.toLowerCase()}`}>
-                                {pedido.estado}
+                            <span className={`estado ${pedido.estadoPedido.toLowerCase()}`}>
+                                {pedido.estadoPedido}
                             </span>
                         </td>
                         
                         <td className="acciones">
                             <button
-                                className="info"
-                                onClick={() => abrirDetalle(pedido)}
-                            >
-                                Ver detalle
-                            </button>
-                            <button
                                 className="modificar"
-                                onClick={() => cambiarEstado(pedido.id)}
+                                onClick={() => cambiarEstado(pedido.nroPedido)}
                             >
                                 Cambiar Estado
                             </button>
                             <button
                                 className="modificar"
-                                onClick={() => cambiarEstadoListo(pedido.id)}
+                                onClick={() => cambiarEstadoListo(pedido.nroPedido)}
                             >
                                 Marcar Listo
                             </button>
-
-                            <DetallePedido funcionAbrir={estadoDetalle} funcionCerrar={cerrarDetalle}>
-                                <h2>Detalle del Pedido #{idPedido}</h2>
-                                {pedidoDetalle && (
-                                    <>
-                                        <strong>Numero de Mesa: {pedidoDetalle.mesa}</strong>
-                                        <table>
-                                            <thead>
-                                                <th>id</th>
-                                                <th>Producto</th>
-                                                <th>Cantidad</th>
-                                            </thead>
-                                            <tbody>
-                                                {pedidoDetalle.productos.map((producto) => (
-                                                    <tr>
-                                                        {/* id muestra un nombre pero deberia mostrar el id del producto */}
-                                                        <td>{producto.id}</td>
-                                                        <td>{producto.nombre}</td>
-                                                        <td>{producto.cantidad}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </>
-                                )}
-                            </DetallePedido>
-                            
                         </td>
                     </tr>
                 ))}

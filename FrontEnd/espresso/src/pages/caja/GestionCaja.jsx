@@ -121,14 +121,20 @@ function GestionCaja() {
             </thead>
             <tbody>
                 {pedidosFiltrados.map((pedido) => (
-                    <tr key={pedido.id} data-estado={pedido.estado}>
-                        <td>{pedido.id}</td>
-                        <td></td>
-                        <td>{pedido.mesa}</td>
+                    <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido}>
+                        <td>{pedido.nroPedido}</td>
+                        <td>Martina</td>
+                        <td>{pedido.mesa.nroMesa}</td>
+{
+/*
                         <td>${pedido.total}</td>
+*/
+}
+                        <td>$1000</td>
+                        
                         <td>
-                            <span className={`estado ${pedido.estado.toLowerCase()}`}>
-                                {pedido.estado}
+                            <span className={`estado ${pedido.estadoPedido.toLowerCase()}`}>
+                                {pedido.estadoPedido}
                             </span>
                         </td>
                         <td className="acciones">
@@ -140,13 +146,13 @@ function GestionCaja() {
                             </button>
                             <button
                                 className="modificar"
-                                onClick={() => cambiarEstado(pedido.id)}
+                                onClick={() => cambiarEstado(pedido.nroPedido)}
                             >
                                 Cambiar Estado
                             </button>
                             <button
                                 className="modificar"
-                                onClick={() => cambiarEstadoFinalizado(pedido.id)}
+                                onClick={() => cambiarEstadoFinalizado(pedido.nroPedido)}
                             >
                                 Marcar Cobrado
                             </button>
@@ -155,7 +161,7 @@ function GestionCaja() {
                                 <h2>Detalle del Pedido #{idPedido}</h2>
                                 {pedidoDetalle && (
                                     <>
-                                        <strong>Numero de Mesa: {pedidoDetalle.mesa}</strong>
+                                        <strong>Numero de Mesa: {pedidoDetalle.mesa.nroMesa}</strong>
                                         <table>
                                             <thead>
                                                 <th>Producto</th>
@@ -163,17 +169,17 @@ function GestionCaja() {
                                                 <th>Precio</th>
                                             </thead>
                                             <tbody>
-                                                {pedidoDetalle.productos.map((producto) => (
+                                                {pedidoDetalle.lineasPedido.map((producto) => (
                                             
                                                         <tr>
-                                                            <td>{producto.nombre}</td>
+                                                            <td>{producto.nombreProducto}</td>
                                                             <td>{producto.cantidad}</td>
-                                                            <td>{producto.precio}</td>
+                                                            <td>{producto.precioUnitario}</td>
                                                         </tr>
                                                 ))}
                                             </tbody>
                                         </table>
-                                        <p><strong>Total: ${pedidoDetalle.total}</strong></p>
+                                        <p><strong>Total: $1000</strong></p>
                                     </>
                                 )}
                             </DetallePedido>
