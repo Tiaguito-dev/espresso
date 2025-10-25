@@ -21,9 +21,10 @@ const validarDataPedido = (data) => {
     //PREGUUNTAR si habria que validar que fecha sea Date
 
     if (data.estadoPedido) {
-        const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado'];
-        if (!estadosValidos.includes(data.estadoPedido)) {
-            errores.push(`El estado del pedido debe ser uno de los siguientes: ${estadosValidos.join(', ')}`);
+        const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado', 'pagado'];
+        const estadoRecibido = data.estadoPedido.toLowerCase();
+        if (!estadosValidos.includes(estadoRecibido)) {
+            errores.push(`Estado de pedido no válido. Recibido: '${data.estadoPedido}'. Válidos: ${estadosValidos.join(', ')}`);
         }
     }
 
@@ -49,9 +50,20 @@ class Pedido {
         this.fecha = data.fecha;
         this.estadoPedido = data.estadoPedido || 'pendiente'; //si no tiene estado, lo inicializa en pendiente
         this.mesa = data.mesa;
+        this.total = data.total;
 
         this.lineasPedido = data.lineasPedido || []; // inicializar como un array vacío si no contiene las lineas de pedido NOTA: A DEFINIR UCANDO SE HACE ESTO
     }
+    toJSON() {
+        return {
+            nroPedido: this.nroPedido,
+            fecha: this.fecha,
+            total: this.total,
+            estadoPedido: this.estadoPedido,
+            mesa: this.mesa,
+            lineasPedido: this.lineasPedido
+    };
+}
 
     agregarLineaPedido() {
         const lineaPedido = new LineaPedido();

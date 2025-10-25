@@ -1,8 +1,16 @@
 // 📄 BackEnd/repositories/PedidoBD.js
 
-// 🎯 Asegúrate de que esta ruta sea correcta para tu archivo db.js
-// Asumo que db.js está un nivel arriba del repositorio.
-const { pool, query } = require('../config/db');
+// === SECCIÓN DE QUERYS ===
+const selectPedidosFecha = 'SELECT * FROM pedido WHERE date(fecha_registro)= date($1)';
+const selectPedidoPorNro = 'SELECT * FROM pedido WHERE nro_pedido = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
+const insertPedido = 'INSERT INTO pedido (nro_pedido, observacion, monto, id_mozo, id_mesa) VALUES ($1, $2, $3, $4, $5)';
+const selectUltimoNroPedido = 'SELECT MAX(nro_pedido) FROM pedido';
+const updateEstadoPedidoPorId = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
+const insertLineaPedido = 'INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ((SELECT id_pedido FROM pedido WHERE nro_pedido = $1),(SELECT id_producto FROM producto WHERE id = $2), $3, $4, $5);';
+const selectLineasPorNroPedido = ("SELECT linea.id_linea_pedido, linea.cantidad, linea.monto, producto.nombre, linea.id_pedido, linea.id_producto FROM pedido JOIN linea_pedido AS linea ON pedido.id_pedido = linea.id_pedido JOIN producto ON linea.id_producto = producto.id_producto WHERE pedido.nro_pedido = $1;");
+
+// TODO: FALTA HACER ESTO
+const selectPedidoPorMozo = 'SELECT * FROM pedido WHERE nombre = $1';
 
 // ------------------------------------------------------------------
 // QUERIES - Define tus sentencias SQL (Ajusta los nombres de tabla y columna)
@@ -47,101 +55,97 @@ exports.obtenerPedidosHoy = async () => {
         const result = await query(SELECT_PEDIDOS_HOY);
         return result.rows;
     } catch (error) {
-        throw new Error('Error al obtener pedidos de hoy: ' + error.message);
+        throw new Error('Error al obtener pedidos desde la base de datos: ' + error.message);
+    }
+};
+
+// Obtener los pedidos de una fecha detereminada
+exports.obtenerPedidosFecha = async (fecha) => {
+    try {
+        const pedidos = await Gateway.ejecutarQuery({ text: selectPedidosFecha, values: [fecha] });
+        return pedidos;
+    } catch (error) {
+        throw new Error('Error al obtener pedidos desde la base de datos: ' + error.message);
+    }
+};
+
+// Le paso un nro de pedido, y me devuelve un pedido
+exports.obtenerPedidoPorNro = async (nroPedido) => {
+    try {
+        const pedidos = await Gateway.ejecutarQuery({ text: selectPedidoPorNro, values: [nroPedido] });
+        return pedidos[0] || null; // Retornar el primer pedido encontrado
+    } catch (error) {
+        throw new Error(`Error al obtener pedido ${nroPedido} desde la base de datos: ${error.message}`);
+    }
+};
+
+// Guardo un pedido en la bd, le paso el nro de pedido ya actualizado, la fecha Y HORA de hoy , y el idMesa
+exports.crearPedido = async (datosDePedido) => {
+
+    // TODO: En el controller tengo que hacer una función para obtener el último y para obtener el id de la categoria
+    const { nroPedido, observacion, monto, idMozo, idMesa } = datosDePedido;
+
+    try {
+        await Gateway.ejecutarQuery({ text: insertPedido, values: [nroPedido, observacion, monto, idMozo, idMesa] });
+        return {
+            success: true,
+            message: `El pedido ${nroPedido} se creó correctamente.`
+        };
+    } catch (error) {
+        throw new Error('Error al crear un pedido desde la base de datos: ' + error.message);
+    }
+
+}
+
+exports.modificarEstadoPedido = async (nroPedido, nuevoEstado) => {
+    try {
+        await Gateway.ejecutarQuery({ text: updateEstadoPedidoPorId, values: [nroPedido, nuevoEstado] });
+        return {
+            success: true,
+            message: `El estado del pedido ${nroPedido} se actualizó correctamente a "${nuevoEstado}".`
+        };
+    } catch (error) {
+        throw new Error(`Error al modificar el estado del pedido ${nroPedido} desde la base de datos: ${error.message}`);
     }
 };
 
 exports.obtenerUltimoNroPedido = async () => {
     try {
-        const result = await query(SELECT_ULTIMO_NRO);
-        // Si hay un resultado, devuelve el nro_pedido, si no hay, devuelve null/undefined
-        return result.rows.length > 0 ? result.rows[0].nro_pedido : 0;
+        const resultado = await Gateway.ejecutarQuery(selectUltimoNroPedido);
+        return resultado[0]?.max || 0; // Retornar el último número de pedido
     } catch (error) {
         throw new Error('Error al obtener el último número de pedido: ' + error.message);
     }
 };
 
-exports.crearPedido = async (data) => {
+// === SECCIÓN DE EJECUCIÓN DE LINEAS DE PEDIDO ===
+// TODO: Hay que ver cómo manejamos esto porque tendría que primero crearse el pedido y luego las líneas por el tema del id
+exports.crearLineaPedido = async (datosDeLineaPedido) => {
+    // TODO: Hay que pasarle el monto porque lo registramos como variable
+    const { idPedido, idProducto, cantidad, monto, nombreProducto } = datosDeLineaPedido;
+
     try {
-        const values = [
-            data.nroPedido, 
-            data.fecha, 
-            data.observacion, 
-            data.monto, 
-            data.idMozo, 
-            data.idMesa
-        ];
-        await query(INSERT_PEDIDO, values);
+        await Gateway.ejecutarQuery({
+            text: insertLineaPedido,
+            values: [idPedido, idProducto, cantidad, monto, nombreProducto]
+        });
+
+        return {
+            success: true,
+            message: `La línea del pedido ${idPedido} se creó correctamente.`
+        };
     } catch (error) {
         throw new Error('Error al crear el pedido principal: ' + error.message);
     }
 };
 
-exports.crearLineaPedido = async (data) => {
+exports.obtenerLineasPorNroPedido = async (nroPedido) => {
     try {
-        const values = [
-            data.idPedido, 
-            data.idProducto, 
-            data.cantidad, 
-            data.monto, 
-            data.nombreProducto
-        ];
-        await query(INSERT_LINEA_PEDIDO, values);
+        const lineas = await Gateway.ejecutarQuery({ text: selectLineasPorNroPedido, values: [nroPedido] });
+        return lineas || [];
     } catch (error) {
-        throw new Error('Error al crear la línea de pedido: ' + error.message);
+        throw new Error(`Error al obtener líneas del pedido ${nroPedido} desde la base de datos: ${error.message}`);
     }
 };
 
-exports.modificarEstadoPedido = async (nroPedido, estado) => {
-    try {
-        await query(UPDATE_ESTADO_PEDIDO, [nroPedido, estado]);
-    } catch (error) {
-        throw new Error('Error al modificar el estado del pedido: ' + error.message);
-    }
-};
-
-
-// ------------------------------------------------------------------
-// FUNCIÓN CLAVE CORREGIDA: Obtener Pedido + Líneas (Transacción)
-// ------------------------------------------------------------------
-
-/**
- * Obtiene un pedido específico y sus líneas de detalle en una sola operación.
- * @param {number} nro - El número del pedido.
- * @returns {Promise<Object | null>} El objeto del pedido con su array 'lineas', o null si no se encuentra.
- */
-exports.obtenerPedidoPorNro = async (nro) => {
-    // 🛑 Corrección: Usamos pool.connect() para manejar transacciones y liberar el error 'pool is not defined'
-    const client = await pool.connect(); 
-    try {
-        await client.query('BEGIN'); // Iniciar transacción
-
-        // 1. Obtener el Pedido principal
-        const SELECT_PEDIDO_BY_NRO = 'SELECT * FROM pedido WHERE nro_pedido = $1'; 
-        const pedidoRes = await client.query(SELECT_PEDIDO_BY_NRO, [nro]);
-        
-        if (pedidoRes.rows.length === 0) {
-            await client.query('COMMIT'); // Commit aunque no haya cambios, por seguridad
-            return null; 
-        }
-        
-        const pedido = pedidoRes.rows[0];
-
-        // 2. Obtener las Líneas/Detalles del pedido
-        // ⚠️ Asumo que el campo de la FK en lineas_pedido es 'id_pedido'
-        const SELECT_LINEAS_BY_ID = 'SELECT * FROM lineas_pedido WHERE id_pedido = $1';
-        const lineasRes = await client.query(SELECT_LINEAS_BY_ID, [nro]); 
-        
-        // 3. Combinar y devolver
-        pedido.lineas = lineasRes.rows;
-
-        await client.query('COMMIT'); // Finalizar transacción
-        return [pedido]; // Devolvemos el pedido en un array, para la consistencia con el Controller
-    } catch (e) {
-        await client.query('ROLLBACK'); // Deshacer si hay error
-        console.error("Error en obtenerPedidoPorNro:", e.message);
-        throw new Error('Error de BD al buscar el pedido: ' + e.message);
-    } finally {
-        client.release(); // Liberar el cliente de la conexión
-    }
-};
+// === SECCIÓN DE EJECUCIÓN DE FUNCIONES DE VALIDACIÓN ===

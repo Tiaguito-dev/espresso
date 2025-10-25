@@ -22,7 +22,7 @@ router.put('/:nroPedido', async (req, res) => {
              // Lógica para actualizar campos completos del pedido (si aplica)
              // await pedidosBD.actualizarPedidoCompleto(Number(nroPedido), data);
         }
-
+        
         res.status(200).json({ message: 'Pedido actualizado con éxito' });
     } catch (error) {
         console.error(error);

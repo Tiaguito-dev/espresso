@@ -15,8 +15,8 @@ function TablaPedidos({ pedidos, arrayCampos, funcionCambiarEstado, funcionModif
                 {pedidos.length > 0 ? (
                     pedidos.map((pedido) => (
                         <FilaPedido 
-                            key={pedido.id_pedido} 
-                            pedido={pedido}
+                            key={pedido.nroPedido} 
+                            pedido={pedido} 
                             funcionCambiarEstado={funcionCambiarEstado} 
                             funcionModificar={funcionModificar} 
                             funcionEliminar={funcionEliminar}
