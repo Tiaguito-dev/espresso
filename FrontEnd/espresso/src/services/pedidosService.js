@@ -34,17 +34,26 @@ export const updatePedido = async (id, pedidoData) => {
 };
 
 export const deletePedido = async (id) => {
-  const response = await api.delete(`/pedidos/${id}`);
-  return response.data;
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+    });
+    if (!response.ok) {
+        throw new Error('No se pudo eliminar el pedido');
+    }
+    // No devuelve el JSON si es un DELETE (código 204), solo verifica el éxito
+    return response.status === 204 ? null : response.json().catch(() => null); 
 };
 
-export const buscarPedidoPorId = async (id) => {
- const response = await fetch(`${API_URL}/${id}`);
- 
- if (!response.ok) {
-  // Si el pedido no existe o hay un error de servidor
-  throw new Error(`Pedido no encontrado o error del servidor: ${response.statusText}`);
- }
- 
- return response.json();
+
+// ✅ CORRECCIÓN 2: Añadir 'export' a buscarPedidoPorId para que pueda ser importada
+export const buscarPedidoPorId = async (id) => { 
+    const response = await fetch(`${API_URL}/${id}`);
+    
+    if (!response.ok) {
+        // Mejorar el manejo de error para devolver el mensaje del backend si existe
+        const errorBody = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(`Pedido no encontrado o error del servidor: ${errorBody.message || response.statusText}`);
+    }
+    
+    return response.json();
 };

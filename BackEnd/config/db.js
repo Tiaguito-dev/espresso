@@ -16,6 +16,9 @@ const pool = new Pool({
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
 });
-
+    const query = (text, params) => pool.query(text, params);
 // Exportar el pool para usarlo en otros modulos
-module.exports = pool;
+module.exports = {
+    pool, // Exporta el objeto pool (necesario para transacciones)
+    query // Exporta la función query (necesario para PedidoBD.js)
+};

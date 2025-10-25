@@ -2,7 +2,7 @@
 
 // 🎯 Asegúrate de que esta ruta sea correcta para tu archivo db.js
 // Asumo que db.js está un nivel arriba del repositorio.
-const { pool, query } = require('../config/db'); 
+const { pool, query } = require('../config/db');
 
 // ------------------------------------------------------------------
 // QUERIES - Define tus sentencias SQL (Ajusta los nombres de tabla y columna)
@@ -10,20 +10,20 @@ const { pool, query } = require('../config/db');
 
 // ⚠️ Asegúrate de que esta SELECT traiga todos los campos necesarios
 const SELECT_PEDIDOS_HOY = `
-    SELECT * FROM pedidos 
+    SELECT * FROM pedido 
     WHERE DATE(fecha_registro) = CURRENT_DATE 
     ORDER BY nro_pedido DESC
 `;
 
 const SELECT_ULTIMO_NRO = `
     SELECT nro_pedido 
-    FROM pedidos 
+    FROM pedido 
     ORDER BY nro_pedido DESC 
     LIMIT 1
 `;
 
 const INSERT_PEDIDO = `
-    INSERT INTO pedidos (nro_pedido, fecha_registro, observacion, monto, estado, id_mozo, id_mesa)
+    INSERT INTO pedido (nro_pedido, fecha_registro, observacion, monto, estado, id_mozo, id_mesa)
     VALUES ($1, $2, $3, $4, 'Pendiente', $5, $6)
 `;
 
@@ -33,7 +33,7 @@ const INSERT_LINEA_PEDIDO = `
 `;
 
 const UPDATE_ESTADO_PEDIDO = `
-    UPDATE pedidos 
+    UPDATE pedido 
     SET estado = $2 
     WHERE nro_pedido = $1
 `;
@@ -117,7 +117,7 @@ exports.obtenerPedidoPorNro = async (nro) => {
         await client.query('BEGIN'); // Iniciar transacción
 
         // 1. Obtener el Pedido principal
-        const SELECT_PEDIDO_BY_NRO = 'SELECT * FROM pedidos WHERE nro_pedido = $1';
+        const SELECT_PEDIDO_BY_NRO = 'SELECT * FROM pedido WHERE nro_pedido = $1'; 
         const pedidoRes = await client.query(SELECT_PEDIDO_BY_NRO, [nro]);
         
         if (pedidoRes.rows.length === 0) {
