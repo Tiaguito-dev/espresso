@@ -135,7 +135,7 @@ function GestionCocina() {
                     <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido} className="fila-cocina">
 
                         <td>{pedido.nroPedido}</td>
-                        <td>lionel</td>
+                        <td></td>
                         <td>{pedido.mesa.nroMesa}</td>
 
                         <td> 
@@ -149,9 +149,10 @@ function GestionCocina() {
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {/* Usar pedido.productos, NO pedidoAcordeon.productos */}
                                         {pedido.lineasPedido.map((producto, index) => (
                                             <tr key={index} className="fila">
-                                                <td>{producto.precioUnitario}</td>
+                                                <td>{index}</td>
                                                 <td>{producto.nombreProducto}</td>
                                                 <td>{producto.cantidad}</td>
                                             </tr>
@@ -169,12 +170,6 @@ function GestionCocina() {
                         
                         <td className="acciones">
                             <button
-                                className="info"
-                                onClick={() => abrirDetalle(pedido)}
-                            >
-                                Ver detalle
-                            </button>
-                            <button
                                 className="modificar"
                                 onClick={() => cambiarEstado(pedido.nroPedido)}
                             >
@@ -186,33 +181,6 @@ function GestionCocina() {
                             >
                                 Marcar Listo
                             </button>
-
-                            <DetallePedido funcionAbrir={estadoDetalle} funcionCerrar={cerrarDetalle}>
-                                <h2>Detalle del Pedido #{idPedido}</h2>
-                                {pedidoDetalle && (
-                                    <>
-                                        <strong>Numero de Mesa: {pedidoDetalle.mesa.nroMesa}</strong>
-                                        <table>
-                                            <thead>
-                                                <th>id</th>
-                                                <th>Producto</th>
-                                                <th>Cantidad</th>
-                                            </thead>
-                                            <tbody>
-                                                {pedidoDetalle.lineasPedido.map((producto) => (
-                                                    <tr>
-                                                        {/* id muestra un nombre pero deberia mostrar el id del producto */}
-                                                        <td>{producto.precioUnitario}</td>
-                                                        <td>{producto.nombreProducto}</td>
-                                                        <td>{producto.cantidad}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </>
-                                )}
-                            </DetallePedido>
-                            
                         </td>
                     </tr>
                 ))}

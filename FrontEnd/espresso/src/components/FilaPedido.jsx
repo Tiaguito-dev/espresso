@@ -31,16 +31,14 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
         <tr>
             <td>{pedido.nroPedido}</td>
             <td>{pedido.mesa.nroMesa}</td>
-            <td>{pedido.mozo}</td>
+            <td>4</td>
             {/* Si fecha no viene, puedes mostrar un guión '-' */}
             <td>{pedido.fecha ? pedido.fecha : '-'}</td> 
             
             {/* Celda del Estado con Color */}
             <td><span className={claseEstado}>{pedido.estadoPedido}</span></td>
             
-
-            {/* <td>${pedido.total}</td> */}
-            <td>$1000 tp</td>
+            <td>$10000</td>
             
             {/* Columna de Acciones */}
             <td>
