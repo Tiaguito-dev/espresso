@@ -65,13 +65,20 @@ class Menu {
        }
    */
     async agregarProducto(datosProducto) {
+        console.log('datos recibidos', datosProducto)
         const { nombre, categoria: nombreCategoria, descripcion, precio, disponible } = datosProducto;
 
+        const existeProducto = await ProductoBD.existeNombreProducto(nombre);
+        if (existeProducto){
+            throw new Error(`Ya existe producto con ese nombre`);
+        }
+        
         const id_categoria = await this.obtenerOCrearCategoria(nombreCategoria);
 
         const ultimoCodigo = await ProductoBD.obtenerUltimoCodigo();
-
-        const id = (ultimoCodigo && ultimoCodigo.max) ? ultimoCodigo.max + 1 : 1;
+        console.log('El ultimo codigo:', ultimoCodigo);
+        const id = ultimoCodigo + 1;
+        console.log('el nuevo codigo:', id);
 
         const categoriaObj = new Categoria({ nombre: nombreCategoria });
         try {
@@ -121,7 +128,12 @@ class Menu {
         }
     */
     async buscarProductoPorId(id) {
-        const producto = await ProductoBD.obtenerProductoPorId(id);
+        const idInt = parseInt(id, 10);
+        if (isNaN(idInt)) {
+            console.error('Error: buscarProductoPorId recibió un ID inválido:', id);
+            return null; // Devuelve null si el ID no es un número
+        }
+        const producto = await ProductoBD.obtenerProductoPorId(idInt);
         if (!producto) {
             return null;
         }
@@ -137,8 +149,13 @@ class Menu {
     async modificarProducto(id, datosModificados) {
         const { precio, nombre, descripcion, id_categoria } = datosModificados;
         //validaciones
+        const idInt = parseInt(id, 10);
+        if (isNaN(idInt)) {
+            throw new Error('ID de producto inválido');
+        }
 
-        const productoActualBD = await ProductoBD.obtenerProductoPorId(id);
+        const productoActualBD = await ProductoBD.obtenerProductoPorId(idInt);
+
         if (!productoActualBD) {
             throw new Error('Producto no encontrado');
         }
@@ -148,14 +165,36 @@ class Menu {
         if (datosModificados.nombre !== undefined && (typeof datosModificados.nombre !== 'string' || datosModificados.nombre.trim() === '')) {
             throw new Error('El nombre debe ser un texto no vacío.');
         }
-
-        let idCategoria = productoActualBD.id_categoria;
-        if (datosModificados.categoria) {
-            idCategoria = await this.obtenerOCrearCategoria(datosModificados.categoria);
+        if (descripcion !== undefined && typeof descripcion !== 'string') {
+            throw new Error('La descripción debe ser un texto.');
+        }
+        if (id_categoria !== undefined && typeof id_categoria !== 'number') {
+            throw new Error('El id_categoria debe ser un número.');
         }
 
-        await ProductoBD.modificarProducto(id, datosModificados);
-        return this.buscarProductoPorId(id);
+        let idCategoria = productoActualBD.id_categoria;
+        const categoriaNueva = datosModificados.categoria;
+        if (categoriaNueva) {
+            let nombreCategoria = null;
+            if (typeof categoriaNueva === 'object' && categoriaNueva.nombre) {
+                nombreCategoria = categoriaNueva.nombre;
+            } else if (typeof categoriaNueva === 'string') {
+                nombreCategoria = categoriaNueva;
+            }
+            if (nombreCategoria && nombreCategoria.trim() !== '') {
+                idCategoria = await this.obtenerOCrearCategoria(nombreCategoria);
+            }
+        }
+
+        const datosParaBD = {
+            precio: datosModificados.precio ?? productoActualBD.precio,
+            nombre: datosModificados.nombre ?? productoActualBD.nombre,
+            descripcion: datosModificados.descripcion ?? productoActualBD.descripcion,
+            id_categoria: idCategoria 
+        };
+        console.log('--- 2. MENU (datosParaBD) ---', datosParaBD);
+        await ProductoBD.modificarProducto(idInt, datosParaBD);
+        return this.buscarProductoPorId(idInt);
     }
 }
 

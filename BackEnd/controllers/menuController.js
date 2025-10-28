@@ -41,6 +41,7 @@ exports.crearProducto = async (req, res) => {
         const productoAgregado = await menu.agregarProducto(req.body);
         res.status(201).json(productoAgregado);
     }catch(error){
+        console.error('Error en crearProducto:', error);
         if (error.message.startsWith('Datos de producto inválidos')) {
             return res.status(400).json({ message: error.message });
         }
@@ -52,12 +53,14 @@ exports.modificarProducto = async (req, res) => {
     try {
         const { id } = req.params;
         const datosModificados = req.body;
+        console.log(`--- 1. CONTROLLER: ID recibido de la URL (req.params.id): '${id}' ---`);
+        console.log('--- 1. CONTROLLER (req.body) ---', datosModificados);
         const productoExiste = await menu.buscarProductoPorId(id);
+        console.log(`--- 1.5. CONTROLLER: Resultado de buscarProductoPorId:`, productoExiste);
         if (!productoExiste){
             return res.status(404).json({ message: 'Producto para modificar no encontrado' });
         }
-        const productoParaModificar = menu.buscarProductoPorId(id);
-
+        console.log('--- 1.8. CONTROLLER: Llamando a menu.modificarProducto... ---');
         const productoModificado = await menu.modificarProducto(id, datosModificados);
 
         res.status(200).json(productoModificado);
