@@ -1,3 +1,7 @@
+//http://localhost:3001/api/productos/categorias
+//http://localhost:3001/api/productos
+
+
 const Menu = require('../models/Menu');
 //const Producto = require('../models/Producto');
 //const productosIniciales = require('../DB/productos.json');
@@ -82,5 +86,22 @@ exports.eliminarProducto = async (req, res) => {
         }
     }catch(error){
         res.status(500).json({ message: 'Error al eliminar producto', error: error.message });
+    }
+};
+
+exports.crearCategoria = async (req, res) => {
+    try {
+        const { nombre } = req.body; 
+
+        if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
+            return res.status(400).json({ message: 'El nombre de la categoría es inválido o está vacío.' });
+        }
+
+        const nuevaCategoria = await menu.obtenerOCrearCategoria(nombre.trim());
+
+        res.status(201).json(nuevaCategoria);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al crear la categoría', error: error.message });
     }
 };

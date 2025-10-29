@@ -35,14 +35,12 @@ class Menu {
     }
 
     async obtenerOCrearCategoria(nombreCategoria) {
-        try {
-            const id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
-            return id;
-        } catch (error) {
-            console.log('Categoria no encontrada, creando:', nombreCategoria);
+        let id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
+        if(!id){
             await CategoriaBD.crearCategoria(nombreCategoria);
-            return await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
+            id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
         }
+        return id;
     }
 
 
@@ -171,6 +169,9 @@ class Menu {
         if (id_categoria !== undefined && typeof id_categoria !== 'number') {
             throw new Error('El id_categoria debe ser un número.');
         }
+        if (datosModificados.disponible !== undefined && typeof datosModificados.disponible !== 'boolean') {
+            throw new Error('La disponibilidad debe ser un valor booleano (true/false).');
+        }
 
         let idCategoria = productoActualBD.id_categoria;
         const categoriaNueva = datosModificados.categoria;
@@ -190,7 +191,8 @@ class Menu {
             precio: datosModificados.precio ?? productoActualBD.precio,
             nombre: datosModificados.nombre ?? productoActualBD.nombre,
             descripcion: datosModificados.descripcion ?? productoActualBD.descripcion,
-            id_categoria: idCategoria 
+            id_categoria: idCategoria,
+            disponible: datosModificados.disponible ?? productoActualBD.disponible
         };
         console.log('--- 2. MENU (datosParaBD) ---', datosParaBD);
         await ProductoBD.modificarProducto(idInt, datosParaBD);

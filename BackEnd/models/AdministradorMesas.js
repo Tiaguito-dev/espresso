@@ -8,7 +8,7 @@ class AdministradorMesas {
         if (!mesas) return null;
         if (Array.isArray(mesas)){
             return mesas.map(m => new Mesa({
-                nroMesa: m.nro_mesa,
+                nroMesa: m.mesa,
                 estadoMesa: m.estado
             }));
         }
@@ -59,7 +59,7 @@ class AdministradorMesas {
         const nuevaMesa = new Mesa({ nroMesa, estadoMesa });
         
         const mesaBD = {
-            nro_mesa: nuevaMesa.nroMesa,
+            mesa: nuevaMesa.nroMesa,
             estado: nuevaMesa.estadoMesa
         };
 
@@ -88,7 +88,7 @@ class AdministradorMesas {
             throw new Error(`El estado '${nuevoEstado}' no es válido.`);
         }
         await MesaBD.modificarEstadoMesa(nroMesa, nuevoEstado);
-        mesaAModificar.estadoMesa = nuevoEstado;
+        mesaAModificar.cambiarEstadoMesa(nuevoEstado);
         return mesaAModificar;        
     }
 }
