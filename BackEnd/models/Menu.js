@@ -17,13 +17,13 @@ class Menu {
         // LO HACE BIEN console.log('CATEGORIAS EN MENU:', categorias);
         const recorroCategorias = new Map();
         categorias.forEach(cat => {
-            recorroCategorias.set(cat.id_categoria, new Categoria(cat));
+            recorroCategorias.set(cat.categoria, new Categoria(cat));
             // LO HACE BIEN console.log('Mapeando categoria:', cat);
             // LO HACE BIEN console.log('IMPRIMO EL TIPO DEL id:', cat.id_categoria, typeof cat.id_categoria);
         })
 
         return productos.map(prod => {
-            const categoriaObj = recorroCategorias.get(prod.id_categoria);
+            const categoriaObj = recorroCategorias.get(prod.categoria);
             // LO HACE BIEN console.log('PRODUCTO EN MENU:', prod);
             // LO HACE BIEN console.log('CATEGORIA DEL PRODUCTO:', categoriaObj);
             return new Producto({
@@ -71,7 +71,7 @@ class Menu {
             throw new Error(`Ya existe producto con ese nombre`);
         }
         
-        const id_categoria = await this.obtenerOCrearCategoria(nombreCategoria);
+        const categoria = await this.obtenerOCrearCategoria(nombreCategoria);
 
         const ultimoCodigo = await ProductoBD.obtenerUltimoCodigo();
         console.log('El ultimo codigo:', ultimoCodigo);
@@ -93,7 +93,7 @@ class Menu {
             precio,
             nombre,
             descripcion,
-            id_categoria,
+            categoria,
         }
 
         await ProductoBD.crearProducto(datosBD);
@@ -191,7 +191,7 @@ class Menu {
             precio: datosModificados.precio ?? productoActualBD.precio,
             nombre: datosModificados.nombre ?? productoActualBD.nombre,
             descripcion: datosModificados.descripcion ?? productoActualBD.descripcion,
-            id_categoria: idCategoria,
+            categoria: idCategoria,
             disponible: datosModificados.disponible ?? productoActualBD.disponible
         };
         console.log('--- 2. MENU (datosParaBD) ---', datosParaBD);

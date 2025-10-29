@@ -86,7 +86,7 @@ class AdministradorPedidos {
                 idProducto: productoObj.id,
                 cantidad: linea.cantidad,
                 monto: subtotal,
-                nombreProducto: productoObj.getNombre()
+                nombre: productoObj.getNombre()
             });
 
             lineasObj.push(new LineaPedido({
