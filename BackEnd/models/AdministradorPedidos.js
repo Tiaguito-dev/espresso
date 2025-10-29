@@ -52,7 +52,7 @@ class AdministradorPedidos {
             }));
         }
         // Imprimo las lineas de pedido para verificar 
-        console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
+        // console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
         return pedidosObj;
     }
 
@@ -122,8 +122,8 @@ class AdministradorPedidos {
                 // fecha: fecha, no anda el campo fecha
                 observacion: observacion || null,
                 monto: montoTotal,
-                idMozo: 1,
-                idMesa: mesaObj.nroMesa,
+                mozo: 1,
+                mesa: mesaObj.nroMesa,
             });
 
             /*const pruebaPedido = {
@@ -204,10 +204,6 @@ class AdministradorPedidos {
         return pedidoObj[0];
     }
 
-    eliminarPedidoPorNumero(nroPedido) {
-
-    }
-
     async modificarEstadoPedido(nroPedido, nuevoEstado) {
         const pedido = await this.buscarPedidoPorNumero(nroPedido);
         if (!pedido) {
@@ -247,5 +243,7 @@ class AdministradorPedidos {
         return pedido;
     }
 }
+
+
 
 module.exports = AdministradorPedidos;
