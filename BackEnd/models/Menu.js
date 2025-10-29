@@ -27,7 +27,10 @@ class Menu {
             // LO HACE BIEN console.log('PRODUCTO EN MENU:', prod);
             // LO HACE BIEN console.log('CATEGORIA DEL PRODUCTO:', categoriaObj);
             return new Producto({
-                ...prod,
+                id: prod.codigo, 
+                nombre: prod.nombre,
+                precio: prod.precio, 
+                descripcion: prod.descripcion,
                 disponible: prod.disponible,
                 categoria: categoriaObj
             });

@@ -27,7 +27,7 @@ class AdministradorPedidos {
             for (const linea of lineasBD) {
                 const productoObj = await this.menu.buscarProductoPorId(linea.id_producto);
 
-                // console.log(`Producto obtenido para la línea de pedido ${linea.id_producto}:`, productoObj);
+                console.log(`Producto obtenido para la línea de pedido ${linea.id_producto}:`, productoObj);
 
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
