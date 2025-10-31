@@ -4,21 +4,27 @@ const MesaBD = require('../repositories/MesaBD');
 class AdministradorMesas {
     constructor() {}
 
-    convertirMesaBD(mesas){
-        if (!mesas) return null;
-        if (Array.isArray(mesas)){
-            return mesas.map(m => new Mesa({
+    convertirMesaBD(dataBD){
+        if (!dataBD) return null;
+        
+        // Si la data es un array (viene de getMesas)
+        if (Array.isArray(dataBD)){
+            return dataBD.map(m => new Mesa({
+                // 🛑 CORRECCIÓN: Mapear correctamente los campos de BD a la clase Mesa
                 nroMesa: m.nro_mesa,
-                estadoMesa: m.estado
+                estadoMesa: m.estado_mesa, // Usar 'estado_mesa' de la BD
+                // Si la BD tiene id_mesa, también lo deberías mapear: id: m.id_mesa
             }));
         }
 
+        // Si la data es un solo objeto (viene de buscarMesaPorNumero)
         return new Mesa({
-            nroMesa: mesas.nro_mesa,
-            estadoMesa: mesas.estado
+            // 🛑 CORRECCIÓN: Mapear correctamente los campos de BD a la clase Mesa
+            nroMesa: dataBD.nro_mesa,
+            estadoMesa: dataBD.estado_mesa // Usar 'estado_mesa' de la BD
+            // Si la BD tiene id_mesa, también lo deberías mapear: id: dataBD.id_mesa
         });
     }
-
 /*    cargarMesas(mesasData) {
         try {
                 mesasData.forEach(dataMesa => {
@@ -87,10 +93,14 @@ class AdministradorMesas {
         if (!estadosValidos.includes(nuevoEstado)) {
             throw new Error(`El estado '${nuevoEstado}' no es válido.`);
         }
+        
+        // 🛑 CORRECCIÓN: Pasar los parámetros separados al repositorio
         await MesaBD.modificarEstadoMesa(nroMesa, nuevoEstado);
+        
         mesaAModificar.estadoMesa = nuevoEstado;
-        return mesaAModificar;        
+        return mesaAModificar;         
     }
+
 }
 
 module.exports = AdministradorMesas;

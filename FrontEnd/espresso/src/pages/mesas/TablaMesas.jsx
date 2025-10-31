@@ -1,32 +1,42 @@
 // src/pages/mesas/TablaMesas.jsx
 
 import React from 'react';
-import FilaMesa from './FilaMesa'; // Importamos el componente de fila
+import FilaMesa from './FilaMesa';
+import './Mesas.css'; // Asegúrate de que los estilos de tabla se importen aquí o en MesasLista
 
-export default function TablaMesas({ mesas, arrayCampos, funcionCambiarEstado, funcionModificar, funcionEliminar }) {
+export default function TablaMesas({ 
+    mesas, 
+    arrayCampos, 
+    funcionCambiarEstado, 
+    funcionModificar, 
+    funcionLiberar,             // 🚨 NUEVA FUNCIÓN
+    funcionPonerNoDisponible    // 🚨 NUEVA FUNCIÓN
+}) {
     return (
-        <div className="tabla-contenedor">
+        <div className="table-container">
             {mesas.length === 0 ? (
-                <p className="mensaje-vacio">No hay mesas para mostrar.</p>
+                <p className="no-data-message">No se encontraron mesas que coincidan con los filtros.</p>
             ) : (
-                <table className="tabla-mesas">
-                    {/* Encabezados */}
+                <table className="mesas-table">
                     <thead>
                         <tr>
+                            {/* Mapeo de los encabezados de la tabla */}
                             {arrayCampos.map((campo, index) => (
                                 <th key={index}>{campo}</th>
                             ))}
                         </tr>
                     </thead>
-                    {/* Cuerpo de la tabla */}
                     <tbody>
+                        {/* Mapeo de cada mesa a su respectiva fila */}
                         {mesas.map((mesa) => (
                             <FilaMesa
                                 key={mesa.id}
                                 mesa={mesa}
                                 funcionCambiarEstado={funcionCambiarEstado}
                                 funcionModificar={funcionModificar}
-                                funcionEliminar={funcionEliminar}
+                                // 🚨 Pasamos las nuevas funciones de Liberar y No Disponible
+                                funcionLiberar={funcionLiberar}
+                                funcionPonerNoDisponible={funcionPonerNoDisponible}
                             />
                         ))}
                     </tbody>

@@ -1,34 +1,39 @@
 // src/pages/pedidos/PedidosLista.jsx
 
 import React, { useState, useEffect } from "react";
-// Asegúrate de que updatePedido esté correctamente exportado aquí
 import { getPedidos, updatePedido, deletePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
 import "./Pedidos.css";
 
 import Filtro from "../menu/Filtro";
-import TablaPedidos from "../../components/TablaPedidos"; // Importamos el componente contenedor de la tabla
+import TablaPedidos from "../../components/TablaPedidos"; 
 
 export default function PedidosLista() {
     const [pedidos, setPedidos] = useState([]);
     const [mostrarFiltros, setMostrarFiltros] = useState(false);
     const [estadoFiltro, setEstadoFiltro] = useState("todos");
+    
+    // 🆕 Nuevos estados para los filtros de Mesa y Mozo
+    const [filtroMesa, setFiltroMesa] = useState(""); 
+    const [filtroMozo, setFiltroMozo] = useState(""); 
+    
     const navigate = useNavigate();
 
     // 🔄 Cargar pedidos del back-end al inicio
     useEffect(() => {
         fetchPedidos();
     }, []);
+    
     const fetchPedidos = async () => {
         try {
             const data = await getPedidos();
+            // Asumo que tu backend devuelve la lista de pedidos con los campos que necesitas
             setPedidos(data);
         } catch (error) {
             console.error("Error al obtener los pedidos:", error);
         }
     };
 
-    // Mostrar/Ocultar filtros
     const toggleFiltros = () => {
         setMostrarFiltros(!mostrarFiltros);
     };
@@ -36,39 +41,53 @@ export default function PedidosLista() {
     const filtrarEstado = (estado) => {
         setEstadoFiltro(estado);
     };
+    
+    // 🆕 Manejadores de cambio para los inputs de Mesa y Mozo
+    const handleFiltroMesaChange = (e) => {
+        setFiltroMesa(e.target.value);
+    };
 
-    // 🔄 Cambiar estado del pedido (Pendiente -> Listo -> Finalizado)
-    const cambiarEstado = async (id) => {
+    const handleFiltroMozoChange = (e) => {
+        setFiltroMozo(e.target.value);
+    };
+
+
+    // 🔄 Cambiar estado del pedido
+    const cambiarEstado = async (nroPedido) => { 
         try {
-            const pedidoActual = pedidos.find((p) => p.id === id);
+            // Buscamos el pedido en el estado local por su nroPedido
+            const pedidoActual = pedidos.find((p) => p.nroPedido === nroPedido); 
+            
             if (!pedidoActual) return;
 
             let siguienteEstado;
-            if (pedidoActual.estadoPedido === "Pendiente") {
-                siguienteEstado = "Listo";
-            } else if (pedidoActual.estadoPedido === "Listo") {
-                siguienteEstado = "Finalizado";
+            // 🚨 CORRECCIÓN: Usamos 'estadoPedido' que es el nombre del campo en tus datos de ejemplo
+            const estadoActual = pedidoActual.estadoPedido; 
+            
+            if (estadoActual === "pendiente") {
+                siguienteEstado = "listo";
+            } else if (estadoActual === "listo") {
+                siguienteEstado = "finalizado";
             } else {
-                alert(`El pedido ya está ${pedidoActual.estadoPedido} y no se puede avanzar.`);
+                alert(`El pedido ya está ${estadoActual} y no se puede avanzar.`);
                 return;
             }
 
-            // Llamada al servicio
-            await updatePedido(id, { nuevoEstado: siguienteEstado });
-            fetchPedidos();
+            // Llamada al servicio para actualizar solo el estado
+            await updatePedido(nroPedido, { estadoPedido: siguienteEstado }); 
+            fetchPedidos(); // Refrescamos la lista
         } catch (error) {
             console.error("Error al actualizar el estado del pedido:", error);
             alert("No se pudo actualizar el estado del pedido.");
         }
     };
-
-    // Función para CANCELAR el pedido (usa updatePedido)
-    const cancelarPedido = async (id) => {
-        if (window.confirm("¿Seguro que desea CANCELAR el pedido? El estado pasará a 'Cancelado'.")) {
+    
+    // 🗑️ Función para CANCELAR el pedido
+    const cancelarPedido = async (nroPedido) => {
+        if (window.confirm("¿Seguro que desea CANCELAR el pedido? El estado pasará a 'cancelado'.")) {
             try {
                 // Llamada al servicio para actualizar el estado
-                await updatePedido(id, { nuevoEstado: "Cancelado" });
-
+                await updatePedido(nroPedido, { estadoPedido: "cancelado" }); 
                 fetchPedidos();
                 alert("Pedido cancelado correctamente.");
             } catch (error) {
@@ -78,50 +97,73 @@ export default function PedidosLista() {
         }
     };
 
-    //Navegar a modificar pedido
-    const navegarAModificar = (id) => {
-        // 🎯 La ruta debe incluir el ID del pedido
-        navigate(`/pedidos/modificar/${id}`);
+    // 🛣️ Navegar a modificar pedido
+    const navegarAModificar = (nroPedido) => { 
+        navigate(`/pedidos/modificar/${nroPedido}`);
     };
 
-    // Filtrar por estado
-    const pedidosFiltrados = (() => {
-        switch (estadoFiltro) {
-            case "pendiente":
-                return pedidos.filter((p) => p.estadoPedido === "Pendiente");
-            case "listo":
-                return pedidos.filter((p) => p.estadoPedido === "Listo");
-            case "finalizado":
-                return pedidos.filter((p) => p.estadoPedido === "Finalizado");
-            case "cancelado":
-                return pedidos.filter((p) => p.estadoPedido === "Cancelado");
-            default:
-                return pedidos;
-        }
-    })();
+    // 🔎 Lógica de Filtrado Combinado (Estado, Mesa y Mozo)
+    // 🔎 Lógica de Filtrado Combinado (Estado, Mesa y Mozo)
+    const pedidosFiltrados = pedidos.filter((p) => {
+        // 🚨 AJUSTE AQUÍ: Usamos p.mozo, que es el campo simulado por el mock.
+        const estadoBD = p.estadoPedido ? p.estadoPedido.toLowerCase() : 'desconocido'; 
+        const mesaBD = p.mesa ? String(p.mesa) : ''; 
+        const mozoBD = p.mozo ? p.mozo.toLowerCase() : ''; 
 
-    //Definimos los campos de la tabla
+        // 1. Filtrar por Estado
+        let pasaFiltroEstado = true;
+        if (estadoFiltro !== "todos") {
+            pasaFiltroEstado = estadoBD === estadoFiltro;
+        }
+
+        // 2. Filtrar por Mesa (Coincidencia parcial)
+        let pasaFiltroMesa = true;
+        if (filtroMesa) {
+            pasaFiltroMesa = mesaBD.includes(filtroMesa);
+        }
+
+        // 3. Filtrar por Mozo (Coincidencia parcial, case-insensitive)
+        let pasaFiltroMozo = true;
+        if (filtroMozo) {
+            pasaFiltroMozo = mozoBD.includes(filtroMozo.toLowerCase());
+        }
+
+        return pasaFiltroEstado && pasaFiltroMesa && pasaFiltroMozo;
+    });
+
+    // Definimos los campos de la tabla
     const arrayCampos = ["ID", "Mesa", "Mozo", "Fecha", "Estado", "Total", "Acciones"];
 
 
     return (
         <div className="container">
-            {/* Botón de filtros */}
+            {/* ... JSX restante ... */}
             <button className="toggle-filtros" onClick={toggleFiltros}>
                 Filtros
             </button>
 
             {mostrarFiltros && (
                 <div className="filtros">
-                    <input type="text" placeholder="Buscar por mesa" />
-                    <input type="text" placeholder="Buscar por estado" />
+                    {/* 🆕 Filtro por Mesa */}
+                    <input 
+                        type="text" 
+                        placeholder="Buscar por nro. de Mesa" 
+                        value={filtroMesa}
+                        onChange={handleFiltroMesaChange}
+                    />
+                    {/* 🆕 Filtro por Mozo */}
+                    <input 
+                        type="text" 
+                        placeholder="Buscar por Mozo (nombre)" 
+                        value={filtroMozo}
+                        onChange={handleFiltroMozoChange}
+                    />
                 </div>
             )}
 
             {/* Estados + botón agregar */}
             <div className="filtros-estado">
                 <div className="estados">
-
                     <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
                     <Filtro estadoActual={estadoFiltro} estadoValor="pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
                     <Filtro estadoActual={estadoFiltro} estadoValor="listo" nombreFiltro="Listo" onClick={filtrarEstado} />
@@ -130,17 +172,16 @@ export default function PedidosLista() {
                 </div>
                 <button
                     className="btn-agregar"
-                    // Ruta para crear un nuevo pedido (normalmente sin ID)
                     onClick={() => navigate("/pedidos/agregar")}
                 >
                     + Agregar Pedido
                 </button>
             </div>
 
-            {/* Uso del componente TablaPedidos, que ahora maneja el renderizado */}
+            {/* Uso del componente TablaPedidos */}
             <TablaPedidos
                 pedidos={pedidosFiltrados}
-                arrayCampos={arrayCampos} // Pasamos los encabezados
+                arrayCampos={arrayCampos} 
                 funcionCambiarEstado={cambiarEstado}
                 funcionModificar={navegarAModificar}
                 funcionEliminar={cancelarPedido}

@@ -12,6 +12,7 @@ export default function Navbar() {
         <li><NavLink to="/caja">Gestión de caja</NavLink></li>
         <li><NavLink to="/cocina">Gestión de cocina</NavLink></li>
         <li><NavLink to="/menu/menuEspresso/">Ver Menú Espresso</NavLink></li>
+        <li><NavLink to="/mesas">Gestion de Mesas</NavLink></li>
       </ul>
     </nav>
   );

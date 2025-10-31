@@ -2,69 +2,76 @@
 
 import React from 'react';
 
-export default function FilaMesa({ mesa, funcionCambiarEstado, funcionModificar, funcionEliminar }) {
-    
-    // Función para determinar la clase de color del estado
-    const getColorClase = (estado) => {
-        switch (estado) {
-            case "Disponible":
-                return "estado-disponible";
-            case "Ocupada":
-                return "estado-ocupada";
-            case "Lista para ordenar":
-                return "estado-ordenar";
-            case "Lista para pagar":
-                return "estado-pagar";
-            default:
-                return "estado-default";
-        }
-    };
+// Estilos de estado para la celda (Incluye No Disponible)
+const getEstadoClass = (estado) => {
+    switch (estado) {
+        case "Disponible":
+            return "estado-disponible";
+        case "Ocupada":
+            return "estado-ocupada";
+        case "No Disponible":
+            return "estado-no-disponible"; 
+        default:
+            return "estado-desconocido";
+    }
+};
 
-    // Función para obtener el texto del botón de cambio de estado
-    const getBotonTexto = (estado) => {
-        switch (estado) {
-            case "Disponible":
-                return "Ocupar";
-            case "Ocupada":
-                return "Tomar Orden";
-            case "Lista para ordenar":
-                return "Cobrar";
-            case "Lista para pagar":
-                return "Liberar";
-            default:
-                return "Cambiar";
-        }
-    };
+// 🚨 La prop 'funcionEliminar' del código anterior se divide en 'funcionLiberar' y 'funcionPonerNoDisponible'
+export default function FilaMesa({ mesa, funcionCambiarEstado, funcionModificar, funcionLiberar, funcionPonerNoDisponible }) {
     
+    const mesaId = mesa.id; 
+
+    // DETERMINAR QUÉ BOTONES MOSTRAR
+    const estaNoDisponible = mesa.estado === "No Disponible";
+
     return (
         <tr>
             <td>{mesa.id}</td>
             <td>{mesa.numero}</td>
             <td>{mesa.mozoACargo || '-'}</td>
             <td>
-                <span className={`estado-badge ${getColorClase(mesa.estado)}`}>
+                <span className={`${getEstadoClass(mesa.estado)} estado-badge`}> 
                     {mesa.estado}
                 </span>
             </td>
-            <td className="acciones">
+            <td>
+                {/* 1. Botón de Ciclo de Estado (Solo visible si NO está No Disponible) */}
+                {!estaNoDisponible && (
+                    <button 
+                        className="btn-accion btn-cambiar-estado" 
+                        onClick={() => funcionCambiarEstado(mesaId)}
+                    >
+                        {/* Muestra el texto opuesto al estado actual */}
+                        {mesa.estado === "Ocupada" ? "Poner Disponible" : "Poner Ocupada"} 
+                    </button>
+                )}
+
+                {/* 2. Botón Modificar (siempre visible) */}
                 <button 
-                    className="btn btn-estado" 
-                    onClick={() => funcionCambiarEstado(mesa.id)}
-                >
-                    {getBotonTexto(mesa.estado)}
-                </button>
-                <button 
-                    className="btn btn-modificar" 
-                    onClick={() => funcionModificar(mesa.id)}
+                    className="btn-accion btn-modificar" 
+                    onClick={() => funcionModificar(mesaId)}
                 >
                     Modificar
                 </button>
-                <button 
-                    className="btn btn-eliminar" 
-                    onClick={() => funcionEliminar(mesa.id)}
-                >
-                    Dar de Baja
-                </button>
+                
+                {/* 3. Botón para liberar (activar) o poner fuera de servicio (eliminar suave) */}
+                {!estaNoDisponible ? (
+                    // Si está Disponible u Ocupada, mostramos Poner No Disponible (Eliminación suave)
+                    <button 
+                        className="btn-accion btn-eliminar-suave" 
+                        onClick={() => funcionPonerNoDisponible(mesaId)} 
+                    >
+                        Poner No Disponible
+                    </button>
+                ) : (
+                    // Si está No Disponible, mostramos el botón para activarla/liberarla
+                    <button 
+                        className="btn-accion btn-liberar" 
+                        onClick={() => funcionLiberar(mesaId)} 
+                    >
+                        Poner Disponible
+                    </button>
+                )}
             </td>
         </tr>
     );

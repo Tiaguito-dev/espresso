@@ -1,56 +1,96 @@
 // src/services/pedidosService.js
+
+// Importamos la data simulada
+import { PEDIDOS_MOCK_DATA } from "../data/mockPedidos";
+
 const API_URL = 'http://localhost:3001/api/pedidos';
 
+// 🚨 Data in-memory para simular las modificaciones del front
+let pedidosInMemory = [...PEDIDOS_MOCK_DATA]; 
+let nextNroPedido = 1004;
+
+const simularRetardo = () => new Promise(resolve => setTimeout(resolve, 300));
+
+// 🔄 GET: Simula la obtención de pedidos
 export const getPedidos = async () => {
-  const response = await fetch(API_URL);
-  if (!response.ok) {
-    throw new Error('No se pudieron obtener los pedidos');
-  }
-  return response.json();
+    await simularRetardo();
+    // 🚨 Devolvemos la copia en memoria
+    return pedidosInMemory.map(p => ({
+        ...p,
+        // Aseguramos que el total siempre esté actualizado si el front lo modificó
+        total: p.lineas.reduce((acc, item) => {
+            // Nota: Aquí necesitaríamos la lista de productos para el precio real, 
+            // pero confiamos en que el total ya viene calculado o lo calculamos en el front.
+            // Para la simulación, usamos el total ya guardado.
+            return p.total || 0; 
+        }, 0)
+    }));
 };
 
+// ➕ POST: Simula la creación de un nuevo pedido
 export const createPedido = async (pedidoData) => {
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(pedidoData),
-  });
-  if (!response.ok) {
-    throw new Error('No se pudo crear el pedido');
-  }
-  return response.json();
+    await simularRetardo();
+    const nuevoPedido = {
+        nroPedido: nextNroPedido++,
+        fecha: new Date().toISOString(),
+        estadoPedido: pedidoData.estadoPedido || "pendiente",
+        ...pedidoData,
+    };
+    pedidosInMemory.push(nuevoPedido);
+    return nuevoPedido;
 };
 
+// ✏️ PUT: Simula la actualización de un pedido (estado o contenido)
 export const updatePedido = async (id, pedidoData) => {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pedidoData),
-    });
-    if (!response.ok) {
-        throw new Error('No se pudo actualizar el pedido');
+    await simularRetardo();
+    const index = pedidosInMemory.findIndex(p => p.nroPedido === Number(id));
+
+    if (index === -1) {
+        throw new Error('Pedido no encontrado para actualizar (Mock)');
     }
-    return response.json();
+
+    // Lógica para manejar la actualización de estado desde PedidosLista.jsx
+    if (pedidoData.estadoPedido) {
+        pedidosInMemory[index] = {
+            ...pedidosInMemory[index],
+            estadoPedido: pedidoData.estadoPedido,
+            // Aquí podrías añadir lógica de historial de estado si fuera real
+        };
+    } 
+    // Lógica para manejar la actualización completa desde FormPedido.jsx (Modificar)
+    else {
+        pedidosInMemory[index] = {
+            ...pedidosInMemory[index],
+            ...pedidoData,
+            // Aseguramos que nroPedido no se pierda/sobrescriba
+            nroPedido: Number(id), 
+        };
+    }
+    
+    return pedidosInMemory[index];
 };
 
-export const deletePedido = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-    });
-    if (!response.ok) {
-        throw new Error('No se pudo eliminar el pedido');
-    }
-    // No devuelve el JSON si es un DELETE (código 204), solo verifica el éxito
-    return response.status === 204 ? null : response.json().catch(() => null); 
-};
-
+// 🔎 GET por ID: Simula la búsqueda de un pedido específico
 export const buscarPedidoPorId = async (id) => {
-    const response = await fetch(`${API_URL}/${id}`);
- 
- if (!response.ok) {
-    // Si el pedido no existe o hay un error de servidor
-    throw new Error(`Pedido no encontrado o error del servidor: ${response.statusText}`);
- }
- 
- return response.json();
+    await simularRetardo();
+    const pedido = pedidosInMemory.find(p => p.nroPedido === Number(id));
+    if (!pedido) {
+        throw new Error(`Pedido ${id} no encontrado (Mock)`);
+    }
+    return pedido;
 };
+
+// 🗑️ DELETE (no usado, pero se deja por completitud): Simula la eliminación
+export const deletePedido = async (id) => {
+    await simularRetardo();
+    const initialLength = pedidosInMemory.length;
+    pedidosInMemory = pedidosInMemory.filter(p => p.nroPedido !== Number(id));
+    if (pedidosInMemory.length === initialLength) {
+        throw new Error('No se pudo eliminar el pedido (Mock)');
+    }
+    return true; 
+};
+
+/* // 🚨 NOTA IMPORTANTE: Para usar el BACKEND real en el futuro, 
+// SOLO necesitas reemplazar este archivo con el código del servicio original.
+*/

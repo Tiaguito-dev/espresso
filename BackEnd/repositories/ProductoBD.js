@@ -1,9 +1,11 @@
+// BackEnd/repositories/ProductoBD.js
+
 const Gateway = require('../DB/Gateway');
 
 // === SECCIÓN DE QUERYS ===
 const selectProductos = 'SELECT * FROM producto';
-// TODO: ESTÁ BUSCANDO POR id_producto PERO DEBERÍA SER POR ID, hay que cambiar cómo se construye la línea de pedidos ya que no puede almacenar OID
-const selectProductoPorId = 'SELECT * FROM producto WHERE id_producto = $1'; // En la base de datos lo tuve uqe llamar id pero la idea es que se llame codigo, PORQUE EN TODOS LADOS LE PUSIMOS ID LA PUTA MADRE
+// Nota: Uso 'id_producto' en la query para ser consistente con la base de datos
+const selectProductoPorId = 'SELECT * FROM producto WHERE id_producto = $1'; 
 const insertProducto = 'INSERT INTO producto (id, precio, nombre, descripcion, id_categoria) VALUES ($1, $2, $3, $4, $5)';
 const selectUltimoCodigo = 'SELECT MAX(id) FROM producto';
 const deleteProductoPorId = 'DELETE FROM producto WHERE id = $1';
@@ -13,27 +15,35 @@ const updateProductoPorId = 'UPDATE producto SET precio = $2, nombre = $3, descr
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES ===
 exports.obtenerProductos = async () => {
     try {
-        const productos = await Gateway.ejecutarQuery(selectProductos);
-        return productos || [];
+        const result = await Gateway.ejecutarQuery(selectProductos);
+        // ✅ CORRECCIÓN: Devolver el array de filas. Esto resuelve 'forEach is not a function' si se llama aquí.
+        return result.rows || []; 
     } catch (error) {
         throw new Error('Error al obtener productos desde la base de datos: ' + error.message);
     }
 };
 
 // Esto en realidad sería por codigo, pero en la bd lo puse id
+// Esto en realidad sería por codigo, pero en la bd lo puse id
 exports.obtenerProductoPorId = async (cod_producto) => {
     try {
-        const productos = await Gateway.ejecutarQuery({ text: selectProductoPorId, values: [cod_producto] });
-        //HAY QUE DEFINIR SI LO VA A BUSCAR POR NOMBRE O POR CODIGO, Porque de eso depende también que sea unique o no
-        return productos[0] || null; // Retornar el primer producto encontrado
+        // Asumimos que Gateway.ejecutarQuery devuelve el objeto resultado completo de pg
+        const result = await Gateway.ejecutarQuery({ text: selectProductoPorId, values: [cod_producto] });
+        
+        // 🛑 CORRECCIÓN CLAVE: Accede a 'rows' de forma segura y al primer elemento.
+        // Si 'result' es undefined/null, result.rows fallaría. 
+        // Si 'result.rows' es undefined/null, devolvemos null.
+        const productos = result && result.rows ? result.rows : [];
+        
+        return productos[0] || null; // Retorna el primer producto encontrado o null
+        
     } catch (error) {
+        // Incluir el ID del producto en el error es útil para la depuración
         throw new Error(`Error al obtener producto ${cod_producto} desde la base de datos: ${error.message}`);
     }
 };
-
 exports.crearProducto = async (datosDeProducto) => {
-
-    // TODO: En el controller tengo que hacer una función para obtener el último y para obtener el id de la categoria
+    // La creación no devuelve filas, no necesita corrección .rows
     const { id, precio, nombre, descripcion, id_categoria } = datosDeProducto;
 
     try {
@@ -45,10 +55,10 @@ exports.crearProducto = async (datosDeProducto) => {
     } catch (error) {
         throw new Error('Error al crear un producto desde la base de datos: ' + error.message);
     }
-
 }
 
 exports.eliminarProducto = async (id) => {
+    // La eliminación no devuelve filas, no necesita corrección .rows
     try {
         await Gateway.ejecutarQuery({ text: deleteProductoPorId, values: [id] });
         return {
@@ -62,14 +72,16 @@ exports.eliminarProducto = async (id) => {
 
 exports.obtenerUltimoCodigo = async () => {
     try {
-        const resultado = await Gateway.ejecutarQuery(selectUltimoCodigo);
-        return resultado[0]?.max || 0; // Retornar el último código
+        const result = await Gateway.ejecutarQuery(selectUltimoCodigo);
+        // ✅ CORRECCIÓN: Devolver el valor 'max' de la primera fila o 0.
+        return result.rows[0]?.max || 0; 
     } catch (error) {
         throw new Error('Error al obtener el último código desde la base de datos: ' + error.message);
     }
 };
 
 exports.modificarProducto = async (id, datosActualizados) => {
+    // La modificación no devuelve filas, no necesita corrección .rows
     const { precio, nombre, descripcion, id_categoria } = datosActualizados;
 
     try {
@@ -84,14 +96,15 @@ exports.modificarProducto = async (id, datosActualizados) => {
 };
 
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES DE VALIDACIÓN ===
-// TODO: Hay que implementar esto en la Producto porque el nombre de un producto lo puse como unique
 exports.existeNombreProducto = async (nombre) => {
     try {
-        const productos = await Gateway.ejecutarQuery({ text: selectProductoPorNombre, values: [nombre] });
-        if (!productos || productos.length === 0) {
-            return true; // No se encontró ningún producto con ese nombre
-        }
-        return false; // Se encontró un producto con ese nombre
+        const result = await Gateway.ejecutarQuery({ text: selectProductoPorNombre, values: [nombre] });
+        // ✅ CORRECCIÓN: Devolver el array de filas, y chequear su longitud.
+        const productos = result.rows || [];
+        
+        // Retorna true si NO hay productos (el nombre está disponible)
+        return productos.length === 0; 
+        
     } catch (error) {
         throw new Error(`Error al obtener producto ${nombre} desde la base de datos: ${error.message}`);
     }

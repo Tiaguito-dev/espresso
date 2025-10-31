@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
+const mesasRoutes = require('./routes/mesasRoutes');
 // Importación de los test
 const TestPedidoBD = require('./Test/TestPedidoBD');
 const TestProductoBD = require('./Test/TestProductoBD');

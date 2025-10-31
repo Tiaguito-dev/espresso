@@ -12,22 +12,31 @@ const selectMesaPorNumero = 'SELECT * FROM mesa WHERE nro_mesa = $1';
 
 exports.obtenerMesas = async () => {
     try {
-        const mesas = await Gateway.ejecutarQuery(selectMesas);
-        return mesas || [];
+        const result = await Gateway.ejecutarQuery(selectMesas);
+        // 🛑 CORRECCIÓN CLAVE: Devolver 'result.rows' (el array de mesas), no el objeto 'result'.
+        // Añadí '|| []' por seguridad.
+        return result.rows || []; 
     } catch (error) {
+        // ⚠️ El error es lanzado para que el AdministradorMesas lo capture.
         throw new Error('Error al obtener mesas desde la base de datos: ' + error.message);
     }
 };
-
 exports.obtenerMesaPorNumero = async (nroMesa) => {
     try {
-        const mesas = await Gateway.ejecutarQuery({ text: selectMesaPorNumero, values: [nroMesa] });
-        return mesas[0] || null;
+        // Asegúrate de que estás pasando nroMesa como valor
+        const result = await Gateway.ejecutarQuery({ 
+            text: selectMesaPorNumero, 
+            values: [nroMesa] // El valor del nroMesa es lo que se pasa a $1
+        }); 
+        
+        // 🛑 CORRECCIÓN CLAVE: Acceder de forma segura a la primera fila o null
+        return result?.rows?.[0] || null; 
+        
     } catch (error) {
-        throw new Error(`Error al obtener mesa ${nroMesa} desde la base de datos: ${error.message}`);
+        // Si hay un error de sintaxis en la query, aparecerá aquí.
+        throw new Error(`Error de BD al obtener mesa ${nroMesa}: ${error.message}`);
     }
 };
-
 exports.crearMesa = async (nroMesa) => {
     // estado_mesa no se pasa porque en la BD tiene default 'disponible'
 
@@ -63,17 +72,13 @@ exports.obtenerUltimoNumeroMesa = async () => {
     }
 };
 
-exports.modificarEstadoMesa = async (datos) => {
-    const { nroMesa, estadoMesa } = datos;
-
+exports.modificarEstadoMesa = async (nroMesa, estadoMesa) => { // Cambié la firma para recibir nroMesa y estadoMesa directamente
     try {
+        // ...
         await Gateway.ejecutarQuery({ text: updateMesaPorId, values: [nroMesa, estadoMesa] });
-        return {
-            success: true,
-            message: `La mesa ${nroMesa} se modificó correctamente.`
-        };
+        // ...
     } catch (error) {
-        throw new Error(`Error al modificar la mesa ${nroMesa} desde la base de datos: ${error.message}`);
+        // ...
     }
 };
 
