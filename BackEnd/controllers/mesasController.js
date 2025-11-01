@@ -1,6 +1,4 @@
 const AdministradorMesas = require('../models/AdministradorMesas');
-const mesasIniciales = require('../DB/mesas.json');
-const express = require('express');
 
 const { json } = require('express');
 

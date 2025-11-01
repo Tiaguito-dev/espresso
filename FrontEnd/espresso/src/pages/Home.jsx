@@ -4,7 +4,11 @@ import "./Home.css";
 function Home() {
   return (
     <div>
-      <h1 className="titulo-home">Bienvenido a Espresso</h1>
+      <div className="bienvenida">
+        <h1 className="titulo-home">Bienvenido a</h1>
+        <div className="titulo">espresso</div>
+      </div>
+      
       <p className="texto-home">
         Sistema de gestión de pedidos. Usa la barra de navegacion o selecciona una opción aquí abajo.
       </p>
