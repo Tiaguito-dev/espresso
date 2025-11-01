@@ -2,7 +2,7 @@
 
 /*boton para ver el menu*/
 .btn-ver-menu{
-    background: #a97457;
+    background: #97A97C;
     color: white;
     border: none;
     padding: 8px 14px;
@@ -14,7 +14,7 @@
 }
 
 .btn-ver-menu:hover {
-  background: #854a27;
+  background: #3A442B;
 }
 
 .menu-container {
@@ -51,7 +51,7 @@ h1 {
   font-family: inherit;
   font-size: large;
   border-radius: 10px;
-  background-color: #5d4037;
+  background-color: #5E6E47;
   /*background-color: rgb(98, 54, 31);*/
   color: white;
   display: flex;
@@ -67,12 +67,12 @@ h1 {
 }
 
 .btn-categoria:hover {
-  background-color: rgb(133, 74, 39);
+  background-color: #3A442B;
 }
 
 
 .btn-categoria.activa {
-  background-color: rgb(133, 74, 39);
+  background-color: #3A442B;
   border-radius: 10px 10px 10px 10px;
 }
 
@@ -110,7 +110,7 @@ h1 {
 .producto h3 {
   margin: 0;
   font-size: 1.1rem;
-  color: rgb(98, 54, 31);
+  color: #87986A;
 }
 
 .producto p {
@@ -120,5 +120,5 @@ h1 {
 
 .producto span {
   font-weight: bold;
-  color: rgb(98, 54, 31);
+  color: #4C5939;
 }

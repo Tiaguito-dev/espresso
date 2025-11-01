@@ -17,13 +17,13 @@ class Menu {
         // LO HACE BIEN console.log('CATEGORIAS EN MENU:', categorias);
         const recorroCategorias = new Map();
         categorias.forEach(cat => {
-            recorroCategorias.set(cat.categoria, new Categoria(cat));
+            recorroCategorias.set(cat.id_categoria, new Categoria(cat));
             // LO HACE BIEN console.log('Mapeando categoria:', cat);
             // LO HACE BIEN console.log('IMPRIMO EL TIPO DEL id:', cat.id_categoria, typeof cat.id_categoria);
         })
 
         return productos.map(prod => {
-            const categoriaObj = recorroCategorias.get(prod.categoria);
+            const categoriaObj = recorroCategorias.get(prod.id_categoria);
             // LO HACE BIEN console.log('PRODUCTO EN MENU:', prod);
             // LO HACE BIEN console.log('CATEGORIA DEL PRODUCTO:', categoriaObj);
             return new Producto({
@@ -32,7 +32,7 @@ class Menu {
                 precio: prod.precio, 
                 descripcion: prod.descripcion,
                 disponible: prod.disponible,
-                categoria: categoriaObj
+                categoria: categoriaObj || null
             });
         });
     }
@@ -194,7 +194,7 @@ class Menu {
             precio: datosModificados.precio ?? productoActualBD.precio,
             nombre: datosModificados.nombre ?? productoActualBD.nombre,
             descripcion: datosModificados.descripcion ?? productoActualBD.descripcion,
-            categoria: idCategoria,
+            id_categoria: idCategoria,
             disponible: datosModificados.disponible ?? productoActualBD.disponible
         };
         console.log('--- 2. MENU (datosParaBD) ---', datosParaBD);
