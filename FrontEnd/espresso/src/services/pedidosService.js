@@ -1,96 +1,106 @@
 // src/services/pedidosService.js
 
-// Importamos la data simulada
-import { PEDIDOS_MOCK_DATA } from "../data/mockPedidos";
-
+// 🚨 URL base de la API para los pedidos
 const API_URL = 'http://localhost:3001/api/pedidos';
 
-// 🚨 Data in-memory para simular las modificaciones del front
-let pedidosInMemory = [...PEDIDOS_MOCK_DATA]; 
-let nextNroPedido = 1004;
 
-const simularRetardo = () => new Promise(resolve => setTimeout(resolve, 300));
+/**
+ * Función genérica para manejar errores de la respuesta de la API.
+ * @param {Response} response - El objeto Response de fetch.
+ * @throws {Error} - Lanza un error con el mensaje de la API o un mensaje por defecto.
+ */
+const handleResponse = async (response) => {
+    if (!response.ok) {
+        let errorData = { message: `Error al obtener pedidos` };
+        try {
+            // 💡 Intenta leer el JSON del cuerpo del error (si el backend lo envía)
+            errorData = await response.json(); 
+            if (!errorData.message) {
+                 // Si la API devuelve el error en otro campo
+                 errorData.message = errorData.error || `Error ${response.status}: ${response.statusText}`;
+            }
+        } catch (e) {
+            // Si el cuerpo no es JSON (ej: un error de HTML o texto plano)
+            errorData.message = `Error ${response.status}: ${response.statusText}`;
+        }
+        // Lanza un error con el mensaje más detallado que pudimos encontrar
+        throw new Error(errorData.message);
+    }
+    return response.json();
+};
 
-// 🔄 GET: Simula la obtención de pedidos
+// 🔄 GET: Obtener todos los pedidos
 export const getPedidos = async () => {
-    await simularRetardo();
-    // 🚨 Devolvemos la copia en memoria
-    return pedidosInMemory.map(p => ({
-        ...p,
-        // Aseguramos que el total siempre esté actualizado si el front lo modificó
-        total: p.lineas.reduce((acc, item) => {
-            // Nota: Aquí necesitaríamos la lista de productos para el precio real, 
-            // pero confiamos en que el total ya viene calculado o lo calculamos en el front.
-            // Para la simulación, usamos el total ya guardado.
-            return p.total || 0; 
-        }, 0)
-    }));
-};
-
-// ➕ POST: Simula la creación de un nuevo pedido
-export const createPedido = async (pedidoData) => {
-    await simularRetardo();
-    const nuevoPedido = {
-        nroPedido: nextNroPedido++,
-        fecha: new Date().toISOString(),
-        estadoPedido: pedidoData.estadoPedido || "pendiente",
-        ...pedidoData,
-    };
-    pedidosInMemory.push(nuevoPedido);
-    return nuevoPedido;
-};
-
-// ✏️ PUT: Simula la actualización de un pedido (estado o contenido)
-export const updatePedido = async (id, pedidoData) => {
-    await simularRetardo();
-    const index = pedidosInMemory.findIndex(p => p.nroPedido === Number(id));
-
-    if (index === -1) {
-        throw new Error('Pedido no encontrado para actualizar (Mock)');
+    try {
+        const response = await fetch(API_URL);
+        return handleResponse(response);
+    } catch (error) {
+        console.error("Error al obtener los pedidos:", error);
+        throw error;
     }
-
-    // Lógica para manejar la actualización de estado desde PedidosLista.jsx
-    if (pedidoData.estadoPedido) {
-        pedidosInMemory[index] = {
-            ...pedidosInMemory[index],
-            estadoPedido: pedidoData.estadoPedido,
-            // Aquí podrías añadir lógica de historial de estado si fuera real
-        };
-    } 
-    // Lógica para manejar la actualización completa desde FormPedido.jsx (Modificar)
-    else {
-        pedidosInMemory[index] = {
-            ...pedidosInMemory[index],
-            ...pedidoData,
-            // Aseguramos que nroPedido no se pierda/sobrescriba
-            nroPedido: Number(id), 
-        };
-    }
-    
-    return pedidosInMemory[index];
 };
 
-// 🔎 GET por ID: Simula la búsqueda de un pedido específico
+// 🔎 GET por ID: Buscar un pedido específico
 export const buscarPedidoPorId = async (id) => {
-    await simularRetardo();
-    const pedido = pedidosInMemory.find(p => p.nroPedido === Number(id));
-    if (!pedido) {
-        throw new Error(`Pedido ${id} no encontrado (Mock)`);
+    try {
+        const response = await fetch(`${API_URL}/${id}`);
+        return handleResponse(response);
+    } catch (error) {
+        console.error(`Error al buscar el pedido ${id}:`, error);
+        throw error;
     }
-    return pedido;
 };
 
-// 🗑️ DELETE (no usado, pero se deja por completitud): Simula la eliminación
+// ➕ POST: Crear un nuevo pedido
+export const createPedido = async (pedidoData) => {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Puedes necesitar un token de autorización aquí
+            },
+            body: JSON.stringify(pedidoData),
+        });
+        return handleResponse(response);
+    } catch (error) {
+        console.error("Error al crear el pedido:", error);
+        throw error;
+    }
+};
+
+// ✏️ PUT: Actualizar un pedido (estado o contenido)
+export const updatePedido = async (id, pedidoData) => {
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'PUT', // o PATCH
+            headers: {
+                'Content-Type': 'application/json',
+                // Puedes necesitar un token de autorización aquí
+            },
+            body: JSON.stringify(pedidoData),
+        });
+        return handleResponse(response);
+    } catch (error) {
+        console.error(`Error al actualizar el pedido ${id}:`, error);
+        throw error;
+    }
+};
+
+
+// 🗑️ DELETE: Eliminar un pedido
 export const deletePedido = async (id) => {
-    await simularRetardo();
-    const initialLength = pedidosInMemory.length;
-    pedidosInMemory = pedidosInMemory.filter(p => p.nroPedido !== Number(id));
-    if (pedidosInMemory.length === initialLength) {
-        throw new Error('No se pudo eliminar el pedido (Mock)');
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+            // Puedes necesitar un token de autorización aquí
+        });
+        if (!response.ok) {
+            await handleResponse(response);
+        }
+        return true; 
+    } catch (error) {
+        console.error(`Error al eliminar el pedido ${id}:`, error);
+        throw error;
     }
-    return true; 
 };
-
-/* // 🚨 NOTA IMPORTANTE: Para usar el BACKEND real en el futuro, 
-// SOLO necesitas reemplazar este archivo con el código del servicio original.
-*/

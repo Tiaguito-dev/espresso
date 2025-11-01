@@ -23,7 +23,7 @@ exports.obtenerProductos = async () => {
     }
 };
 
-// Esto en realidad sería por codigo, pero en la bd lo puse id
+
 // Esto en realidad sería por codigo, pero en la bd lo puse id
 exports.obtenerProductoPorId = async (cod_producto) => {
     try {
@@ -98,6 +98,7 @@ exports.modificarProducto = async (id, datosActualizados) => {
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES DE VALIDACIÓN ===
 exports.existeNombreProducto = async (nombre) => {
     try {
+
         const result = await Gateway.ejecutarQuery({ text: selectProductoPorNombre, values: [nombre] });
         // ✅ CORRECCIÓN: Devolver el array de filas, y chequear su longitud.
         const productos = result.rows || [];

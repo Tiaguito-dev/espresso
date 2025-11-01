@@ -4,25 +4,21 @@ const MesaBD = require('../repositories/MesaBD');
 class AdministradorMesas {
     constructor() {}
 
-    convertirMesaBD(dataBD){
-        if (!dataBD) return null;
+    convertirMesaBD(data){ // 💡 Usamos 'data' como nombre de la variable de entrada
+        if (!data) return null;
         
-        // Si la data es un array (viene de getMesas)
-        if (Array.isArray(dataBD)){
-            return dataBD.map(m => new Mesa({
-                // 🛑 CORRECCIÓN: Mapear correctamente los campos de BD a la clase Mesa
+        if (Array.isArray(data)){
+            return data.map(m => new Mesa({
                 nroMesa: m.nro_mesa,
-                estadoMesa: m.estado_mesa, // Usar 'estado_mesa' de la BD
-                // Si la BD tiene id_mesa, también lo deberías mapear: id: m.id_mesa
+                estadoMesa: m.estado_mesa 
             }));
         }
 
-        // Si la data es un solo objeto (viene de buscarMesaPorNumero)
+        // Caso 2: Objeto único (viene de buscarMesaPorNumero)
         return new Mesa({
-            // 🛑 CORRECCIÓN: Mapear correctamente los campos de BD a la clase Mesa
-            nroMesa: dataBD.nro_mesa,
-            estadoMesa: dataBD.estado_mesa // Usar 'estado_mesa' de la BD
-            // Si la BD tiene id_mesa, también lo deberías mapear: id: dataBD.id_mesa
+            // ✅ Usa la variable de entrada 'data'
+            nroMesa: data.nro_mesa, 
+            estadoMesa: data.estado_mesa 
         });
     }
 /*    cargarMesas(mesasData) {
@@ -48,11 +44,15 @@ class AdministradorMesas {
     }
 
     async buscarMesaPorNumero(nroMesa) {
-        const mesas = await MesaBD.obtenerMesaPorNumero(nroMesa);
-        if (!mesas){
+        // Renombramos la variable a 'dataBD'
+        const dataBD = await MesaBD.obtenerMesaPorNumero(nroMesa);
+        
+        // Si no se encuentra, devuelve null, lo cual pasa la validación.
+        if (!dataBD){ 
             return null;
         }
-        return this.convertirMesaBD(mesas);
+        // Llama a convertirMesaBD con el objeto único de la BD
+        return this.convertirMesaBD(dataBD); 
     }
 
     async crearMesa(dataMesa){
@@ -65,7 +65,7 @@ class AdministradorMesas {
         const nuevaMesa = new Mesa({ nroMesa, estadoMesa });
         
         const mesaBD = {
-            nro_mesa: nuevaMesa.nroMesa,
+            mesa: nuevaMesa.nroMesa,
             estado: nuevaMesa.estadoMesa
         };
 
@@ -96,9 +96,8 @@ class AdministradorMesas {
         
         // 🛑 CORRECCIÓN: Pasar los parámetros separados al repositorio
         await MesaBD.modificarEstadoMesa(nroMesa, nuevoEstado);
-        
-        mesaAModificar.estadoMesa = nuevoEstado;
-        return mesaAModificar;         
+        mesaAModificar.cambiarEstadoMesa(nuevoEstado);
+        return mesaAModificar;        
     }
 
 }

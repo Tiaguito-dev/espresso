@@ -123,9 +123,15 @@ function GestionCaja() {
                 {pedidosFiltrados.map((pedido) => (
                     <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido}>
                         <td>{pedido.nroPedido}</td>
-                        <td>lionel</td>
+                        <td>Martina</td>
                         <td>{pedido.mesa.nroMesa}</td>
-                        <td>{pedido.total}</td>
+{
+/*
+                        <td>${pedido.total}</td>
+*/
+}
+                        <td>$1000</td>
+                        
                         <td>
                             <span className={`estado ${pedido.estadoPedido.toLowerCase()}`}>
                                 {pedido.estadoPedido}
@@ -164,15 +170,16 @@ function GestionCaja() {
                                             </thead>
                                             <tbody>
                                                 {pedidoDetalle.lineasPedido.map((producto) => (
-                                                    <tr>
-                                                        {/* id muestra un nombre pero deberia mostrar el id del producto */}
-                                                        <td>{producto.idProducto}</td>
-                                                        <td>{producto.nombreProducto}</td>
-                                                        <td>{producto.cantidad}</td>
-                                                    </tr>
+                                            
+                                                        <tr>
+                                                            <td>{producto.nombreProducto}</td>
+                                                            <td>{producto.cantidad}</td>
+                                                            <td>{producto.precioUnitario}</td>
+                                                        </tr>
                                                 ))}
                                             </tbody>
                                         </table>
+                                        <p><strong>Total: $1000</strong></p>
                                     </>
                                 )}
                             </DetallePedido>

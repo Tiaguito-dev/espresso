@@ -1,74 +1,104 @@
 // src/services/mesasService.js
 
-// Datos de Mesas simulados (Mock Data)
-let mesasInMemory = [
-    { id: 1, numero: 1, mozoACargo: "Juan Pérez", estado: "Ocupada" },
-    { id: 2, numero: 2, mozoACargo: "Ana Gómez", estado: "Disponible" },
-    { id: 3, numero: 3, mozoACargo: "Juan Pérez", estado: "Listo Para Cobrar" },
-    { id: 4, numero: 4, mozoACargo: "Sofía Díaz", estado: "Disponible" },
-    { id: 5, numero: 5, mozoACargo: "Sofía Díaz", estado: "Listo Para Ordenar" },
-];
-let nextId = 6;
+// Importamos el modelo de Mesa para validación y/o tipado si fuera necesario.
+// const Mesa = require('../models/Mesa'); 
 
-const simularRetardo = () => new Promise(resolve => setTimeout(resolve, 300));
+// 🚨 URL base de la API para las mesas
+const API_URL = 'http://localhost:3001/api/mesas';
+
+/**
+ * Función genérica para manejar errores de la respuesta de la API.
+ * @param {Response} response - El objeto Response de fetch.
+ * @throws {Error} - Lanza un error con el mensaje de la API o un mensaje por defecto.
+ */
+const handleResponse = async (response) => {
+    if (!response.ok) {
+        let errorData = { message: `Error ${response.status}: ${response.statusText}` };
+        try {
+            // Intentamos leer el mensaje de error de la respuesta
+            errorData = await response.json();
+        } catch (e) {
+            // Si falla la lectura del body, usamos el error por defecto
+        }
+        throw new Error(errorData.message || `Error en la solicitud: ${response.status}`);
+    }
+    return response.json();
+};
+
 
 // 🔄 GET: Obtener todas las mesas
 export const getMesas = async () => {
-    await simularRetardo();
-    // Devolvemos una copia para evitar mutaciones directas
-    return [...mesasInMemory];
+    try {
+        const response = await fetch(API_URL);
+        return handleResponse(response);
+    } catch (error) {
+        console.error("Error al obtener las mesas:", error);
+        throw error;
+    }
 };
 
-// 🔎 GET por ID: Obtener una mesa por ID (útil para modificar)
+// 🔎 GET por ID: Obtener una mesa por ID
 export const getMesaById = async (id) => {
-    await simularRetardo();
-    const mesa = mesasInMemory.find(m => m.id === Number(id));
-    if (!mesa) {
-        throw new Error(`Mesa ${id} no encontrada (Mock)`);
+    try {
+        const response = await fetch(`${API_URL}/${id}`);
+        return handleResponse(response);
+    } catch (error) {
+        console.error(`Error al obtener la mesa ${id}:`, error);
+        throw error;
     }
-    return mesa;
 };
 
 // ➕ POST: Crear una nueva mesa
 export const createMesa = async (mesaData) => {
-    await simularRetardo();
-    const nuevaMesa = {
-        id: nextId++,
-        ...mesaData,
-        // Aseguramos que el estado se guarde como lo espera el front
-        estado: mesaData.estado || "Disponible", 
-        numero: Number(mesaData.numero) // Aseguramos que sea número
-    };
-    mesasInMemory.push(nuevaMesa);
-    return nuevaMesa;
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Puedes necesitar un token de autorización aquí
+            },
+            body: JSON.stringify(mesaData),
+        });
+        return handleResponse(response);
+    } catch (error) {
+        console.error("Error al crear la mesa:", error);
+        throw error;
+    }
 };
 
 // ✏️ PUT: Actualizar una mesa
 export const updateMesa = async (id, updatedFields) => {
-    await simularRetardo();
-    const index = mesasInMemory.findIndex(m => m.id === Number(id));
-
-    if (index === -1) {
-        throw new Error('Mesa no encontrada para actualizar (Mock)');
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'PUT', // o PATCH si tu API solo espera los campos a actualizar
+            headers: {
+                'Content-Type': 'application/json',
+                // Puedes necesitar un token de autorización aquí
+            },
+            body: JSON.stringify(updatedFields),
+        });
+        // La API puede devolver la mesa actualizada o solo un estado de éxito
+        return handleResponse(response);
+    } catch (error) {
+        console.error(`Error al actualizar la mesa ${id}:`, error);
+        throw error;
     }
-
-    // Actualizamos la mesa con los campos nuevos
-    mesasInMemory[index] = {
-        ...mesasInMemory[index],
-        ...updatedFields,
-        id: Number(id), // Mantenemos el ID original
-    };
-    
-    return mesasInMemory[index];
 };
 
 // 🗑️ DELETE: Eliminar una mesa
 export const deleteMesa = async (id) => {
-    await simularRetardo();
-    const initialLength = mesasInMemory.length;
-    mesasInMemory = mesasInMemory.filter(m => m.id !== Number(id));
-    if (mesasInMemory.length === initialLength) {
-        throw new Error('No se pudo eliminar la mesa (Mock)');
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+            // Puedes necesitar un token de autorización aquí
+        });
+        // Las respuestas DELETE a menudo tienen un body vacío
+        if (!response.ok) {
+            await handleResponse(response); // Lanza el error si no es 2xx
+        }
+        return true; // Indicamos éxito
+    } catch (error) {
+        console.error(`Error al eliminar la mesa ${id}:`, error);
+        throw error;
     }
-    return true; 
 };

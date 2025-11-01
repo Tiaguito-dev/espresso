@@ -134,7 +134,7 @@ function GestionCocina() {
                     <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido} className="fila-cocina">
 
                         <td>{pedido.nroPedido}</td>
-                        <td>lionel</td>
+                        <td></td>
                         <td>{pedido.mesa.nroMesa}</td>
 
                         <td> 
@@ -148,9 +148,10 @@ function GestionCocina() {
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {/* Usar pedido.productos, NO pedidoAcordeon.productos */}
                                         {pedido.lineasPedido.map((producto, index) => (
                                             <tr key={index} className="fila">
-                                                <td>{producto.precioUnitario}</td>
+                                                <td>{index}</td>
                                                 <td>{producto.nombreProducto}</td>
                                                 <td>{producto.cantidad}</td>
                                             </tr>

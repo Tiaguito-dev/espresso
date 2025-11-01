@@ -1,3 +1,7 @@
+//http://localhost:3001/api/productos/categorias
+//http://localhost:3001/api/productos
+
+
 const Menu = require('../models/Menu');
 //const Producto = require('../models/Producto');
 //const productosIniciales = require('../DB/productos.json');
@@ -41,6 +45,7 @@ exports.crearProducto = async (req, res) => {
         const productoAgregado = await menu.agregarProducto(req.body);
         res.status(201).json(productoAgregado);
     }catch(error){
+        console.error('Error en crearProducto:', error);
         if (error.message.startsWith('Datos de producto inválidos')) {
             return res.status(400).json({ message: error.message });
         }
@@ -52,12 +57,14 @@ exports.modificarProducto = async (req, res) => {
     try {
         const { id } = req.params;
         const datosModificados = req.body;
+        console.log(`--- 1. CONTROLLER: ID recibido de la URL (req.params.id): '${id}' ---`);
+        console.log('--- 1. CONTROLLER (req.body) ---', datosModificados);
         const productoExiste = await menu.buscarProductoPorId(id);
+        console.log(`--- 1.5. CONTROLLER: Resultado de buscarProductoPorId:`, productoExiste);
         if (!productoExiste){
             return res.status(404).json({ message: 'Producto para modificar no encontrado' });
         }
-        const productoParaModificar = menu.buscarProductoPorId(id);
-
+        console.log('--- 1.8. CONTROLLER: Llamando a menu.modificarProducto... ---');
         const productoModificado = await menu.modificarProducto(id, datosModificados);
 
         res.status(200).json(productoModificado);
@@ -79,5 +86,22 @@ exports.eliminarProducto = async (req, res) => {
         }
     }catch(error){
         res.status(500).json({ message: 'Error al eliminar producto', error: error.message });
+    }
+};
+
+exports.crearCategoria = async (req, res) => {
+    try {
+        const { nombre } = req.body; 
+
+        if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
+            return res.status(400).json({ message: 'El nombre de la categoría es inválido o está vacío.' });
+        }
+
+        const nuevaCategoria = await menu.obtenerOCrearCategoria(nombre.trim());
+
+        res.status(201).json(nuevaCategoria);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al crear la categoría', error: error.message });
     }
 };

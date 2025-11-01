@@ -1,14 +1,17 @@
-// 📄 mesasRoutes.js (CORREGIDO)
-
+// routes/pedidosRoutes.js
 const express = require('express');
 const router = express.Router();
-const mesasController = require('../controllers/mesasController');
+const mesaController = require('../controllers/mesasController');
 
-// 🎯 Rutas de Mesa
-router.get('/', mesasController.obtenerMesas);          // 🎯 CAMBIADO de getMesas
-router.post('/', mesasController.crearMesa);           // 🎯 CAMBIADO de createMesa
-router.get('/:id', mesasController.obtenerMesaPorNumero); // 🎯 CAMBIADO de getMesaById
-router.put('/:id', mesasController.cambiarEstadoMesa); // 🎯 CAMBIADO de updateMesa (y la lógica es para estado)
-router.delete('/:id', mesasController.eliminarMesa);   // 🎯 CAMBIADO de deleteMesa
+// Ruta para obtener todos los pedidos
+router.get('/', mesaController.obtenerMesas);
+
+// Ruta para crear un nuevo pedido
+router.post('/', mesaController.crearMesa);
+
+// Ruta para actualizar un pedido
+router.put('/:nroMesa', mesaController.cambiarEstadoMesa);
+
+router.delete('/:nroMesa', mesaController.eliminarMesa);
 
 module.exports = router;

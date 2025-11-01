@@ -6,7 +6,7 @@ const insertMesa = 'INSERT INTO mesa (nro_mesa) VALUES ($1)';
 const selectUltimoCodigo = 'SELECT MAX(nro_mesa) FROM mesa';
 const deleteMesaPorId = 'DELETE FROM mesa WHERE nro_mesa = $1';
 const updateMesaPorId = 'UPDATE mesa SET estado_mesa = $2 WHERE nro_mesa = $1';
-const selectMesaPorNumero = 'SELECT * FROM mesa WHERE nro_mesa = $1';
+const selectMesaPorNumero = 'SELECT * FROM mesa WHERE id_mesa = $1';
 
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES ===
 

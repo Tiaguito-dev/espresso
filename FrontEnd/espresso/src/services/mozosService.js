@@ -1,62 +1,61 @@
 // src/services/mozosService.js
 
-// Mock de datos de Mozos basado en tu tabla de usuarios, 
-// usando 'correo' como el 'nombre' del mozo temporalmente.
-let mozosInMemory = [
-    { id: 1, nombre: "Juliana", correo: "juliana@gmail.com" }, // Perfil 1
-    { id: 2, nombre: "Admin", correo: "admin@gmail.com" }, // Perfil 2 (no lo usaremos como mozo real)
-    { id: 3, nombre: "Juan Pérez", correo: "juan@cafe.com" }, // Mozo simulado
-    { id: 4, nombre: "Ana Gómez", correo: "ana@cafe.com" }, // Mozo simulado
-    { id: 5, nombre: "Sofía Díaz", correo: "sofia@cafe.com" }, // Mozo simulado
-];
+// 🚨 URL base de la API para los mozos
+const API_URL = 'http://localhost:3001/api/mozos';
 
-// Asignaremos las mesas que tienen pedidos en curso aquí (mozoId: [mesaNum1, mesaNum2, ...])
-let asignacionesMesas = {
-    3: [1, 3], // Juan Pérez tiene mesas 1 y 3 asignadas
-    4: [],     // Ana Gómez no tiene asignaciones (aunque tiene la mesa 2 en la lista de mesas)
-    5: [5]     // Sofía Díaz tiene la mesa 5 asignada
+
+/**
+ * Función genérica para manejar errores de la respuesta de la API.
+ * @param {Response} response - El objeto Response de fetch.
+ * @throws {Error} - Lanza un error con el mensaje de la API o un mensaje por defecto.
+ */
+const handleResponse = async (response) => {
+    if (!response.ok) {
+        let errorData = { message: `Error ${response.status}: ${response.statusText}` };
+        try {
+            errorData = await response.json();
+        } catch (e) {}
+        throw new Error(errorData.message || `Error en la solicitud: ${response.status}`);
+    }
+    return response.json();
 };
 
-const simularRetardo = () => new Promise(resolve => setTimeout(resolve, 300));
-
-// 🔄 GET: Obtener solo los mozos activos (simularemos que son los IDs > 2)
+// 🔄 GET: Obtener todos los mozos (incluyendo sus mesas asignadas)
 export const getMozos = async () => {
-    await simularRetardo();
-    // Filtramos para solo mostrar a los mozos que trabajarán en el café.
-    const mozosActivos = mozosInMemory.filter(m => m.id > 2);
-    
-    // Adjuntamos las mesas asignadas a cada mozo
-    const mozosConMesas = mozosActivos.map(mozo => ({
-        ...mozo,
-        mesasAsignadas: asignacionesMesas[mozo.id] || [],
-    }));
-    
-    return mozosConMesas;
+    try {
+        // Asumimos que la API devuelve los mozos activos con sus mesas asignadas
+        const response = await fetch(API_URL);
+        return handleResponse(response);
+    } catch (error) {
+        console.error("Error al obtener los mozos:", error);
+        throw error;
+    }
 };
 
 // 📌 FUNCIÓN CLAVE: Asigna una mesa a un mozo (cuando toma un pedido)
-// Nota: Esta función también necesitará llamar al updateMesa del mesasService 
-// para cambiar el estado a 'Ocupada', lo cual haremos después.
 export const asignarMesaAMozo = async (mozoId, mesaId) => {
-    await simularRetardo();
-    const mozoIdNum = Number(mozoId);
-    const mesaIdNum = Number(mesaId);
-    
-    // 1. Eliminar la mesa de cualquier otro mozo (para evitar duplicados)
-    Object.keys(asignacionesMesas).forEach(id => {
-        asignacionesMesas[id] = asignacionesMesas[id].filter(m => m !== mesaIdNum);
-    });
+    try {
+        // En lugar de manipular el estado local, enviamos la petición a la API
+        const response = await fetch(`${API_URL}/${mozoId}/asignarMesa`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Puedes necesitar un token de autorización aquí
+            },
+            body: JSON.stringify({ mesaId: Number(mesaId) }),
+        });
 
-    // 2. Asignar la mesa al mozo
-    if (!asignacionesMesas[mozoIdNum]) {
-        asignacionesMesas[mozoIdNum] = [];
+        // Asumimos que la API maneja la lógica de:
+        // 1. Desasignar la mesa de cualquier otro mozo.
+        // 2. Asignar la mesa al nuevo mozo.
+        // 3. (Opcional) Llamar internamente al mesasService para actualizar el estado de la mesa a 'ocupada'.
+        
+        return handleResponse(response); // La API podría devolver el mozo actualizado o un mensaje de éxito.
+    } catch (error) {
+        console.error(`Error al asignar la mesa ${mesaId} al mozo ${mozoId}:`, error);
+        throw error;
     }
-    if (!asignacionesMesas[mozoIdNum].includes(mesaIdNum)) {
-        asignacionesMesas[mozoIdNum].push(mesaIdNum);
-    }
-    
-    // Lógica adicional (FUERA DE ESTE ARCHIVO): 
-    // Llamar a updateMesa(mesaId, { estado: 'Ocupada', mozoACargo: mozoNombre })
-
-    return true;
 };
+
+// NOTA: No se implementan create, update, delete, getById si solo se usan para asignación/listado.
+// Si se necesitan, se harían llamadas fetch POST/PUT/DELETE/GET a ${API_URL}/...

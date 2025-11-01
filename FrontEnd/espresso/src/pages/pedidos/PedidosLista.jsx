@@ -55,9 +55,7 @@ export default function PedidosLista() {
     // 🔄 Cambiar estado del pedido
     const cambiarEstado = async (nroPedido) => { 
         try {
-            // Buscamos el pedido en el estado local por su nroPedido
-            const pedidoActual = pedidos.find((p) => p.nroPedido === nroPedido); 
-            
+            const pedidoActual = pedidos.find((p) => p.nroPedido === id);
             if (!pedidoActual) return;
 
             let siguienteEstado;
