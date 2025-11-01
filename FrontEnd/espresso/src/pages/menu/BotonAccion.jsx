@@ -6,20 +6,20 @@ function BotonAccion({productoId, funcionCambiarEstado, funcionModificar, funcio
                 className="info" 
                 onClick={() => funcionCambiarEstado(productoId)}
             >
-                ℹ️ Disponibilidad
+                Disponibilidad
             </button>
             <button 
                 className="modificar" 
                 onClick={() => funcionModificar(productoId)}
             >
-                ✏️ Modificar
+                Modificar
             </button>
 
             <button
                 className="baja"
                 onClick={() => funcionEliminar(productoId)}
             >
-                🗑️ Baja
+                Baja
             </button>
         </td>
     );

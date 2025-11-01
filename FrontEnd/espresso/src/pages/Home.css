@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');*/
+
+
 .home-container {
     display: flex;
     width: 100%;
@@ -7,14 +11,29 @@
     align-items: flex-start;
 }
 
+.bienvenida {
+    display: flex; 
+    align-items: baseline;
+    margin: 0;
+    width: auto;
+    text-align: left;
+}
+
 .titulo-home {
     padding: 10px;
-    font-family: italic;
-    font: bold;
-    font-size: 4rem;
+    /*font: bold;*/
+    font-size: 3rem;
 }
 
 .texto-home {
     padding: 10px;
     font-size: 1.2rem;
+}
+
+.titulo {
+    font-family: 'MuseoModerno', sans-serif;
+    font-weight: 200;
+    /*font-family: 'Sofia', sans-serif;*/
+    display: flex;
+    font-size: 3rem;    
 }
