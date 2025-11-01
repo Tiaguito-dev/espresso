@@ -38,7 +38,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
             {/* Celda del Estado con Color */}
             <td><span className={claseEstado}>{pedido.estadoPedido}</span></td>
             
-            <td>$10000</td>
+            <td>{pedido.nroPedido}</td>
             
             {/* Columna de Acciones */}
             <td>
