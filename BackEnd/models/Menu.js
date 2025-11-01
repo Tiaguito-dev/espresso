@@ -27,9 +27,9 @@ class Menu {
             // LO HACE BIEN console.log('PRODUCTO EN MENU:', prod);
             // LO HACE BIEN console.log('CATEGORIA DEL PRODUCTO:', categoriaObj);
             return new Producto({
-                id: prod.codigo, 
+                id: prod.id,
                 nombre: prod.nombre,
-                precio: prod.precio, 
+                precio: prod.precio,
                 descripcion: prod.descripcion,
                 disponible: prod.disponible,
                 categoria: categoriaObj || null
@@ -39,7 +39,7 @@ class Menu {
 
     async obtenerOCrearCategoria(nombreCategoria) {
         let id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
-        if(!id){
+        if (!id) {
             await CategoriaBD.crearCategoria(nombreCategoria);
             id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
         }
@@ -70,16 +70,16 @@ class Menu {
         const { nombre, categoria: nombreCategoria, descripcion, precio, disponible } = datosProducto;
 
         const existeProducto = await ProductoBD.existeNombreProducto(nombre);
-        if (existeProducto){
+        if (existeProducto) {
             throw new Error(`Ya existe producto con ese nombre`);
         }
-        
+
         const categoria = await this.obtenerOCrearCategoria(nombreCategoria);
 
         const ultimoCodigo = await ProductoBD.obtenerUltimoCodigo();
-        console.log('El ultimo codigo:', ultimoCodigo);
+        console.log('El ultimo id:', ultimoCodigo);
         const id = ultimoCodigo + 1;
-        console.log('el nuevo codigo:', id);
+        console.log('el nuevo id:', id);
 
         const categoriaObj = new Categoria({ nombre: nombreCategoria });
         try {

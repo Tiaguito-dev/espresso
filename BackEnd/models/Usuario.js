@@ -5,8 +5,8 @@ class Usuario {
         this.id = data.id;
         this.nombre = data.nombre;
         this.email = data.email;
-        this.contraseñaHash = data.contraseñaHash; 
-        this.perfil = data.perfil; 
+        this.contraseñaHash = data.contraseñaHash;
+        this.perfil = data.perfil;
     }
 
     async compararContaseña(contraseña) {
@@ -15,13 +15,14 @@ class Usuario {
 
     static async hashContraseña(contraseña) {
         const saltRounds = 10;
+        // Falta instalar el hash creo
         return await bcrypt.hash(contraseña, saltRounds);
     }
 
     tienePermiso(permiso) {
         if (this.perfil) {
             return this.perfil.tienePermiso(permiso);
-        }  
+        }
         return false;
     }
 

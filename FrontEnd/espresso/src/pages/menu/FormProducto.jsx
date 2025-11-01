@@ -15,12 +15,12 @@ function FormProducto() {
         disponible: true
     });
 
-    const [categorias, setCategorias] = useState([]); 
-    const [nuevaCategoria, setNuevaCategoria] = useState(""); 
+    const [categorias, setCategorias] = useState([]);
+    const [nuevaCategoria, setNuevaCategoria] = useState("");
     const [usarNuevaCategoria, setUsarNuevaCategoria] = useState(false);
     const navigate = useNavigate();
     const existeId = Boolean(id);
-  
+
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
@@ -42,7 +42,7 @@ function FormProducto() {
                 setProducto({
                     id: data.id || "",
                     nombre: data.nombre || "",
-                    categoria: data.categoria.id || "",
+                    categoria: data.categoria.nombre || "",
                     descripcion: data.descripcion || "",
                     precio: data.precio || "",
                     disponible: data.disponible || true
@@ -63,7 +63,7 @@ function FormProducto() {
                     precio: Number(producto.precio),
                     disponible: producto.disponible
                 };
-                
+
                 console.log("Datos enviados a updateProducto:", productoParaActualizar);
                 await updateProducto(id, productoParaActualizar);
                 console.log("Producto actualizado correctamente");
