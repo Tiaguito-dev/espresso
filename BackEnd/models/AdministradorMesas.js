@@ -4,23 +4,21 @@ const MesaBD = require('../repositories/MesaBD');
 class AdministradorMesas {
     constructor() {}
 
-    convertirMesaBD(data){ // 💡 Usamos 'data' como nombre de la variable de entrada
-        if (!data) return null;
-        
-        if (Array.isArray(data)){
-            return data.map(m => new Mesa({
-                nroMesa: m.nro_mesa,
-                estadoMesa: m.estado_mesa 
+    convertirMesaBD(mesas){
+        if (!mesas) return null;
+        if (Array.isArray(mesas)){
+            return mesas.map(m => new Mesa({
+                nroMesa: m.mesa,
+                estadoMesa: m.estado
             }));
         }
 
-        // Caso 2: Objeto único (viene de buscarMesaPorNumero)
         return new Mesa({
-            // ✅ Usa la variable de entrada 'data'
-            nroMesa: data.nro_mesa, 
-            estadoMesa: data.estado_mesa 
+            nroMesa: mesas.nro_mesa,
+            estadoMesa: mesas.estado
         });
     }
+
 /*    cargarMesas(mesasData) {
         try {
                 mesasData.forEach(dataMesa => {
@@ -44,15 +42,11 @@ class AdministradorMesas {
     }
 
     async buscarMesaPorNumero(nroMesa) {
-        // Renombramos la variable a 'dataBD'
-        const dataBD = await MesaBD.obtenerMesaPorNumero(nroMesa);
-        
-        // Si no se encuentra, devuelve null, lo cual pasa la validación.
-        if (!dataBD){ 
+        const mesas = await MesaBD.obtenerMesaPorNumero(nroMesa);
+        if (!mesas){
             return null;
         }
-        // Llama a convertirMesaBD con el objeto único de la BD
-        return this.convertirMesaBD(dataBD); 
+        return this.convertirMesaBD(mesas);
     }
 
     async crearMesa(dataMesa){
@@ -93,13 +87,10 @@ class AdministradorMesas {
         if (!estadosValidos.includes(nuevoEstado)) {
             throw new Error(`El estado '${nuevoEstado}' no es válido.`);
         }
-        
-        // 🛑 CORRECCIÓN: Pasar los parámetros separados al repositorio
         await MesaBD.modificarEstadoMesa(nroMesa, nuevoEstado);
         mesaAModificar.cambiarEstadoMesa(nuevoEstado);
         return mesaAModificar;        
     }
-
 }
 
 module.exports = AdministradorMesas;

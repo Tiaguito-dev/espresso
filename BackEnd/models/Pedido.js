@@ -28,19 +28,11 @@ const validarDataPedido = (data) => {
         }
     }
 
-    /* CÓDIGO A COMENTAR TEMPORALMENTE:
     if (data.mesa && !(data.mesa instanceof Mesa)) {
         errores.push('La mesa debe ser una instancia de la clase Mesa');
     } else if (!data.mesa) {
-        errores.push('La mesa es obligatoria'); // 🛑 ESTA ES LA LÍNEA QUE FALLA
+        errores.push('La mesa es obligatoria');
     }
-    */
-    // CÓDIGO MODIFICADO PARA DEBUG:
-    if (data.mesa && !(data.mesa instanceof Mesa)) {
-        errores.push('La mesa debe ser una instancia de la clase Mesa');
-    }
-    // Si la mesa es nula, permitimos el paso TEMPORALMENTE:
-    // NOTA: Es mejor dejar el if y arreglar la BD.
 
     return errores;
 
