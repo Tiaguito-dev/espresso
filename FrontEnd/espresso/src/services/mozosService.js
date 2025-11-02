@@ -59,3 +59,12 @@ export const asignarMesaAMozo = async (mozoId, mesaId) => {
 
 // NOTA: No se implementan create, update, delete, getById si solo se usan para asignación/listado.
 // Si se necesitan, se harían llamadas fetch POST/PUT/DELETE/GET a ${API_URL}/...
+
+export async function fetchMozos() {
+    const response = await fetch(`${API_URL}/mozos`);
+    if (!response.ok) {
+        throw new Error('No se pudieron obtener los mozos.');
+    }
+    const data = await response.json();
+    return data; // Debería devolver un array: [{ codMozo: 'M01', nombre: 'Carlos' }, ...]
+}
