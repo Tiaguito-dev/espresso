@@ -4,25 +4,26 @@ const UsuarioBD = require('../repositories/UsuarioBD');
 
 
 class AdministradorUsuarios {
+    // SIMPLIFICADO: Ya no necesita obtener todos los perfiles
     async convertirUsuarioBD(usuariosBD) {
         if (!usuariosBD || usuariosBD.length === 0) {
             return [];
         }
 
-        const perfiles = await administradorPerfiles.obtenerPerfiles();
-        const perfilesMap = new Map();
-        perfiles.forEach(perfil => {
-            perfilesMap.set(perfil.codigo, perfil);
-        });
-
         return usuariosBD.map(usuario => {
-            const perfil = perfilesMap.get(usuario.codigoPerfil);
-            if (!perfil) {
-                console.error(`Error: El usuario tiene un codigo de perfil invalido`);
+            // El perfil ya viene del JOIN
+            if (!usuario.perfil_codigo || !usuario.perfil_nombre) {
+                console.error(`Error: El usuario ${usuario.codigo} no tiene perfil válido`);
                 return null;
             }
+
+            // Crear objeto Perfil desde los datos del JOIN
+            const perfil = new Perfil({
+                codigo: usuario.perfil_codigo,
+                nombre: usuario.perfil_nombre
+            });
             return new Usuario({
-                id: usuario.codigo,
+                codigo: usuario.codigo,
                 nombre: usuario.nombre,
                 correo: usuario.correo,
                 contraseñaHash: usuario.contraseñaHash,
@@ -34,7 +35,7 @@ class AdministradorUsuarios {
     async registrarUsuario(data) {
         const { nombre, correo, contraseña, perfil } = data;
 
-        const usuarioExistente = await this.buscarUsuarioPorCorreo(correo);
+        const usuarioExistente = await this.buscarPorCorreo(correo);
         if (usuarioExistente) {
             throw new Error('El email ya está registrado');
         }

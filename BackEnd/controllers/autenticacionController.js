@@ -1,8 +1,6 @@
-const AdministradorUsuarios = require('../models/AdministradorUsuarios.js');
+const administradorUsuarios = require('../models/AdministradorUsuarios.js');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'clave';
-
-const administradorUsuarios = new AdministradorUsuarios();
 
 exports.registrar = async (req, res) => {
     try {
@@ -25,13 +23,13 @@ exports.registrar = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { codigo, contraseña } = req.body;
+        const { correo, contraseña } = req.body;
 
-        if (!codigo || !contraseña) {
+        if (!correo || !contraseña) {
             return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
         }
 
-        const usuario = await administradorUsuarios.buscarPorCodigo(codigo);
+        const usuario = await administradorUsuarios.buscarPorCorreo(correo);
         if (!usuario) {
             return res.status(401).json({ mensaje: 'Credenciales inválidas' });
         }
@@ -41,17 +39,19 @@ exports.login = async (req, res) => {
             return res.status(401).json({ mensaje: 'Credenciales inválidas' });
         }
         const token = jwt.sign({
-            id: usuario.codigo,
+            codigo: usuario.codigo,
             nombre: usuario.nombre,
             correo: usuario.correo,
-            perfil: usuario.perfil
+            perfilCodigo: usuario.perfil.nombre,
+            perfilNombre: usuario.perfil.codigo
         },
             SECRET_KEY, { expiresIn: '4h' }
         );
         res.status(200).json({
-            message: 'Login exitoso',
+            mensaje: 'Login exitoso',
             token: token,
-            usuario: usuario
+            nombreUsuario: usuario.nombre,
+            perfil: usuario.perfil.nombre // Solo el nombre del perfil
         });
     } catch (error) {
         res.status(500).json({ mensaje: 'Error en el servidor' });

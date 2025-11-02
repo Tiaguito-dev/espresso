@@ -7,7 +7,7 @@ const FormularioLogin = () => {
     const { setNombreUsuario, setPerfil, setAutenticado, setCodigo } = useContext(UsuarioContext);
 
     // ESTO ES LO DEL FORMULARIO
-    const [usuario, setUsuario] = useState('');
+    const [correo, setCorreo] = useState('');
     const [contrasenia, setContrasenia] = useState('');
 
     const autenticarUsuario = (dataUser) => {
@@ -30,7 +30,7 @@ const FormularioLogin = () => {
 
         const data = {
             // PUEDE QUE LAS VARIABLES NO SE LLAMEN ASÍ
-            nombre: usuario,
+            correo: correo,
             password: contrasenia,
         };
 
@@ -50,9 +50,9 @@ const FormularioLogin = () => {
         <form onSubmit={enviarFormulario}>
             <h3>Iniciar Sesión</h3>
 
-            <label htmlFor="usuario">Usuario</label>
+            <label htmlFor="correo">Correo Electrónico</label>
             <input
-                id="usuario"
+                id="correo"
                 type="text"
                 value={usuario}
                 onChange={(event) => setUsuario(event.target.value)}

@@ -1,12 +1,12 @@
 const Perfil = require('./Perfil.js');
-const PerfilesBD = require('../repositories/PerfilesBD');
+const PerfilBD = require('../repositories/PerfilBD');
 
 
 class AdministradorPerfiles {
     convertirPerfilBD(perfilBD) {
         if (!perfilBD) return null;
         return new Perfil({
-            id: perfilBD.codigo,
+            codigo: perfilBD.codigo,
             nombre: perfilBD.nombre
             /* NO VAMOS A TARBAJAR CON LISTA DE PERMISOS AHORA*/
             // permisos: perfilBD.permisos // es un array de strings
@@ -19,7 +19,7 @@ class AdministradorPerfiles {
         /* NO VAMOS A TARBAJAR CON LISTA DE PERMISOS AHORA*/
         const { permisos } = data;
 
-        const nuevoId = await PerfilesBD.obtenerUltimoCodigo() + 1;
+        const nuevoId = await PerfilBD.obtenerUltimoCodigo() + 1;
 
         const datosBD = {
             codigo: nuevoId,
@@ -27,19 +27,19 @@ class AdministradorPerfiles {
             /* NO VAMOS A TARBAJAR CON LISTA DE PERMISOS AHORA*/
             // permisos: permisos
         }
-        await PerfilesBD.crearPerfil(datosBD);
+        await PerfilBD.crearPerfil(datosBD);
 
-        const nuevoPerfil = new Perfil({ id: nuevoId, nombre, permisos });
+        const nuevoPerfil = new Perfil({ codigo: nuevoId, nombre });
 
         return nuevoPerfil;
     }
     async buscarPorNombre(nombre) {
-        const perfilBD = await PerfilesBD.obtenerPerfilPorNombre(nombre);
+        const perfilBD = await PerfilBD.obtenerPerfilPorNombre(nombre);
         return this.convertirPerfilBD(perfilBD);
     }
 
     async obtenerPerfiles() {
-        const perfilesBD = await PerfilesBD.obtenerPerfiles();
+        const perfilesBD = await PerfilBD.obtenerPerfiles();
         if (!perfilesBD || perfilesBD.length === 0) {
             return [];
         }
