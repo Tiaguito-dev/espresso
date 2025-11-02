@@ -2,9 +2,9 @@ const bcrypt = require('bcrypt');
 
 class Usuario {
     constructor(data) {
-        this.id = data.id;
+        this.codigo = data.codigo;
         this.nombre = data.nombre;
-        this.email = data.email;
+        this.correo = data.correo;
         this.contraseñaHash = data.contraseñaHash;
         this.perfil = data.perfil;
     }
@@ -18,19 +18,21 @@ class Usuario {
         // Falta instalar el hash creo
         return await bcrypt.hash(contraseña, saltRounds);
     }
-
+    /* NO VAMOS A TARBAJAR CON LISTA DE PERMISSOS POR AHORA
+    
     tienePermiso(permiso) {
         if (this.perfil) {
             return this.perfil.tienePermiso(permiso);
         }
         return false;
     }
+    */
 
     toJSON() {
         return {
-            id: this.id,
+            codigo: this.codigo,
             nombre: this.nombre,
-            email: this.email,
+            correo: this.correo,
             perfil: this.perfil
         };
     }

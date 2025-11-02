@@ -1,21 +1,21 @@
 const AdministradorUsuarios = require('../models/AdministradorUsuarios.js');
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'clave'; 
+const SECRET_KEY = 'clave';
 
 const administradorUsuarios = new AdministradorUsuarios();
 
 exports.registrar = async (req, res) => {
     try {
-        const { nombre, email, contraseña, nombrePerfil } = req.body;
+        const { nombre, correo, contraseña, perfil } = req.body;
 
-        if (!nombre || !email || !contraseña || !nombrePerfil) {
+        if (!nombre || !correo || !contraseña || !perfil) {
             return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
         }
         const nuevoUsuario = await administradorUsuarios.registrarUsuario({
             nombre,
-            email,
+            correo,
             contraseña,
-            nombrePerfil
+            perfil
         });
         res.status(201).json({ mensaje: 'Usuario registrado', usuario: nuevoUsuario });
     } catch (error) {
@@ -25,13 +25,13 @@ exports.registrar = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { email, contraseña } = req.body;
+        const { codigo, contraseña } = req.body;
 
-        if (!email || !contraseña) {
+        if (!codigo || !contraseña) {
             return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
         }
 
-        const usuario = await administradorUsuarios.buscarPorEmail(email);
+        const usuario = await administradorUsuarios.buscarPorCodigo(codigo);
         if (!usuario) {
             return res.status(401).json({ mensaje: 'Credenciales inválidas' });
         }
@@ -40,18 +40,19 @@ exports.login = async (req, res) => {
         if (!contraseñaValida) {
             return res.status(401).json({ mensaje: 'Credenciales inválidas' });
         }
-        const token = jwt.sign({ 
-            id: usuario.id, 
-            nombre: usuario.nombre, 
-            email: usuario.email,
+        const token = jwt.sign({
+            id: usuario.codigo,
+            nombre: usuario.nombre,
+            correo: usuario.correo,
             perfil: usuario.perfil
-            },
+        },
             SECRET_KEY, { expiresIn: '4h' }
         );
         res.status(200).json({
-        message: 'Login exitoso',
-        token: token,
-        usuario: usuario });
+            message: 'Login exitoso',
+            token: token,
+            usuario: usuario
+        });
     } catch (error) {
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }

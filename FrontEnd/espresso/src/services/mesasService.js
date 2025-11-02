@@ -7,13 +7,13 @@ const handleResponse = async (response) => {
     if (response.status === 204) {
         return {};
     }
-    
+
     // Si la respuesta no es OK (ej. 404, 500, 400), lanzamos un error
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
         throw new Error(errorData.message || `Error en la petición: ${response.status}`);
     }
-    
+
     // Devolvemos los datos parseados como JSON
     return response.json();
 };

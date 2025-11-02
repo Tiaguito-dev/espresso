@@ -1,44 +1,45 @@
 const Usuario = require('./Usuario.js');
 const administradorPerfiles = require('./AdministradorPerfiles.js');
-const UsuariosBD = require('../repositories/UsuariosBD');
+const UsuarioBD = require('../repositories/UsuarioBD');
 
 
 class AdministradorUsuarios {
-    async convertirUsuarioBD(usuariosBD){
-        if(!usuariosBD || usuariosBD.legth === 0){
-            return[];
+    async convertirUsuarioBD(usuariosBD) {
+        if (!usuariosBD || usuariosBD.length === 0) {
+            return [];
         }
 
         const perfiles = await administradorPerfiles.obtenerPerfiles();
         const perfilesMap = new Map();
-        perfiles.forEach(perfil => { perfilesMap.set(perfil.id, perfil);            
+        perfiles.forEach(perfil => {
+            perfilesMap.set(perfil.codigo, perfil);
         });
 
         return usuariosBD.map(usuario => {
             const perfil = perfilesMap.get(usuario.codigoPerfil);
-            if (!perfil){
+            if (!perfil) {
                 console.error(`Error: El usuario tiene un codigo de perfil invalido`);
                 return null;
             }
-            return new Usuario({ 
-                id: usuario.codigo, 
-                nombre: usuario.nombre, 
-                email: usuario.email, 
-                contraseñaHash: usuario.contraseñaHash, 
+            return new Usuario({
+                id: usuario.codigo,
+                nombre: usuario.nombre,
+                correo: usuario.correo,
+                contraseñaHash: usuario.contraseñaHash,
                 perfil: perfil
             })
-        })
-        }
+        }).filter(u => u !== null); // FILTRA LOS QUE SON NULL
+    }
 
     async registrarUsuario(data) {
-        const { nombre, email, contraseña, nombrePerfil } = data;
+        const { nombre, correo, contraseña, perfil } = data;
 
-        const usuarioExistente = await this.buscarUsuarioPorEmail(email);
+        const usuarioExistente = await this.buscarUsuarioPorCorreo(correo);
         if (usuarioExistente) {
             throw new Error('El email ya está registrado');
         }
 
-        const perfilUsuario = await administradorPerfiles.buscarPorNombre(nombrePerfil);
+        const perfilUsuario = await administradorPerfiles.buscarPorNombre(perfil);
         if (!perfilUsuario) {
             throw new Error('El perfil especificado no existe');
         }
@@ -51,33 +52,34 @@ class AdministradorUsuarios {
         const datosBD = {
             codigo: nuevoId,
             nombre: nombre,
-            email: email,
+            correo: correo,
             contraseñaHash: contraseñaHash,
             codigoPerfil: perfilUsuario.codigo
         }
-        await UsuariosBD.crearUsuario(datosBD);
+        await UsuarioBD.crearUsuario(datosBD);
 
         const nuevoUsuario = new Usuario({
-            id: nuevoId, 
-            nombre: nombre, 
-            email: email, 
-            contraseñaHash: contraseñaHash, 
-            perfi: perfilUsuario});
+            codigo: nuevoId,
+            nombre: nombre,
+            correo: correo,
+            contraseñaHash: contraseñaHash,
+            perfil: perfilUsuario
+        });
         return nuevoUsuario;
     }
 
-    async buscarPorEmail(email) {
-        const datosUsuario = await UsuariosBD.obtenerUsuarioPorEmail(email)
-        if (!datosUsuario){
+    async buscarPorCorreo(correo) {
+        const datosUsuario = await UsuarioBD.obtenerUsuarioPorCorreo(correo)
+        if (!datosUsuario) {
             return undefined;
         }
         const [usuario] = await this.convertirUsuarioBD([datosUsuario]);
         return usuario;
     }
 
-    async buscarPorId(id) {
-        const datosUsuario = await UsuariosBD.obtenerUsuarioPorId(id);
-        if (!datosUsuario){
+    async buscarPorCodigo(codigo) {
+        const datosUsuario = await UsuarioBD.obtenerUsuarioPorCodigo(codigo);
+        if (!datosUsuario) {
             return undefined;
         }
         const [usuario] = await this.convertirUsuarioBD([datosUsuario]);

@@ -32,6 +32,8 @@ app.use('/api', (req, res, next) => {
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/productos', productosRoutes);
 
+// FALTAN LAS RUTAS DE MESAS Y TODO ESO. Es decir, faltan conectar cosas
+
 const PORT = 3001;
 // Esto me lo dio chat para depurar, así que podríamos sacarlo
 app.listen(PORT, () => {
