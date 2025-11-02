@@ -61,11 +61,11 @@ export const obtenerCategorias = async () => {
         const response = await fetch(`${API_URL}/categoria`);
         if (!response.ok) {
             console.error('Error al obtener categorías:', response.statusText);
-            return []; 
+            return [];
         }
         const data = await response.json();
-        return data; 
-        
+        return data;
+
     } catch (error) {
         console.error("Error de red al obtener categorías:", error);
         return [];

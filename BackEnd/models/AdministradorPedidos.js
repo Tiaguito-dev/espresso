@@ -25,9 +25,7 @@ class AdministradorPedidos {
             const lineasObj = [];
 
             for (const linea of lineasBD) {
-                const productoObj = await this.menu.buscarProductoPorId(linea.id_producto);
-
-                console.log(`Producto obtenido para la línea de pedido ${linea.id_producto}:`, productoObj);
+                const productoObj = await this.menu.buscarProductoPorId(linea.id);
 
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
@@ -37,7 +35,7 @@ class AdministradorPedidos {
                     }));
                     //console.log(`Producto Numero ${productoObj.id} agregado a la línea de pedido ${pedido.nro_pedido}:`);
                 } else {
-                    console.warn(`El producto con ID ${linea.id_producto} del pedido ${pedido.nro_pedido} ya no existe.`); //CASO MUY EXTRAÑO
+                    console.warn(`El producto con ID ${linea.id} del pedido ${pedido.nro_pedido} ya no existe.`); //CASO MUY EXTRAÑO
                 }
             }
 

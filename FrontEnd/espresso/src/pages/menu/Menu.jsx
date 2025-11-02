@@ -67,13 +67,13 @@ export default function Menu() {
 
     //elimino un producto    
     const eliminarProducto = async (id) => {
-        if(window.confirm("¿Seguro que desea eliminar el producto?")) {
-            try{
+        if (window.confirm("¿Seguro que desea eliminar el producto?")) {
+            try {
                 await deleteProducto(id);
                 alert("Producto eliminado correctamente");
-                setProductos(prevProductos => 
-                prevProductos.filter(p => String(p.id) !== String(id))
-            );
+                setProductos(prevProductos =>
+                    prevProductos.filter(p => String(p.id) !== String(id))
+                );
             } catch (error) {
                 console.error("Error al eliminar el producto");
                 alert("No se pudo eliminar el producto");
@@ -94,7 +94,7 @@ export default function Menu() {
                 Filtros
             </button>
 
-            <button className="btn-ver-menu"onClick={() => navigate("/menu/menuEspresso/")}>
+            <button className="btn-ver-menu" onClick={() => navigate("/menu/menuEspresso/")}>
                 Ver menú Espresso
             </button>
 
@@ -122,8 +122,8 @@ export default function Menu() {
                 </button>
             </div>
 
-            
-            <TablaProducto 
+
+            <TablaProducto
                 productos={productosFiltrados}
                 arrayCampos={["Codigo", "Nombre", "Categoria", "Descripcion", "Precio", "Disponible", "Acciones"]}
                 funcionCambiarEstado={cambiarEstado}
@@ -131,6 +131,6 @@ export default function Menu() {
                 funcionEliminar={eliminarProducto}
             ></TablaProducto>
         </div>
-        
+
     );
 }
