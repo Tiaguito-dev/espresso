@@ -1,16 +1,16 @@
-// src/pages/mesas/TablaMesas.jsx
+// src/pages/mesas/TablaMesas.jsx (SIN CAMBIOS FUNCIONALES CRÍTICOS)
 
 import React from 'react';
 import FilaMesa from './FilaMesa';
-import './Mesas.css'; // Asegúrate de que los estilos de tabla se importen aquí o en MesasLista
+import './Mesas.css'; 
 
 export default function TablaMesas({ 
     mesas, 
     arrayCampos, 
     funcionCambiarEstado, 
     funcionModificar, 
-    funcionLiberar,             // 🚨 NUEVA FUNCIÓN
-    funcionPonerNoDisponible    // 🚨 NUEVA FUNCIÓN
+    funcionLiberar,            
+    funcionPonerNoDisponible    
 }) {
     return (
         <div className="table-container">
@@ -20,25 +20,22 @@ export default function TablaMesas({
                 <table className="mesas-table">
                     <thead>
                         <tr>
-                            {/* Mapeo de los encabezados de la tabla */}
                             {arrayCampos.map((campo, index) => (
                                 <th key={index}>{campo}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {/* Mapeo de cada mesa a su respectiva fila */}
                         {mesas.map((mesa) => (
-                            <FilaMesa
-                                key={mesa.id}
-                                mesa={mesa}
-                                funcionCambiarEstado={funcionCambiarEstado}
-                                funcionModificar={funcionModificar}
-                                // 🚨 Pasamos las nuevas funciones de Liberar y No Disponible
-                                funcionLiberar={funcionLiberar}
-                                funcionPonerNoDisponible={funcionPonerNoDisponible}
-                            />
-                        ))}
+                               <FilaMesa
+                                    key={mesa.nroMesa} // Usa nroMesa como key
+                                    mesa={mesa}
+                                    funcionCambiarEstado={funcionCambiarEstado}
+                                    funcionModificar={funcionModificar}
+                                    funcionLiberar={funcionLiberar}
+                                    funcionPonerNoDisponible={funcionPonerNoDisponible}
+                                />
+                            ))}
                     </tbody>
                 </table>
             )}

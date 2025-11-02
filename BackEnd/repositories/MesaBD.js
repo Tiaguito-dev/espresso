@@ -1,3 +1,5 @@
+// repositories/MesaBD.js (CORREGIDO)
+
 const Gateway = require('../DB/Gateway');
 
 // === SECCIÓN DE QUERYS ===
@@ -57,28 +59,33 @@ exports.eliminarMesa = async (nroMesa) => {
 exports.obtenerUltimoNumeroMesa = async () => {
     try {
         const resultado = await Gateway.ejecutarQuery(selectUltimoCodigo);
-        return resultado[0]?.max || 0; // Retornar el último número de mesa
+        // Nota: Si el resultado de MAX(col) se llama "max" en tu DB:
+        return resultado[0]?.max || 0; 
     } catch (error) {
         throw new Error('Error al obtener el último número de mesa desde la base de datos: ' + error.message);
     }
 };
 
-exports.modificarEstadoMesa = async (datos) => {
-    const { nroMesa, estadoMesa } = datos;
-
+/**
+ * 🚨 CORRECCIÓN CLAVE: La función ahora recibe nroMesa y nuevoEstado como argumentos separados,
+ * tal como se le llama desde AdministradorMesas.js
+ */
+exports.modificarEstadoMesa = async (nroMesa, nuevoEstado) => {
     try {
-        await Gateway.ejecutarQuery({ text: updateMesaPorId, values: [nroMesa, estadoMesa] });
+        // La query usa $1 para nroMesa y $2 para estadoMesa
+        await Gateway.ejecutarQuery({ text: updateMesaPorId, values: [nroMesa, nuevoEstado] });
         return {
             success: true,
             message: `La mesa ${nroMesa} se modificó correctamente.`
         };
     } catch (error) {
+        // Lanzamos el error de forma explícita para debugging si sigue fallando
+        console.error(`[ERROR DB] Fallo al modificar mesa ${nroMesa}:`, error.message);
         throw new Error(`Error al modificar la mesa ${nroMesa} desde la base de datos: ${error.message}`);
     }
 };
 
 // === SECCIÓN DE VALIDACIÓN ===
-// (por si el número de mesa debe ser único)
 exports.existeNumeroMesa = async (nroMesa) => {
     try {
         const mesas = await Gateway.ejecutarQuery({ text: selectMesaPorNumero, values: [nroMesa] });

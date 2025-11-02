@@ -2,9 +2,28 @@
 
 import React from 'react';
 
-// Estilos de estado para la celda (Incluye No Disponible)
-const getEstadoClass = (estado) => {
-    switch (estado) {
+// 🔄 Función de mapeo y normalización de estado
+const normalizarEstado = (estadoBD) => {
+    if (!estadoBD) return 'Desconocido';
+    
+    const estadoLower = estadoBD.toLowerCase();
+
+    switch (estadoLower) {
+        case "disponible":
+            return "Disponible";
+        case "ocupada":
+            return "Ocupada";
+        case "fuera de servicio": // 🚨 El valor que el Backend almacena
+            return "No Disponible"; // 🚨 El valor que el Frontend espera mostrar
+        default:
+            // Capitalizar el resto si lo hay, aunque sea desconocido
+            return estadoBD.charAt(0).toUpperCase() + estadoBD.slice(1).toLowerCase();
+    }
+}
+
+// Estilos de estado para la celda (AHORA USA EL ESTADO NORMALIZADO)
+const getEstadoClass = (estadoNormalizado) => {
+    switch (estadoNormalizado) {
         case "Disponible":
             return "estado-disponible";
         case "Ocupada":
@@ -16,37 +35,45 @@ const getEstadoClass = (estado) => {
     }
 };
 
-// 🚨 La prop 'funcionEliminar' del código anterior se divide en 'funcionLiberar' y 'funcionPonerNoDisponible'
 export default function FilaMesa({ mesa, funcionCambiarEstado, funcionModificar, funcionLiberar, funcionPonerNoDisponible }) {
     
-    const mesaId = mesa.id; 
+    const mesaId = mesa.nroMesa; 
+    
+    // 🚨 CLAVE: Normalizamos el estado de la DB para todas las comparaciones y la visualización
+    const estadoNormalizado = normalizarEstado(mesa.estadoMesa);
 
-    // DETERMINAR QUÉ BOTONES MOSTRAR
-    const estaNoDisponible = mesa.estado === "No Disponible";
+    const estaNoDisponible = estadoNormalizado === "No Disponible"; 
+    const estaOcupada = estadoNormalizado === "Ocupada";
 
     return (
         <tr>
-            <td>{mesa.id}</td>
-            <td>{mesa.numero}</td>
+            {/* 1. Columnas ID/Número */}
+            <td>{mesa.nroMesa}</td> 
+            <td>{mesa.nroMesa}</td>
+            
+            {/* 2. Columna Mozo a cargo */}
             <td>{mesa.mozoACargo || '-'}</td>
-            <td>
-                <span className={`${getEstadoClass(mesa.estado)} estado-badge`}> 
-                    {mesa.estado}
+            
+            {/* 3. Columna Estado */}
+            <td> 
+                <span className={`${getEstadoClass(estadoNormalizado)} estado-badge`}>
+                    {estadoNormalizado} {/* 🚨 Usa el estado normalizado para mostrar */}
                 </span>
             </td>
-            <td>
-                {/* 1. Botón de Ciclo de Estado (Solo visible si NO está No Disponible) */}
+            
+            {/* 4. Columna Acciones */}
+            <td> 
+                {/* Botón Ciclo de Estado (Visible si NO está No Disponible) */}
                 {!estaNoDisponible && (
                     <button 
                         className="btn-accion btn-cambiar-estado" 
                         onClick={() => funcionCambiarEstado(mesaId)}
                     >
-                        {/* Muestra el texto opuesto al estado actual */}
-                        {mesa.estado === "Ocupada" ? "Poner Disponible" : "Poner Ocupada"} 
+                        {estaOcupada ? "Poner Disponible" : "Poner Ocupada"} {/* 🚨 Usa la variable normalizada */}
                     </button>
                 )}
 
-                {/* 2. Botón Modificar (siempre visible) */}
+                {/* Botón Modificar (siempre visible) */}
                 <button 
                     className="btn-accion btn-modificar" 
                     onClick={() => funcionModificar(mesaId)}
@@ -54,9 +81,9 @@ export default function FilaMesa({ mesa, funcionCambiarEstado, funcionModificar,
                     Modificar
                 </button>
                 
-                {/* 3. Botón para liberar (activar) o poner fuera de servicio (eliminar suave) */}
+                {/* Botón para liberar (activar) o poner fuera de servicio */}
                 {!estaNoDisponible ? (
-                    // Si está Disponible u Ocupada, mostramos Poner No Disponible (Eliminación suave)
+                    // Si está Disponible u Ocupada -> Poner No Disponible
                     <button 
                         className="btn-accion btn-eliminar-suave" 
                         onClick={() => funcionPonerNoDisponible(mesaId)} 
@@ -64,7 +91,7 @@ export default function FilaMesa({ mesa, funcionCambiarEstado, funcionModificar,
                         Poner No Disponible
                     </button>
                 ) : (
-                    // Si está No Disponible, mostramos el botón para activarla/liberarla
+                    // Si está No Disponible -> Poner Disponible (usa funcionLiberar)
                     <button 
                         className="btn-accion btn-liberar" 
                         onClick={() => funcionLiberar(mesaId)} 

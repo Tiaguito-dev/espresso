@@ -1,7 +1,6 @@
 // src/pages/mesas/MesasLista.jsx
 
 import React, { useState, useEffect } from "react";
-// Solo usamos getMesas y updateMesa, ya que no hay delete físico.
 import { getMesas, updateMesa } from "../../services/mesasService"; 
 import { useNavigate } from "react-router-dom";
 import "./Mesas.css";
@@ -12,7 +11,6 @@ import TablaMesas from "./TablaMesas";
 export default function MesasLista() {
     const [mesas, setMesas] = useState([]);
     const [mostrarFiltros, setMostrarFiltros] = useState(false);
-    // 🎯 Incluimos el nuevo filtro al estado
     const [estadoFiltro, setEstadoFiltro] = useState("todas"); 
     const [filtroNumero, setFiltroNumero] = useState(""); 
     const [filtroMozo, setFiltroMozo] = useState(""); 
@@ -32,6 +30,77 @@ export default function MesasLista() {
         }
     };
 
+    // --- Lógica de Actualización de Estado (Envía al Backend: 'disponible', 'ocupada', 'fuera de servicio') ---
+
+    // 🔄 Cambiar estado (Alterna entre disponible <-> ocupada)
+    const cambiarEstado = async (id) => {
+        try {
+            const mesaActual = mesas.find((m) => m.nroMesa === id); 
+            if (!mesaActual) return; 
+
+            const estadoActualLower = (mesaActual.estadoMesa || "").toLowerCase();
+            
+            // Bloquear si la mesa está en "fuera de servicio"
+            if (estadoActualLower === "fuera de servicio") return; 
+
+            // Determina el siguiente estado (en minúscula, para la API)
+            const siguienteEstadoAPI = 
+                estadoActualLower === "ocupada" 
+                    ? "disponible" 
+                    : "ocupada";   
+            
+            const updates = { 
+                estado: siguienteEstadoAPI, // Clave 'estado' y valor 'disponible'/'ocupada'
+            };
+            
+            if (siguienteEstadoAPI === "disponible") { 
+                updates.mozoACargo = null;
+            }
+            
+            await updateMesa(id, updates); 
+            fetchMesas(); // Refresca la lista
+
+        } catch (error) {
+            console.error("Error al cambiar el estado de la mesa:", error);
+            alert(`Error al cambiar el estado: ${error.message || 'Verifique la consola para detalles.'}`);
+        }
+    };
+
+    // 🧹 Función liberarMesa
+    const liberarMesa = async (id) => {
+        if (window.confirm("¿Desea liberar/activar la mesa?")) {
+            try {
+                await updateMesa(id, { 
+                    estado: "disponible", // Valor esperado por el Backend
+                    mozoACargo: null,
+                });
+                fetchMesas();
+            } catch (error) {
+                console.error("Error al liberar la mesa:", error);
+                alert("No se pudo liberar/activar la mesa.");
+            }
+        }
+    };
+
+    const ponerNoDisponible = async (nroMesa) => {
+        try {
+            // ¡mesasService ahora está definido!
+            const nuevoEstado = 'fuera de servicio'; 
+            await mesasService.cambiarEstadoMesa(nroMesa, nuevoEstado);
+            fetchMesas(); 
+        } catch (error) {
+            console.error("Error al poner la mesa no disponible:", error);
+        }
+    
+    };
+    
+    // ✏️ Navegar a modificar
+    const navegarAModificar = (id) => {
+        navigate(`/mesas/modificar/${id}`);
+    };
+
+    // --- Funciones de Filtrado y Renderizado ---
+
     const toggleFiltros = () => {
         setMostrarFiltros(!mostrarFiltros);
     };
@@ -48,100 +117,29 @@ export default function MesasLista() {
         setFiltroMozo(e.target.value);
     };
 
-    // 🔄 Cambiar estado (SOLO Disponible <-> Ocupada)
-    const cambiarEstado = async (id) => {
-        try {
-            const mesaActual = mesas.find((m) => m.id === id);
-            // Si la mesa está No Disponible, no permitimos el cambio de ciclo.
-            if (!mesaActual || mesaActual.estado === "No Disponible") return;
-
-            // Ciclo: Ocupada -> Disponible, o Disponible -> Ocupada
-            const siguienteEstado = mesaActual.estado === "Ocupada" ? "Disponible" : "Ocupada";
-            
-            const updates = { 
-                estado: siguienteEstado,
-            };
-            
-            // Si pasa a Disponible, eliminamos el mozo a cargo
-            if (siguienteEstado === "Disponible") {
-                updates.mozoACargo = null;
-            }
-
-            await updateMesa(id, updates); 
-            fetchMesas();
-        } catch (error) {
-            console.error("Error al cambiar el estado de la mesa:", error);
-        }
-    }; 
-
-
-    // 🧹 Función 1: Poner mesa en 'Disponible' (Libera/reactiva la mesa)
-    const liberarMesa = async (id) => {
-        if (window.confirm("¿Desea liberar/activar la mesa? Se pondrá en 'Disponible' y se desasignará el mozo.")) {
-            try {
-                await updateMesa(id, { 
-                    estado: "Disponible", 
-                    mozoACargo: null,
-                });
-                fetchMesas();
-            } catch (error) {
-                console.error("Error al liberar la mesa:", error);
-                alert("No se pudo liberar/activar la mesa.");
-            }
-        }
-    };
-
-    // ❌ Función 2: Poner mesa en 'No Disponible' (Eliminación suave)
-    const ponerNoDisponible = async (id) => {
-        if (window.confirm("¿Seguro que quiere dejar esta mesa como NO DISPONIBLE? Esto la quita de servicio.")) {
-            try {
-                await updateMesa(id, { 
-                    estado: "No Disponible", 
-                    mozoACargo: null, 
-                });
-                fetchMesas();
-            } catch (error) {
-                console.error("Error al poner la mesa como no disponible:", error);
-                alert("No se pudo poner la mesa como no disponible.");
-            }
-        }
-    };
-
-    // ✏️ Navegar a modificar (igual)
-    const navegarAModificar = (id) => {
-        navigate(`/mesas/modificar/${id}`);
-    };
-
-    // 🔎 Filtrar por estado, número y mozo
+    // 🔎 Lógica de Filtrado (Asegura la compatibilidad de estados)
     const mesasFiltradas = mesas.filter((mesa) => {
-        const estadoMap = {
-            "disponible": "Disponible",
-            "ocupada": "Ocupada",
-            "no-disponible": "No Disponible", 
-        };
-
-        const estadoBD = mesa.estado || "";
-        const numeroBD = mesa.numero ? String(mesa.numero) : "";
-        const mozoBD = mesa.mozoACargo ? mesa.mozoACargo.toLowerCase() : "";
+        // Mapea el estado del objeto Mesa a minúscula para la comparación
+        const estadoBD = (mesa.estadoMesa || "").toLowerCase();
+        const numeroBD = mesa.nroMesa ? String(mesa.nroMesa) : ""; 
+        const mozoBD = mesa.mozoACargo ? mozoACargo.toLowerCase() : ""
 
         // 1. Filtro por Estado (botones)
         let pasaFiltroEstado = true;
         if (estadoFiltro !== "todas") {
-            const estadoEsperado = estadoMap[estadoFiltro];
+            // Convierte el filtro del botón ('no-disponible') al valor real del backend
+            const estadoEsperado = estadoFiltro === "no-disponible" 
+                ? "fuera de servicio" 
+                : estadoFiltro;   
+
             pasaFiltroEstado = estadoBD === estadoEsperado;
         }
 
         // 2. Filtro por Número
-        let pasaFiltroNumero = true;
-        if (filtroNumero) {
-            pasaFiltroNumero = numeroBD.includes(filtroNumero);
-        }
+        let pasaFiltroNumero = !filtroNumero || numeroBD.includes(filtroNumero);
         
         // 3. Filtro por Mozo
-        let pasaFiltroMozo = true;
-        if (filtroMozo) {
-            pasaFiltroMozo = mozoBD.includes(filtroMozo.toLowerCase());
-        }
+        let pasaFiltroMozo = !filtroMozo || mozoBD.includes(filtroMozo.toLowerCase());
 
         return pasaFiltroEstado && pasaFiltroNumero && pasaFiltroMozo;
     });
