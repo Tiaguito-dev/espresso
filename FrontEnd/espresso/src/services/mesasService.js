@@ -72,3 +72,17 @@ export async function deleteMesa(id) {
     // DELETE a menudo devuelve 204 (No Content)
     return handleResponse(response);
 }
+
+
+export async function cambiarEstadoMesa(nroMesa, nuevoEstado) {
+    // El backend espera el número de mesa en la URL y el estado en el body.
+    const response = await fetch(`${API_URL}/${nroMesa}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        // 🚨 CRÍTICO: El body debe contener la clave 'estado' que espera el controller.
+        body: JSON.stringify({ estado: nuevoEstado }), 
+    });
+    return handleResponse(response);
+}

@@ -128,8 +128,6 @@ export default function FormMesas() {
                     <select name="estado" value={mesa.estado} onChange={handleChange}>
                         <option value="Disponible">Disponible</option>
                         <option value="Ocupada">Ocupada</option>
-                        <option value="Listo Para Ordenar">Listo Para Ordenar</option>
-                        <option value="Listo Para Cobrar">Listo Para Cobrar</option>
                     </select>
                 </div>
 

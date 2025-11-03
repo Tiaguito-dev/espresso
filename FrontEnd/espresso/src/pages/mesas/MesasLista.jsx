@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { getMesas, updateMesa } from "../../services/mesasService"; 
 import { useNavigate } from "react-router-dom";
 import "./Mesas.css";
-
+import * as mesasService from '../../services/mesasService';
 import Filtro from "../menu/Filtro";
 import TablaMesas from "./TablaMesas"; 
 
@@ -84,14 +84,13 @@ export default function MesasLista() {
 
     const ponerNoDisponible = async (nroMesa) => {
         try {
-            // ¡mesasService ahora está definido!
+            // Ahora mesasService ya está definido:
             const nuevoEstado = 'fuera de servicio'; 
             await mesasService.cambiarEstadoMesa(nroMesa, nuevoEstado);
             fetchMesas(); 
         } catch (error) {
             console.error("Error al poner la mesa no disponible:", error);
         }
-    
     };
     
     // ✏️ Navegar a modificar

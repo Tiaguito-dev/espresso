@@ -337,7 +337,7 @@ function FormPedido() {
                         <label>Total del Pedido</label>
                         <input
                             type="text"
-                            value={`$${pedido.total.toFixed(2)}`}
+                            value={`$${pedido.total}`}
                             readOnly
                             className="form-control read-only total-display"
                         />
