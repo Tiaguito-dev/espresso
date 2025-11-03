@@ -86,3 +86,16 @@ export async function cambiarEstadoMesa(nroMesa, nuevoEstado) {
     });
     return handleResponse(response);
 }
+
+export async function modificarNumeroMesa(nroMesaAnterior, nroMesaNuevo) {
+    // La ruta espera el número anterior en la URL y el nuevo número en el body.
+    const response = await fetch(`${API_URL}/${nroMesaAnterior}/numero`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        // 🚨 El backend espera el body: { nroMesaNuevo: 10 }
+        body: JSON.stringify({ nroMesaNuevo: nroMesaNuevo }), 
+    });
+    return handleResponse(response);
+}

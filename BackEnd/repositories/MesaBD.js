@@ -1,4 +1,4 @@
-// repositories/MesaBD.js (CORREGIDO)
+// repositories/MesaBD.js
 
 const Gateway = require('../DB/Gateway');
 
@@ -7,7 +7,7 @@ const selectMesas = 'SELECT * FROM mesa';
 const insertMesa = 'INSERT INTO mesa (nro_mesa) VALUES ($1)';
 const selectUltimoCodigo = 'SELECT MAX(nro_mesa) FROM mesa';
 const deleteMesaPorId = 'DELETE FROM mesa WHERE nro_mesa = $1';
-const updateMesaPorId = 'UPDATE mesa SET estado_mesa = $2 WHERE nro_mesa = $1';
+const updateMesaPorId = 'UPDATE mesa SET estado_mesa = $2 WHERE nro_mesa = $1'; // nro_mesa=$1, estado_mesa=$2
 const selectMesaPorNumero = 'SELECT * FROM mesa WHERE nro_mesa = $1';
 
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES ===
@@ -30,21 +30,20 @@ exports.obtenerMesaPorNumero = async (nroMesa) => {
     }
 };
 
-exports.crearMesa = async (nroMesa) => {
-    // estado_mesa no se pasa porque en la BD tiene default 'disponible'
-
+exports.crearMesa = async (dataMesa) => {
+    // 🚨 MODIFICACIÓN: Recibe el objeto (aunque solo usa nro_mesa para el insert si el estado es DEFAULT)
     try {
-        await Gateway.ejecutarQuery({ text: insertMesa, values: [nroMesa] });
+        await Gateway.ejecutarQuery({ text: insertMesa, values: [dataMesa.nro_mesa] });
         return {
             success: true,
-            message: `La mesa ${nroMesa} se creó correctamente.`
+            message: `La mesa ${dataMesa.nro_mesa} se creó correctamente.`
         };
     } catch (error) {
         throw new Error('Error al crear una mesa en la base de datos: ' + error.message);
     }
 };
 
-exports.eliminarMesa = async (nroMesa) => {
+exports.eliminarMesaPorNumero = async (nroMesa) => { // Corregido el nombre a 'eliminarMesaPorNumero' para AdministradorMesas
     try {
         await Gateway.ejecutarQuery({ text: deleteMesaPorId, values: [nroMesa] });
         return {
@@ -56,10 +55,10 @@ exports.eliminarMesa = async (nroMesa) => {
     }
 };
 
+
 exports.obtenerUltimoNumeroMesa = async () => {
     try {
         const resultado = await Gateway.ejecutarQuery(selectUltimoCodigo);
-        // Nota: Si el resultado de MAX(col) se llama "max" en tu DB:
         return resultado[0]?.max || 0; 
     } catch (error) {
         throw new Error('Error al obtener el último número de mesa desde la base de datos: ' + error.message);
@@ -67,19 +66,18 @@ exports.obtenerUltimoNumeroMesa = async () => {
 };
 
 /**
- * 🚨 CORRECCIÓN CLAVE: La función ahora recibe nroMesa y nuevoEstado como argumentos separados,
- * tal como se le llama desde AdministradorMesas.js
+ * 🚨 MODIFICACIÓN CLAVE: La función ahora recibe un OBJETO 'datos'.
  */
-exports.modificarEstadoMesa = async (nroMesa, nuevoEstado) => {
+exports.modificarEstadoMesa = async (datos) => {
+    const { nroMesa, estadoMesa } = datos; // Desestructuración
+
     try {
-        // La query usa $1 para nroMesa y $2 para estadoMesa
-        await Gateway.ejecutarQuery({ text: updateMesaPorId, values: [nroMesa, nuevoEstado] });
+        await Gateway.ejecutarQuery({ text: updateMesaPorId, values: [nroMesa, estadoMesa] });
         return {
             success: true,
             message: `La mesa ${nroMesa} se modificó correctamente.`
         };
     } catch (error) {
-        // Lanzamos el error de forma explícita para debugging si sigue fallando
         console.error(`[ERROR DB] Fallo al modificar mesa ${nroMesa}:`, error.message);
         throw new Error(`Error al modificar la mesa ${nroMesa} desde la base de datos: ${error.message}`);
     }
@@ -89,7 +87,7 @@ exports.modificarEstadoMesa = async (nroMesa, nuevoEstado) => {
 exports.existeNumeroMesa = async (nroMesa) => {
     try {
         const mesas = await Gateway.ejecutarQuery({ text: selectMesaPorNumero, values: [nroMesa] });
-        return mesas.length > 0; // true si ya existe
+        return mesas.length > 0; 
     } catch (error) {
         throw new Error(`Error al verificar número de mesa ${nroMesa}: ${error.message}`);
     }
