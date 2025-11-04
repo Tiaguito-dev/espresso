@@ -106,3 +106,26 @@ exports.crearCategoria = async (req, res) => {
         res.status(500).json({ message: 'Error al crear la categoría', error: error.message });
     }
 };
+
+exports.modificarEstadoProducto = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { disponible } = req.body; 
+
+        if (typeof disponible !== 'boolean') {
+             return res.status(400).json({ message: 'El valor de "disponible" debe ser true o false.' });
+        }
+        
+        const productoExiste = await menu.buscarProductoPorId(id);
+        if (!productoExiste) {
+            return res.status(404).json({ message: 'Producto no encontrado para modificar estado' });
+        }
+
+        const productoActualizado = await menu.modificarEstadoProducto(id, { disponible });
+
+        res.status(200).json(productoActualizado);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al modificar estado del producto', error: error.message });
+    }
+}; 

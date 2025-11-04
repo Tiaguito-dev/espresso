@@ -1,6 +1,9 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');*/
 
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
+
 /*boton para ver el menu*/
+
 .btn-ver-menu{
     background: #97A97C;
     color: white;
@@ -21,6 +24,8 @@
   text-align: center;
   font-family: century gothic;
   padding: 20px;
+  background-color: white;
+  min-height: 90vh;
 }
 
 h1 {
@@ -28,6 +33,8 @@ h1 {
   font-size: 50px;
   color: black;
   /*font-family: 'Sofia', cursive;*/
+  margin-top: 0px;
+  font-weight: 500;
 }
 
 .contenedor-categorias {
@@ -64,6 +71,7 @@ h1 {
   cursor: pointer;
   margin: 0 auto; 
   transition: background-color 0.3s ease, border-radius 0.3s ease;
+  font-weight: lighter;
 }
 
 .btn-categoria:hover {
@@ -78,7 +86,7 @@ h1 {
 
 
 .lista-productos {
-  background-color: #fcfcfc;
+  background-color: #f9f8ef;
   border-radius: 10px 10px 10px 10px;
   width: 100%;
   max-width: 800px;
@@ -121,4 +129,9 @@ h1 {
 .producto span {
   font-weight: bold;
   color: #4C5939;
+}
+
+.logo {
+  width: 400px;
+  height: 100px;
 }

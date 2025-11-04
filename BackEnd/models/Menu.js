@@ -201,6 +201,21 @@ class Menu {
         await ProductoBD.modificarProducto(idInt, datosParaBD);
         return this.buscarProductoPorId(idInt);
     }
+
+    async modificarEstadoProducto(id, datosEstado) {
+        console.log(`Modificando estado de ID: ${id}`, datosEstado);
+        
+        if (!id || datosEstado.disponible === undefined) {
+            throw new Error('ID o estado no proporcionados para modificar estado.');
+        }
+
+        try {
+            const resultado = await ProductoBD.modificarEstadoProducto(id, datosEstado);
+            return resultado;
+        } catch (error) {
+            throw new Error(`Error en la capa de Modelo al modificar estado: ${error.message}`);
+        }
+    }
 }
 
 module.exports = Menu;

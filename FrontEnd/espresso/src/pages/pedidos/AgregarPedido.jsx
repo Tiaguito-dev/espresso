@@ -1,7 +1,10 @@
 // src/pages/pedidos/AgregarPedido.jsx
-import React, { useState } from "react";
-import { createPedido } from "../../services/pedidosService"; // Importamos la función de nuestro servicio
+import React, { use, useEffect, useMemo, useState } from "react";
+import { createPedido } from "../../services/pedidosService"; 
+import { getProductos } from "../../services/productosService";
 import "./AgregarPedido.css";
+import Popup from "../../components/VentanaPopUp";
+import SelectorProductos from "./SelectorProductos";
 
 function AgregarPedido() {
   const [mesa, setMesa] = useState("");
@@ -9,6 +12,10 @@ function AgregarPedido() {
   const [productos, setProductos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalCantidades, setModalCantidades] = useState({});
+  
+  const [popUpAbierto, setPopUpAbierto] = useState(false);
+  const [menuCompleto, setMenuCompleto] = useState([]);
+  const [seleccionados, setSeleccionados] = useState({});
 
   /*
     const [productos, setProductos] = useState([]);
@@ -22,11 +29,67 @@ function AgregarPedido() {
   */
 
   // Definición del "menú" (idealmente esto también vendría del back-end)
-  const menu = {
+  
+  {/*const menu = {
     Bebidas: [{ id: "cafe", nombre: "Café", precio: 200 }],
     Comida: [{ id: "medialuna", nombre: "Medialuna", precio: 300 }],
+  };*/}
+
+  useEffect(() => {
+    const fetchMenu = async() => {
+      try {
+        const data = await getProductos();
+        setMenuCompleto(data);
+      } catch (error) {
+        console.error("Error al obtener el menu:", error);
+      }
+    };
+    fetchMenu();
+  }, []);
+
+  const handleCheckChange = (id) => {
+    setSeleccionados((prev) => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
+  const menuDisponible = useMemo(() => {
+    return menuCompleto.filter(producto => producto.disponible);
+  }, [menuCompleto]);
+
+  const agregarItemsAlPedido = () => {
+    const itemsParaAgregar = menuDisponible.filter(
+      (prod) => seleccionados[prod.id]
+    );
+
+    if (itemsParaAgregar.length === 0) {
+      alert("No seleccionaste ningun producto");
+      return;
+    }
+
+    setProductos((prevProductos) => {
+      const productosActualizados = [...prevProductos];
+
+      itemsParaAgregar.forEach((item) => {
+        const existente = productosActualizados.find((p) => p.id === item.id);
+
+        if (existente) {
+          existente.cantidad += 1;
+        } else {
+          productosActualizados.push({...item, cantidad: 1});
+        }
+      });
+      return productosActualizados;
+    });
+    setSeleccionados({});
+    setPopUpAbierto(false);
+  }
+
+  const handleCerrarPopUp = () => {
+    setSeleccionados({}); // Limpia la selección por si acaso
+    setPopUpAbierto(false);
+  };
 
   const handleModalQtyChange = (id, value) => {
     setModalCantidades((prev) => ({ ...prev, [id]: Math.max(1, parseInt(value || 1)) }));
@@ -117,15 +180,14 @@ function AgregarPedido() {
       </div>
 
       <div className="productos-section">
-        <button className="btn-agregar" onClick={() => setShowModal(true)}>
+        <button className="btn-agregar" onClick={() => setPopUpAbierto(true)}>
           + Agregar productos
         </button>
-
         <h3>Productos seleccionados</h3>
         {productos.length === 0 ? (
           <p className="empty">No hay productos agregados.</p>
         ) : (
-          <ul className="lista-productos">
+          <ul className="lista-productosPedido">
             {productos.map((p) => (
               <li key={p.id} className="producto-line">
                 <div className="producto-info">
@@ -142,7 +204,7 @@ function AgregarPedido() {
                   <span className="subtotal">= ${p.precio * p.cantidad}</span>
                 </div>
 
-                <button className="btn-eliminar" onClick={() => eliminarProducto(p.id)}>
+                <button className="btn-eliminar-item" onClick={() => eliminarProducto(p.id)}>
                   Eliminar
                 </button>
               </li>
@@ -159,9 +221,26 @@ function AgregarPedido() {
             Guardar Pedido
           </button>
         </div>
-      </div>
 
-      {/* Modal del menú */}
+        <Popup isOpen={popUpAbierto} onClose={handleCerrarPopUp}>
+        <SelectorProductos
+          menu={menuDisponible}
+          seleccionados={seleccionados}
+          onCheckChange={handleCheckChange}
+          onClose={handleCerrarPopUp}
+        />
+        
+        <div className="popup-actions">
+          <button className="btn-cerrar" onClick={handleCerrarPopUp}>
+            Cancelar
+          </button>
+          <button className="btn-agregar" onClick={agregarItemsAlPedido}>
+            Agregar Seleccionados
+          </button>
+        </div>
+      </Popup>
+      </div>
+      {/* Modal del menú 
       {showModal && (
         <div className="modal-backdrop" onClick={() => setShowModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -204,7 +283,7 @@ function AgregarPedido() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

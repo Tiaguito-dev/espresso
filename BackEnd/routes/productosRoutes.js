@@ -23,4 +23,7 @@
     // ruta para eliminar un producto  DELETE/123
     router.delete('/:id', menuController.eliminarProducto);
 
+    // ruta para modificar el estado de un producto
+    router.patch('/:id/estado', menuController.modificarEstadoProducto);
+
     module.exports = router;

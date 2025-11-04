@@ -1,6 +1,4 @@
-/* ================================
-   📦 CONTENEDOR PRINCIPAL
-================================== */
+/* ===== CONTENEDOR PRINCIPAL ===== */
 .agregar-pedido {
   max-width: 900px;
   margin: 24px auto;
@@ -12,9 +10,7 @@
   color: #333;
 }
 
-/* ================================
-   🧾 ENCABEZADO
-================================== */
+/* ===== ENCABEZADO ===== */
 .agregar-pedido h2 {
   color: #5a3e2b;
   text-align: left;
@@ -24,9 +20,7 @@
   padding-bottom: 6px;
 }
 
-/* ================================
-   🧍 CAMPOS GENERALES (Mesa y Mozo)
-================================== */
+/* ===== CAMPOS GENERALES (Mesa y Mozo) ===== */
 .form-row {
   display: flex;
   gap: 16px;
@@ -59,9 +53,7 @@
   outline: none;
 }
 
-/* ================================
-   ☕ SECCIÓN DE PRODUCTOS
-================================== */
+/* ===== SECCIÓN DE PRODUCTOS ===== */
 .productos-section {
   margin-top: 20px;
   padding: 16px;
@@ -76,9 +68,7 @@
   font-size: 1.2rem;
 }
 
-/* ----------------
-   Botones básicos
----------------- */
+/* ------ Botones básicos ------ */
 .btn {
   background: #a97457;
   color: white;
@@ -94,10 +84,8 @@
   background: #8a5d44;
 }
 
-/* ================================
-   🛒 LISTA DE PRODUCTOS
-================================== */
-.lista-productos {
+/* ===== LISTA DE PRODUCTOS ===== */
+.lista-productosPedidos {
   list-style: none;
   padding: 0;
   margin-top: 12px;
@@ -120,7 +108,8 @@
   flex: 2;
   text-align: left;
   font-weight: 600;
-  color: #3a2a20;
+  color: black;
+  font-family: "Century gothic";
 }
 
 /* Contenedor de cantidad + subtotal */
@@ -164,9 +153,7 @@
   background: #c62828;
 }
 
-/* ================================
-   💰 TOTAL Y GUARDAR
-================================== */
+/* ===== TOTAL Y GUARDAR ===== */
 .total-row {
   display: flex;
   justify-content: flex-end;
@@ -199,9 +186,7 @@
   background: #1976d2;
 }
 
-/* ================================
-   🪟 MODAL DE PRODUCTOS
-================================== */
+/* ===== MODAL DE PRODUCTOS ===== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -229,9 +214,7 @@
   font-size: 1.3rem;
 }
 
-/* ----------------
-   Listado de categorías
----------------- */
+/* ------ Listado de categorías ------ */
 .categoria {
   margin-top: 12px;
 }
@@ -242,9 +225,7 @@
   font-size: 1.05rem;
 }
 
-/* ----------------
-   Ítems del menú
----------------- */
+/* ----- Ítems del menú ----- */
 .menu-item {
   display: flex;
   justify-content: space-between;
@@ -270,9 +251,7 @@
   font-size: 0.95rem;
 }
 
-/* ----------------
-   Acciones del menú
----------------- */
+/* ----- Acciones del menú ------ */
 .menu-item-actions {
   display: flex;
   gap: 8px;
@@ -319,9 +298,7 @@
   background: #8a5d44;
 }
 
-/* ================================
-   ✨ ANIMACIONES
-================================== */
+/* ===== ANIMACIONES ===== */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -333,9 +310,7 @@
   }
 }
 
-/* ================================
-   📱 ADAPTABILIDAD
-================================== */
+/* ===== ADAPTABILIDAD ===== */
 @media (max-width: 600px) {
   .agregar-pedido {
     padding: 18px;

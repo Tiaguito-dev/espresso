@@ -71,3 +71,29 @@ export const obtenerCategorias = async () => {
         return [];
     }
 };
+
+export const updateEstadoProducto =  async (id, estadoData) => {
+    console.log(`Enviando PATCH a: ${API_URL}/${id}/estado`);
+    console.log('Enviando body:', estadoData);
+
+    try {
+        const response = await fetch(`${API_URL}/${id}/estado`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(estadoData),
+        });
+
+        if (!response.ok) {
+            const errorInfo = await response.json();
+            throw new Error(errorInfo.message || `Error del servidor: ${response.status}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error('Error en updateEstadoProducto:', error);
+        throw error;
+    }
+}; 

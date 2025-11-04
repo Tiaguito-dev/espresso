@@ -10,6 +10,8 @@ const deleteProductoPorId = 'DELETE FROM producto WHERE id = $1';
 const selectProductoPorNombre = 'SELECT * FROM producto WHERE nombre = $1';
 const updateProductoPorId = 'UPDATE producto SET precio = $2, nombre = $3, descripcion = $4, id_categoria = $5 WHERE id = $1';
 
+const updateEstadoProductoPorId = 'UPDATE producto SET disponible = $2 WHERE id = $1';
+
 // === SECCIÓN DE EJECUCIÓN DE FUNCIONES ===
 exports.obtenerProductos = async () => {
     try {
@@ -95,5 +97,19 @@ exports.existeNombreProducto = async (nombre) => {
         return true; // Se encontró un producto con ese nombre
     } catch (error) {
         throw new Error(`Error al obtener producto ${nombre} desde la base de datos: ${error.message}`);
+    }
+};
+
+exports.modificarEstadoProducto = async (id, datosEstado) => {
+    const { disponible } = datosEstado;
+
+    try {
+        await Gateway.ejecutarQuery({ text: updateEstadoProductoPorId, values: [id, disponible] });
+        return {
+            success: true,
+            message: `El estado del producto ${id} se modificó correctamente.`
+        };
+    } catch (error) {
+        throw new Error(`Error al modificar el estado del producto ${id} desde la base de datos: ${error.message}`);
     }
 };
