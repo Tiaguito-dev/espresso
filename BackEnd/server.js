@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
+const authRoutes = require('./routes/auth');
 // Importación de los test
 const TestPedidoBD = require('./Test/TestPedidoBD');
 const TestProductoBD = require('./Test/TestProductoBD');
@@ -31,6 +32,9 @@ app.use('/api', (req, res, next) => {
 // Registrar rutas
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/productos', productosRoutes);
+app.use('/api/registrar',);
+
+// FALTAN LAS RUTAS DE MESAS Y TODO ESO. Es decir, faltan conectar cosas
 
 const PORT = 3001;
 // Esto me lo dio chat para depurar, así que podríamos sacarlo
