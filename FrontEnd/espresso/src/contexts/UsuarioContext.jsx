@@ -7,7 +7,7 @@ export function UsuarioProvider({ children }) {
     const [codigoUsuario, setCodigoUsuario] = useState('');
     // Esto lo estoy hardcodeando pero tienen que configurarse en FormularioLogin.jsx a partir de la respuesta que le da iniciarSesion() de usuarioService.js
     const [perfil, setPerfil] = useState('cocinero'); // Harcoding - Hay que ponerlo en:useState('');
-    const [autenticado, setAutenticado] = useState(true); // Harcoding - Hay que ponerlo en:useState(false);
+    const [autenticado, setAutenticado] = useState(false); // Harcoding - Hay que ponerlo en:useState(false);
     // const [token, setToken] = useState(); LO VOY A GUARDAR EN EL LOCAL STORAGE
     // localStorage.setItem('token', data.token); PERO LO HAGO EN usuariosService.js
 

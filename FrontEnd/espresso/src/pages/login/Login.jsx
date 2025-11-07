@@ -1,13 +1,12 @@
 import FormularioLogin from "../../components/FormularioLogin";
+import { Navigate } from "react-router-dom";
 
 const Login = () => {
 
     return (
-        <>
-            <FormularioLogin>
-
-            </FormularioLogin>
-        </>
+        <div style={{ height: "100vh", alignContent: "center" }}>
+            <FormularioLogin />
+        </div>
     );
 
 }

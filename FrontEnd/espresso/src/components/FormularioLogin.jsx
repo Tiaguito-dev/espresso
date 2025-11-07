@@ -1,73 +1,90 @@
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { UsuarioContext } from "../contexts/UsuarioContext";
 import { iniciarSesion } from "../services/usuariosService";
+import styles from "./FormularioLogin.module.css";
 
 const FormularioLogin = () => {
-    // ESTAS SON LAS VARIABLES GLOBALES
-    const { setNombreUsuario, setPerfil, setAutenticado, setCodigo } = useContext(UsuarioContext);
+    const { setNombreUsuario, setPerfil, setAutenticado, setCodigoUsuario } = useContext(UsuarioContext);
 
-    // ESTO ES LO DEL FORMULARIO
-    const [correo, setCorreo] = useState('');
-    const [contrasenia, setContrasenia] = useState('');
+    const [correo, setCorreo] = useState("");
+    const [contrasenia, setContrasenia] = useState("");
+
+    const navigate = useNavigate();
 
     const autenticarUsuario = (dataUser) => {
         const { nombreUsuario, perfil, codigoUsuario } = dataUser;
-        setCodigo(codigoUsuario);
+        setCodigoUsuario(codigoUsuario);
         setNombreUsuario(nombreUsuario);
         setPerfil(perfil);
         setAutenticado(true);
     };
 
     const desautenticarUsuario = () => {
-        setCodigo('');
-        setNombreUsuario('');
-        setPerfil('');
+        setCodigoUsuario("");
+        setNombreUsuario("");
+        setPerfil("");
         setAutenticado(false);
     };
 
     const enviarFormulario = async (event) => {
-        event.preventDefault(); // evita que se recargue la página
+        event.preventDefault();
 
-        const data = {
-            // PUEDE QUE LAS VARIABLES NO SE LLAMEN ASÍ
-            correo: correo,
-            password: contrasenia,
-        };
+        const data = { correo, contraseña: contrasenia };
 
         try {
-            const data = await iniciarSesion(data);
-            // Response me tiene que devolver un nombre de usuario, un perfil y un codigo. El token lo guardo directamente en iniciarSesion
-            autenticarUsuario(data);
-            console.log("Inicio de sesión exitoso:", response); // TODO: QUÉ VA A DEVOLVER EL BACK EN RESPONSE???
+            const response = await iniciarSesion(data);
+            autenticarUsuario(response);
+            console.log("Inicio de sesión exitoso:", response);
+            if (response) {
+                navigate("/");
+            }
         } catch (error) {
-            // Lo unico que hago es borrar los datos de las variables globales
             desautenticarUsuario();
             console.error("Error al iniciar sesión:", error);
         }
     };
 
     return (
-        <form onSubmit={enviarFormulario}>
+        <div className={styles.container}>
             <h3>Iniciar Sesión</h3>
 
-            <label htmlFor="correo">Correo Electrónico</label>
-            <input
-                id="correo"
-                type="text"
-                value={usuario}
-                onChange={(event) => setUsuario(event.target.value)}
-            />
+            <form onSubmit={enviarFormulario} className={styles.form}>
+                <div className={styles.fieldGroup}>
+                    <label htmlFor="correo" className="form-label">
+                        Correo Electrónico
+                    </label>
+                    <input
+                        id="correo"
+                        type="email"
+                        className="form-control"
+                        value={correo}
+                        onChange={(event) => setCorreo(event.target.value)}
+                        placeholder="ejemplo@correo.com"
+                        required
+                    />
+                </div>
 
-            <label htmlFor="contrasenia">Contraseña</label>
-            <input
-                id="contrasenia"
-                type="password"
-                value={contrasenia}
-                onChange={(event) => setContrasenia(event.target.value)}
-            />
+                <div className={styles.fieldGroup}>
+                    <label htmlFor="contrasenia" className="form-label">
+                        Contraseña
+                    </label>
+                    <input
+                        id="contrasenia"
+                        type="password"
+                        className="form-control"
+                        value={contrasenia}
+                        onChange={(event) => setContrasenia(event.target.value)}
+                        placeholder="********"
+                        required
+                    />
+                </div>
 
-            <button type="submit">Ingresar</button>
-        </form>
+                <button type="submit" className="btn">
+                    Ingresar
+                </button>
+            </form>
+        </div>
     );
 };
 
