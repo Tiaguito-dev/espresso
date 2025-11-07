@@ -20,7 +20,7 @@ const verificarToken = (req, res, next) => {
         const decoded = jwt.verify(token, SECRET_KEY);
 
         // Setea req.user
-        req.user = {
+        req.usuario = {
             codigo: decoded.codigo,
             nombre: decoded.nombre,
             correo: decoded.correo,
@@ -39,7 +39,7 @@ const verificarToken = (req, res, next) => {
 // Middleware simple para verificar perfil
 const verificarPerfil = (perfilesPermitidos) => {
     return (req, res, next) => {
-        if (!req.user) {
+        if (!req.usuario) {
             return res.status(401).json({ mensaje: 'No autenticado' });
         }
 

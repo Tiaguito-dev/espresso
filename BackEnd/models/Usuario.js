@@ -9,7 +9,7 @@ class Usuario {
         this.perfil = data.perfil;
     }
 
-    async compararContaseña(contraseña) {
+    async compararContraseña(contraseña) {
         return await bcrypt.compare(contraseña, this.contraseñaHash);
     }
 

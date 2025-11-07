@@ -26,7 +26,7 @@ class AdministradorUsuarios {
                 codigo: usuario.codigo,
                 nombre: usuario.nombre,
                 correo: usuario.correo,
-                contraseñaHash: usuario.contraseñaHash,
+                contraseñaHash: usuario.contraseñahash,
                 perfil: perfil
             })
         }).filter(u => u !== null); // FILTRA LOS QUE SON NULL

@@ -44,8 +44,8 @@ exports.login = async (req, res) => {
             codigo: usuario.codigo,
             nombre: usuario.nombre,
             correo: usuario.correo,
-            perfilCodigo: usuario.perfil.nombre,
-            perfilNombre: usuario.perfil.codigo
+            perfilCodigo: usuario.perfil.codigo,
+            perfilNombre: usuario.perfil.nombre
         },
             SECRET_KEY, { expiresIn: '4h' }
         );
