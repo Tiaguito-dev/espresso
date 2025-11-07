@@ -72,4 +72,4 @@ exports.eliminarMesa = async (req, res) => {
     }catch(error){
             res.status(404).json({ message: `No fue posible eliminar la mesa ${nroMesa}` });
     }
-}
+}}
