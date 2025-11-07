@@ -71,13 +71,10 @@ exports.crearPedido = async (data) => {
 // PARA MANU: conviene más que me pases un pedido entero y un estado y yo le hago un deconstructor? Creo que se podría terminar reutilizando una función
 exports.modificarEstadoPedido = async (pedido, estado) => {
     try {
-        // 🎯 CORRECCIÓN CLAVE: Cambiar 'updateEstadoPedidoPorNro' por 'updateEstadoPedidoPorId'
-        // Esto asume que 'updateEstadoPedidoPorId' es la variable de query SQL declarada.
-        await Gateway.ejecutarQuery({ text: updateEstadoPedidoPorId, values: [pedido, estado] }); 
-
+        await Gateway.ejecutarQuery({ text: updateEstadoPedidoPorNro, values: [pedido, estado] });
         return {
             success: true,
-            message: `El estado del pedido ${pedido} se actualizó correctamente a "${estado}".`
+            message: `El estado del pedido ${pedido} se actualizó correctamente a "${nuevoEstado}".`
         };
     } catch (error) {
         throw new Error(`Error al modificar el estado del pedido ${pedido} desde la base de datos: ${error.message}`);

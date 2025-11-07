@@ -53,8 +53,8 @@ function GestionCaja() {
 
 //Funciones para cambios de estados fijos
 
-    const cambiarEstadoFinalizado = async (id) => {
-        const nuevoEstado = "Finalizado";
+    const cambiarEstadoListo = async (id) => {
+        const nuevoEstado = "Listo";
         if (!nuevoEstado) return;
 
         try {
