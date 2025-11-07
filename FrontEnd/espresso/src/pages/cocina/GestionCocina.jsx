@@ -3,7 +3,6 @@ import { getPedidos, updatePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 import Filtro from "./../menu/Filtro";
-import DetallePedido from '../caja/DetallePedido';
 import Acordeon from "./Acordeon";
 
 

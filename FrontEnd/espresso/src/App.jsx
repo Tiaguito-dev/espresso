@@ -10,6 +10,8 @@ import GestionCocina from "./pages/cocina/GestionCocina.jsx";
 import MenuCliente from "./pages/menu/ClienteMenu.jsx";
 import MesasLista from "./pages/mesas/MesasLista.jsx";
 import FormPedido from "./pages/pedidos/FormPedido.jsx";
+import FormMesas from "./pages/mesas/FormMesas.jsx";
+import MozosLista from "./pages/mozos/MozosLista.jsx";
 
 function App() {
   return (
@@ -27,7 +29,10 @@ function App() {
           <Route path="/cocina" element={<GestionCocina />} />
           <Route path="/menu/menuEspresso" element={<MenuCliente />} />
           <Route path="/mesas" element={<MesasLista />} />
+          <Route path="/mesas/FormMesas" element={<FormMesas />} />
+          <Route path="/mesas/modificar/:id" element={<FormMesas />} />
           <Route path="/pedidos/modificar/:id" element={<FormPedido />} />
+          <Route path="/mozos" element={<MozosLista />} />
         </Routes>
       </div>
     </Router>

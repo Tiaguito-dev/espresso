@@ -45,10 +45,16 @@ exports.cambiarEstadoMesa = async (req, res) => {
         const { nroMesa } = req.params;
         const { estado } = req.body;
 
+        // 🚨 DEBUGGING: Verificar qué datos recibe el servidor
+        console.log(`[DEBUG] Recibida petición PUT para mesa ${nroMesa}. Nuevo estado: ${estado}`);
+
         if (!estado){
             return res.status(400).json({ message: ' Se requiere el nuevo estado de la mesa en el body'});
         }
-        const mesaAModificar = await administradorMesas.cambiarEstadoMesa(parseInt(nroMesa), estado);
+        
+        // El nroMesa viene de req.params como string, lo parseamos a entero:
+        const mesaAModificar = await administradorMesas.cambiarEstadoMesa(parseInt(nroMesa), estado); 
+        
         res.status(200).json(mesaAModificar);
     }catch(error){
         if (error.message.includes('encontrada')) {
@@ -56,7 +62,6 @@ exports.cambiarEstadoMesa = async (req, res) => {
         }
         res.status(400).json({ message: error.message });
     }
-
 }
 
 exports.eliminarMesa = async (req, res) => {

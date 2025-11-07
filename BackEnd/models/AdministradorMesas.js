@@ -1,41 +1,32 @@
+// AdministradorMesas.js
+
 const Mesa = require('./Mesa');
 const MesaBD = require('../repositories/MesaBD');
 
 class AdministradorMesas {
     constructor() {}
 
+    /**
+     * Mapeo limpio sin mozoACargo.
+     * Se asume que la BD devuelve 'nro_mesa' y 'estado_mesa'.
+     */
     convertirMesaBD(mesas){
         if (!mesas) return null;
+        
         if (Array.isArray(mesas)){
             return mesas.map(m => new Mesa({
-                nroMesa: m.mesa,
-                estadoMesa: m.estado
+                nroMesa: m.nro_mesa,
+                estadoMesa: m.estado_mesa
             }));
         }
-
+        
+        // Caso de objeto único
         return new Mesa({
-            nroMesa: mesas.nro_mesa,
-            estadoMesa: mesas.estado
+            nroMesa: mesas.nro_mesa, 
+            estadoMesa: mesas.estado_mesa
         });
     }
 
-/*    cargarMesas(mesasData) {
-        try {
-                mesasData.forEach(dataMesa => {
-                    const nuevaMesa = new Mesa(dataMesa);
-                    this.agregarMesa(nuevaMesa);
-                });
-            } catch (error) {
-                console.error('Error cargando mesas iniciales:', error.message);
-            }
-        }
-
-    agregarMesa(mesa) {
-        if (mesa instanceof Mesa) {
-            this.mesas.push(mesa);
-        }
-    }
-*/
     async getMesas() {
         const mesas = await MesaBD.obtenerMesas();
         return this.convertirMesaBD(mesas);
@@ -53,17 +44,18 @@ class AdministradorMesas {
         const { nroMesa, estadoMesa } = dataMesa;
         const mesaExistente = await this.buscarMesaPorNumero(nroMesa);
         if (mesaExistente){
-            throw new Error (`Mesa con número ${nroMesa} ya existence.`)
+            throw new Error (`Mesa con número ${nroMesa} ya existe.`);
         }
 
         const nuevaMesa = new Mesa({ nroMesa, estadoMesa });
         
+        // 🚨 MODIFICACIÓN: Creamos el objeto para la BD con 'snake_case' y pasamos el objeto.
         const mesaBD = {
-            mesa: nuevaMesa.nroMesa,
-            estado: nuevaMesa.estadoMesa
+            nro_mesa: nuevaMesa.nroMesa,
+            estado_mesa: nuevaMesa.estadoMesa 
         };
 
-        await MesaBD.crearMesa(mesaBD);
+        await MesaBD.crearMesa(mesaBD); 
         return nuevaMesa;
     }
 
@@ -82,14 +74,18 @@ class AdministradorMesas {
             throw new Error(`Mesa para modificar no encontrada`);
         }
         
-        const estadosValidos = ['disponible', 'ocupada', 'fuera de servicio'];
+        // Se sincronizan los estados con Mesa.js y la validación
+        const estadosValidos = ['disponible', 'ocupada', 'fuera de servicio']; 
 
         if (!estadosValidos.includes(nuevoEstado)) {
             throw new Error(`El estado '${nuevoEstado}' no es válido.`);
         }
-        await MesaBD.modificarEstadoMesa(nroMesa, nuevoEstado);
+        
+        // 🚨 MODIFICACIÓN CLAVE: Pasamos el objeto requerido por MesaBD.modificarEstadoMesa
+        await MesaBD.modificarEstadoMesa({ nroMesa, estadoMesa: nuevoEstado });
+        
         mesaAModificar.cambiarEstadoMesa(nuevoEstado);
-        return mesaAModificar;        
+        return mesaAModificar;     
     }
 }
 
