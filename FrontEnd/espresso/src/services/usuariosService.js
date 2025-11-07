@@ -1,4 +1,9 @@
+const API_URL = "http://localhost:3001/api/auth/login"
+
 export const iniciarSesion = async (usuarioData) => {
+
+    console.log("ESTAMOS EN EL LOGIN, le voy a mandar:", JSON.stringify(usuarioData));
+
     const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
