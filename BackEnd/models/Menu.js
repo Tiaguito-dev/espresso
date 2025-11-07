@@ -27,22 +27,23 @@ class Menu {
             // LO HACE BIEN console.log('PRODUCTO EN MENU:', prod);
             // LO HACE BIEN console.log('CATEGORIA DEL PRODUCTO:', categoriaObj);
             return new Producto({
-                ...prod,
+                id: prod.id,
+                nombre: prod.nombre,
+                precio: prod.precio,
+                descripcion: prod.descripcion,
                 disponible: prod.disponible,
-                categoria: categoriaObj
+                categoria: categoriaObj || null
             });
         });
     }
 
     async obtenerOCrearCategoria(nombreCategoria) {
-        try {
-            const id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
-            return id;
-        } catch (error) {
-            console.log('Categoria no encontrada, creando:', nombreCategoria);
+        let id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
+        if (!id) {
             await CategoriaBD.crearCategoria(nombreCategoria);
-            return await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
+            id = await CategoriaBD.obtenerIdCategoriaPorNombre(nombreCategoria);
         }
+        return id;
     }
 
 
@@ -65,13 +66,20 @@ class Menu {
        }
    */
     async agregarProducto(datosProducto) {
+        console.log('datos recibidos', datosProducto)
         const { nombre, categoria: nombreCategoria, descripcion, precio, disponible } = datosProducto;
 
-        const id_categoria = await this.obtenerOCrearCategoria(nombreCategoria);
+        const existeProducto = await ProductoBD.existeNombreProducto(nombre);
+        if (existeProducto) {
+            throw new Error(`Ya existe producto con ese nombre`);
+        }
+
+        const categoria = await this.obtenerOCrearCategoria(nombreCategoria);
 
         const ultimoCodigo = await ProductoBD.obtenerUltimoCodigo();
-
-        const id = (ultimoCodigo && ultimoCodigo.max) ? ultimoCodigo.max + 1 : 1;
+        console.log('El ultimo id:', ultimoCodigo);
+        const id = ultimoCodigo + 1;
+        console.log('el nuevo id:', id);
 
         const categoriaObj = new Categoria({ nombre: nombreCategoria });
         try {
@@ -88,7 +96,7 @@ class Menu {
             precio,
             nombre,
             descripcion,
-            id_categoria,
+            categoria,
         }
 
         await ProductoBD.crearProducto(datosBD);
@@ -121,7 +129,12 @@ class Menu {
         }
     */
     async buscarProductoPorId(id) {
-        const producto = await ProductoBD.obtenerProductoPorId(id);
+        const idInt = parseInt(id, 10);
+        if (isNaN(idInt)) {
+            console.error('Error: buscarProductoPorId recibió un ID inválido:', id);
+            return null; // Devuelve null si el ID no es un número
+        }
+        const producto = await ProductoBD.obtenerProductoPorId(idInt);
         if (!producto) {
             return null;
         }
@@ -137,8 +150,13 @@ class Menu {
     async modificarProducto(id, datosModificados) {
         const { precio, nombre, descripcion, id_categoria } = datosModificados;
         //validaciones
+        const idInt = parseInt(id, 10);
+        if (isNaN(idInt)) {
+            throw new Error('ID de producto inválido');
+        }
 
-        const productoActualBD = await ProductoBD.obtenerProductoPorId(id);
+        const productoActualBD = await ProductoBD.obtenerProductoPorId(idInt);
+
         if (!productoActualBD) {
             throw new Error('Producto no encontrado');
         }
@@ -148,14 +166,55 @@ class Menu {
         if (datosModificados.nombre !== undefined && (typeof datosModificados.nombre !== 'string' || datosModificados.nombre.trim() === '')) {
             throw new Error('El nombre debe ser un texto no vacío.');
         }
-
-        let idCategoria = productoActualBD.id_categoria;
-        if (datosModificados.categoria) {
-            idCategoria = await this.obtenerOCrearCategoria(datosModificados.categoria);
+        if (descripcion !== undefined && typeof descripcion !== 'string') {
+            throw new Error('La descripción debe ser un texto.');
+        }
+        if (id_categoria !== undefined && typeof id_categoria !== 'number') {
+            throw new Error('El id_categoria debe ser un número.');
+        }
+        if (datosModificados.disponible !== undefined && typeof datosModificados.disponible !== 'boolean') {
+            throw new Error('La disponibilidad debe ser un valor booleano (true/false).');
         }
 
-        await ProductoBD.modificarProducto(id, datosModificados);
-        return this.buscarProductoPorId(id);
+        let idCategoria = productoActualBD.id_categoria;
+        const categoriaNueva = datosModificados.categoria;
+        if (categoriaNueva) {
+            let nombreCategoria = null;
+            if (typeof categoriaNueva === 'object' && categoriaNueva.nombre) {
+                nombreCategoria = categoriaNueva.nombre;
+            } else if (typeof categoriaNueva === 'string') {
+                nombreCategoria = categoriaNueva;
+            }
+            if (nombreCategoria && nombreCategoria.trim() !== '') {
+                idCategoria = await this.obtenerOCrearCategoria(nombreCategoria);
+            }
+        }
+
+        const datosParaBD = {
+            precio: datosModificados.precio ?? productoActualBD.precio,
+            nombre: datosModificados.nombre ?? productoActualBD.nombre,
+            descripcion: datosModificados.descripcion ?? productoActualBD.descripcion,
+            id_categoria: idCategoria,
+            disponible: datosModificados.disponible ?? productoActualBD.disponible
+        };
+        console.log('--- 2. MENU (datosParaBD) ---', datosParaBD);
+        await ProductoBD.modificarProducto(idInt, datosParaBD);
+        return this.buscarProductoPorId(idInt);
+    }
+
+    async modificarEstadoProducto(id, datosEstado) {
+        console.log(`Modificando estado de ID: ${id}`, datosEstado);
+        
+        if (!id || datosEstado.disponible === undefined) {
+            throw new Error('ID o estado no proporcionados para modificar estado.');
+        }
+
+        try {
+            const resultado = await ProductoBD.modificarEstadoProducto(id, datosEstado);
+            return resultado;
+        } catch (error) {
+            throw new Error(`Error en la capa de Modelo al modificar estado: ${error.message}`);
+        }
     }
 }
 

@@ -1,3 +1,5 @@
+// Mesa.js
+
 const validarDataMesa = (data) => {
     const errores = [];
     if (!data || typeof data !== 'object') {
@@ -6,11 +8,12 @@ const validarDataMesa = (data) => {
     }
 
     if (!data.nroMesa || typeof data.nroMesa !== 'number' || data.nroMesa <= 0) {
-        errores.push('El número de mesa es obligatorio, debe ser un numero positivo');
+        errores.push('El número de mesa es obligatorio y debe ser un número positivo.');
     }
 
     if (data.estadoMesa) {
-        const estadosValidos = ['disponible', 'ocupada', 'reservada', 'fuera de servicio'];
+        // Se sincronizan los estados válidos con AdministradorMesas
+        const estadosValidos = ['disponible', 'ocupada', 'fuera de servicio']; 
         if (!estadosValidos.includes(data.estadoMesa)) {
             errores.push(`El estado de la mesa debe ser uno de los siguientes: ${estadosValidos.join(', ')}`);
         }
@@ -20,21 +23,24 @@ const validarDataMesa = (data) => {
 }
 
 class Mesa {
-    constructor(data) {
-        const errores = validarDataMesa(data);
+    constructor({ nroMesa, estadoMesa, capacidad }) { 
+        // 🚨 Se ejecuta la validación
+        const errores = validarDataMesa({ nroMesa, estadoMesa }); 
         if (errores.length > 0) {
-            throw new Error(`Errores de validacion: ${errores.join(', ')}`);
+            throw new Error(`Errores de validación al crear Mesa: ${errores.join(', ')}`);
         }
-
-        // TODO: HAY UN PROBLEMA CON ESTO. TIENE QUE COINCIDIR CON LA BD
-        this.nroMesa = data.nroMesa;
-        this.estadoMesa = data.estadoMesa || 'disponible'; //si no tiene estado, lo inicializa en disponible
+        
+        // Asignación de propiedades
+        this.nroMesa = nroMesa;
+        this.estadoMesa = estadoMesa || 'disponible';
+        
+        
+        
     }
 
     cambiarEstadoMesa(nuevoEstado) {
         this.estadoMesa = nuevoEstado;
     }
-
 }
 
 module.exports = Mesa;

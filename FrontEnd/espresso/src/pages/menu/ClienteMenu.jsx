@@ -5,6 +5,7 @@ import Categoria from './Categoria';
 
 
 
+
 export default function MenuCliente() {
     
     const [productos, setProductos] = useState([]);
@@ -70,8 +71,9 @@ export default function MenuCliente() {
     
     return (
         <div className="menu-container">
-            <h1>Nuestro Menú</h1>
-
+            <img className='logo' src="/logoEspresso.png" alt="logo de Espresso" />
+            <h1>nuestro menú</h1>
+        
             <div className="contenedor-categorias">
                 {categoriasDinamicas.map((categoriaItem, index) => {
                     const activa = categoriaSeleccionada === categoriaItem;

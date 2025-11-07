@@ -1,47 +1,178 @@
 // src/pages/pedidos/AgregarPedido.jsx
-import React, { useState } from "react";
-import { createPedido } from "../../services/pedidosService"; // Importamos la función de nuestro servicio
+import React, { use, useEffect, useMemo, useState } from "react";
+import { createPedido } from "../../services/pedidosService"; 
+import { getProductos } from "../../services/productosService";
 import "./AgregarPedido.css";
+import Popup from "../../components/VentanaPopUp";
+import SelectorProductos from "./SelectorProductos";
+
+import { fetchMozos } from "../../services/mozosService"; 
+
+function AgregarPedido() {
+  const [mesa, setMesa] = useState("");
+  const [mozo, setMozo] = useState("");
+  const [productos, setProductos] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalCantidades, setModalCantidades] = useState({});
+  
+  const [popUpAbierto, setPopUpAbierto] = useState(false);
+  const [menuCompleto, setMenuCompleto] = useState([]);
+  const [seleccionados, setSeleccionados] = useState({});
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+{/*  import React, { useState, useEffect } from "react";
+import { createPedido } from "../../services/pedidosService"; 
+// Usamos tu servicio existente para obtener el menú
+import { getProductos } from "../../services/productosService"; 
+// 🚨 Nota: Comentamos la importación de mozosService para evitar el error 404
+// import { fetchMozos } from "../../services/mozosService"; 
+
+import "../pedidos/AgregarPedido.css";
 
 function AgregarPedido() {
     const [mesa, setMesa] = useState("");
     const [mozo, setMozo] = useState("");
-    const [productos, setProductos] = useState([]);
+    // Productos seleccionados: { id, nombre, precio, cantidad }
+    const [productos, setProductos] = useState([]); 
     const [showModal, setShowModal] = useState(false);
-    const [modalCantidades, setModalCantidades] = useState({});
+    // Para guardar la cantidad en el modal antes de agregar
+    const [modalCantidades, setModalCantidades] = useState({}); 
 
-    /*
-      const [productos, setProductos] = useState([]);
-      es lo mismo que hacer esto:
+    // Solo necesitamos el menú por categoría y el estado de carga/error
+    const [menuPorCategoria, setMenuPorCategoria] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-      let productos = [];
-      function setProductos(nuevosProductos) {
-        productos = nuevosProductos;
-        // React se encarga de re-renderizar el componente
+    // ===============================================
+    // 💡 LÓGICA DE CARGA DE DATOS (useEffect) - SOLO PRODUCTOS
+    // ===============================================
+    useEffect(() => {
+        const loadData = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                // SOLO CARGAMOS PRODUCTOS
+                const productosData = await getProductos(); 
+                
+                // Mapeamos los productos por categoría
+                const menuMap = productosData.reduce((acc, prod) => {
+                    // Usamos 'categoria' si existe, sino 'Otros'
+                    const categoria = prod.categoria || "Otros"; 
+                    if (!acc[categoria]) {
+                        acc[categoria] = [];
+                    }
+                    // Asumo que el objeto producto tiene las propiedades: id, nombre, precio, categoria
+                    acc[categoria].push(prod);
+                    return acc;
+                }, {});
+                setMenuPorCategoria(menuMap); */}
+
+  // Definición del "menú" (idealmente esto también vendría del back-end)
+  
+  {/*const menu = {
+    Bebidas: [{ id: "cafe", nombre: "Café", precio: 200 }],
+    Comida: [{ id: "medialuna", nombre: "Medialuna", precio: 300 }],
+  };*/}
+
+  useEffect(() => {
+    const fetchMenu = async() => {
+      try {
+        const data = await getProductos();
+        setMenuCompleto(data);
+      } catch (error) {
+        console.error("Error al obtener el menu:", error);
       }
-    */
-
-    // Definición del "menú" (idealmente esto también vendría del back-end)
-    const menu = {
-        Bebidas: [{ id: "cafe", nombre: "Café", precio: 200 }],
-        Comida: [{ id: "medialuna", nombre: "Medialuna", precio: 300 }],
     };
+    fetchMenu();
+  }, []);
 
+  const handleCheckChange = (id) => {
+    setSeleccionados((estadoAnterior) => ({
+      ...estadoAnterior,
+      [id]: !estadoAnterior[id]
+    }));
+  };
+
+  //no entiendo de donde sale este catch no estaba en mi codigo
+            {/*} catch (err) {
+                console.error("Error al cargar menú:", err);
+                setError("Error al cargar el menú de productos. Revisa tu productosService y el backend.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []); */}
+
+
+  // el useMemo guarda en un array el menu completo la primera vez que el componente se renderiza, entonces en el caso de que la pagina sea recargada y el menu no se modificó, utiliza el array que ya tiene guardado (esto funciona mas que nada cuando el menu es muy grande y tiene muchos elementos para cargar [por el momento no es nuetsro caso, pero bueno en algun momento vamos a tener que cargar bastantes productos])
+  const menuDisponible = useMemo(() => {
+    return menuCompleto.filter(producto => producto.disponible);
+  }, [menuCompleto]);
+
+  const agregarItemsAlPedido = () => {
+    const itemsParaAgregar = menuDisponible.filter(
+      (producto) => seleccionados[producto.id]
+    );
+
+    if (itemsParaAgregar.length === 0) {
+      alert("No seleccionaste ningun producto");
+      return;
+    }
+
+    setProductos((prevProductos) => {
+      const productosActualizados = [...prevProductos];
+
+      itemsParaAgregar.forEach((item) => {
+        const existente = productosActualizados.find((producto) => producto.id === item.id);
+
+        if (existente) {
+          existente.cantidad += 1;
+        } else {
+          productosActualizados.push({...item, cantidad: 1});
+        }
+      });
+      return productosActualizados;
+    });
+    setSeleccionados({});
+    setPopUpAbierto(false);
+  }
+
+  const handleCerrarPopUp = () => {
+    setSeleccionados({});
+    setPopUpAbierto(false);
+  };
 
     const handleModalQtyChange = (id, value) => {
-        setModalCantidades((prev) => ({ ...prev, [id]: Math.max(1, parseInt(value || 1)) }));
+        // Asegura que sea un número entero positivo y por defecto 1
+        const qty = Math.max(1, parseInt(value || 1, 10));
+        setModalCantidades((prev) => ({ ...prev, [id]: qty }));
     };
 
-    const agregarProductoDesdeModal = (prod) => {
-        const qty = modalCantidades[prod.id] ? Number(modalCantidades[prod.id]) : 1;
-        const existente = productos.find((p) => p.id === prod.id);
+    const agregarProductoDesdeModal = (prodBase) => {
+        const qty = modalCantidades[prodBase.id] ? Number(modalCantidades[prodBase.id]) : 1;
+        const existente = productos.find((p) => p.id === prodBase.id);
+        
         if (existente) {
+            // Si ya existe, solo incrementamos la cantidad
             setProductos((prev) =>
-                prev.map((p) => (p.id === prod.id ? { ...p, cantidad: p.cantidad + qty } : p))
+                prev.map((p) => (p.id === prodBase.id ? { ...p, cantidad: p.cantidad + qty } : p))
             );
         } else {
-            setProductos((prev) => [...prev, { ...prod, cantidad: qty }]);
+            // Si es nuevo, lo agregamos al listado
+            setProductos((prev) => [...prev, { 
+                id: prodBase.id, 
+                nombre: prodBase.nombre, 
+                precio: prodBase.precio, 
+                cantidad: qty 
+            }]);
         }
+        
+        setShowModal(false); 
+        setModalCantidades({});
     };
 
     const eliminarProducto = (id) => {
@@ -50,7 +181,8 @@ function AgregarPedido() {
 
     const cambiarCantidad = (id, nuevaCantidad) => {
         const qty = parseInt(nuevaCantidad, 10);
-        if (!qty || qty <= 0) {
+        if (isNaN(qty) || qty <= 0) {
+            // Si la cantidad es inválida o cero, se elimina el producto
             eliminarProducto(id);
             return;
         }
@@ -58,21 +190,21 @@ function AgregarPedido() {
     };
 
     const calcularTotal = () =>
-        productos.reduce((acc, p) => acc + p.precio * Number(p.cantidad), 0);
+        productos.reduce((acc, p) => acc + (Number(p.precio) * Number(p.cantidad)), 0);
 
     const guardarPedido = async () => {
-        if (!mesa || !mozo || productos.length === 0) {
-            alert("Completá todos los campos.");
+        const numMesa = Number(mesa); 
+
+        if (isNaN(numMesa) || numMesa <= 0 || !mozo || productos.length === 0) {
+            alert("Completa la Mesa (número), ingresa el Mozo y agrega al menos un producto.");
             return;
         }
 
         const pedido = {
-            mesa,
-            mozo,
-            productos,
-            total: calcularTotal(),
-            estado: "Pendiente",
-            historial: "Pendiente",
+            mesa: numMesa,
+            mozo, // Se envía el valor del input de texto (código o nombre)
+            // Mapeamos a la estructura de 'lineas' que espera el back-end
+            lineas: productos.map(p => ({ idProducto: p.id, cantidad: p.cantidad })), 
         };
 
         try {
@@ -83,130 +215,262 @@ function AgregarPedido() {
             setMozo("");
             setProductos([]);
             setModalCantidades({});
-            setShowModal(false);
         } catch (error) {
             console.error("Error al guardar el pedido:", error);
-            alert("Hubo un error al guardar el pedido.");
+            alert("Hubo un error al guardar el pedido. Revisa la consola.");
         }
     };
 
+    // ===============================================
+    // 💡 RENDERIZADO
+    // ===============================================
+    
+    {/*if (loading) {
+        return <div className="pedido-form-container"><p>Cargando menú...</p></div>;
+    }
+
+    if (error) {
+        return <div className="pedido-form-container"><p className="error-message">{error}</p></div>;
+    } */}
+
     return (
-      <div className="agregar-pedido">
-        <h2>Agregar Pedido</h2>
-
-        <div className="form-row">
-          <div className="form-field">
-            <label>Mesa</label>
-            <input
-              type="text"
-              value={mesa}
-              onChange={(e) => setMesa(e.target.value)}
-              placeholder="N° de mesa"
-            />
-          </div>
-
-          <div className="form-field">
-            <label>Mozo</label>
-            <input
-              type="text"
-              value={mozo}
-              onChange={(e) => setMozo(e.target.value)}
-              placeholder="Nombre del mozo"
-            />
-          </div>
-        </div>
-
-        <div className="productos-section">
-          <button className="btn-agregar" onClick={() => setShowModal(true)}>
-            + Agregar productos
-          </button>
-
-          <h3>Productos seleccionados</h3>
-          {productos.length === 0 ? (
-            <p className="empty">No hay productos agregados.</p>
-          ) : (
-            <ul className="lista-productos">
-              {productos.map((p) => (
-                <li key={p.id} className="producto-line">
-                  <div className="producto-info">
-                    <strong>{p.nombre}</strong> (${p.precio})
-                  </div>
-
-                  <div className="producto-qty">
+      <>
+        <div className="pedido-form-container"> 
+            <h2 className="form-title">Agregar Pedido</h2>
+            {/*pegue aca el codigo de jere para ver que onda*/}
+            <div className="form-row">
+                <div className="form-group"> 
+                    <label>Mesa</label>
                     <input
-                      type="number"
-                      min="1"
-                      value={p.cantidad}
-                      onChange={(e) => cambiarCantidad(p.id, e.target.value)}
+                        type="number"
+                        className="form-control" 
+                        value={mesa}
+                        onChange={(e) => setMesa(e.target.value)}
+                        placeholder="N° de mesa"
+                        min="1"
                     />
-                    <span className="subtotal">= ${p.precio * p.cantidad}</span>
-                  </div>
+                </div>
 
-                  <button className="btn-eliminar" onClick={() => eliminarProducto(p.id)}>
-                    Eliminar
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+                <div className="form-group"> 
+                    <label>Mozo</label>
+                    <input
+                        type="text"
+                        className="form-control" 
+                        value={mozo}
+                        onChange={(e) => setMozo(e.target.value)}
+                        placeholder="Ingresa código o nombre del mozo"
+                    />
+                </div>
+            </div> 
 
-          <div className="total-row">
-            <strong>Total:</strong> <span>${calcularTotal()}</span>
-          </div>
+        {/*<div className="form-field">
+          <label>Mozo</label>
+          <input
+            type="text"
+            value={mozo}
+            onChange={(e) => setMozo(e.target.value)}
+            placeholder="Nombre del mozo"
+          />
+        </div>*/}
+      </div>
 
-          <div className="actions">
-            <button className="btn-guardar" onClick={guardarPedido}>
-              Guardar Pedido
-            </button>
-          </div>
+      <div className="productos-section">
+        <button className="btn-agregar" onClick={() => setPopUpAbierto(true)}>
+          + Agregar productos
+        </button>
+        <h3>Productos seleccionados</h3>
+        {productos.length === 0 ? (
+          <p className="empty">No hay productos agregados.</p>
+        ) : (
+          <ul className="lista-productosPedido">
+            {productos.map((productoItem) => (
+              <li key={productoItem.id} className="producto-lista">
+                <div className="producto-info">
+                  <strong>{productoItem.nombre}</strong> (${productoItem.precio})
+                </div>
+
+                <div className="producto-qty">
+                  <input
+                    type="number"
+                    min="1"
+                    value={productoItem.cantidad}
+                    onChange={(e) => cambiarCantidad(productoItem.id, e.target.value)}
+                  />
+                  <span className="subtotal">= ${productoItem.precio * productoItem.cantidad}</span>
+                </div>
+
+                <button className="btn-eliminar-item" onClick={() => eliminarProducto(productoItem.id)}>
+                  Eliminar
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="total-row">
+          <strong>Total:</strong> <span>${calcularTotal()}</span>
         </div>
 
-        {/* Modal del menú */}
-        {showModal && (
-          <div className="modal-backdrop" onClick={() => setShowModal(false)}>
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <h3>Menú</h3>
+        <div className="actions">
+          <button className="btn-guardar" onClick={guardarPedido}>
+            Guardar Pedido
+          </button>
+        </div>
 
-              {Object.keys(menu).map((cat) => (
-                <div key={cat} className="categoria">
-                  <h4>{cat}</h4>
-                  {menu[cat].map((prod) => (
-                    <div key={prod.id} className="menu-item">
-                      <div className="menu-item-info">
-                        <span className="nombre">{prod.nombre}</span>
-                        <span className="precio">${prod.precio}</span>
-                      </div>
+        <Popup isOpen={popUpAbierto} onClose={handleCerrarPopUp}>
+        <SelectorProductos
+          menu={menuDisponible}
+          seleccionados={seleccionados}
+          onCheckChange={handleCheckChange}
+          onClose={handleCerrarPopUp} />
+        
+        <div className="popup-actions">
+          <button className="btn-cerrar" onClick={handleCerrarPopUp}>
+            Cancelar
+          </button>
+          <button className="btn-agregar" onClick={agregarItemsAlPedido}>
+            Agregar Seleccionados
+          </button>
+        </div>
+      </Popup>
+    </div>
+    {/* Modal del menú 
+      {showModal && (
+        <div className="modal-backdrop" onClick={() => setShowModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Menú</h3>
 
-                      <div className="menu-item-actions">
-                        <input
-                          type="number"
-                          min="1"
-                          value={modalCantidades[prod.id] || 1}
-                          onChange={(e) => handleModalQtyChange(prod.id, e.target.value)}
-                          className="qty-input"
-                        />
-                        <button
-                          className="btn-agregar"
-                          onClick={() => agregarProductoDesdeModal(prod)}
-                        >
-                          Agregar
-                        </button>
-                      </div>
+            {Object.keys(menu).map((cat) => (
+              <div key={cat} className="categoria">
+                <h4>{cat}</h4>
+                {menu[cat].map((prod) => (
+                  <div key={prod.id} className="menu-item">
+                    <div className="menu-item-info">
+                      <span className="nombre">{prod.nombre}</span>
+                      <span className="precio">${prod.precio}</span>
                     </div>
-                  ))}
-                </div>
-              ))}
 
-              <div className="modal-close">
-                <button className="btn-cerrar" onClick={() => setShowModal(false)}>
-                  Cerrar
+                    <div className="menu-item-actions">
+                      <input
+                //Campos Mesa y Mozo 
+            <div className="form-row">
+                <div className="form-group"> 
+                    <label>Mesa</label>
+                    <input
+                        type="number"
+                        className="form-control" 
+                        value={mesa}
+                        onChange={(e) => setMesa(e.target.value)}
+                        placeholder="N° de mesa"
+                        min="1"
+                    />
+                </div>
+
+                <div className="form-group"> 
+                    <label>Mozo</label>
+                    <input
+                        type="text"
+                        className="form-control" 
+                        value={mozo}
+                        onChange={(e) => setMozo(e.target.value)}
+                        placeholder="Ingresa código o nombre del mozo"
+                    />
+                </div>
+            </div> 
+
+            <div className="productos-card"> 
+                <button className="btn-add" onClick={() => setShowModal(true)}>
+                    + Agregar productos
                 </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
+
+                <h3>Productos seleccionados</h3>
+                {productos.length === 0 ? (
+                    <p className="empty">No hay productos agregados.</p>
+                ) : (
+                    <ul className="product-list"> 
+                        {productos.map((p) => (
+                            <li key={p.id} className="product-item"> 
+                                <div className="producto-info">
+                                    <strong>{p.nombre}</strong> (${p.precio})
+                                </div>
+
+                                <div className="producto-qty">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value={p.cantidad}
+                                        onChange={(e) => cambiarCantidad(p.id, e.target.value)}
+                                        className="input-qty"
+                                    />
+                                </div>
+                                <button className="btn-remove" onClick={() => eliminarProducto(p.id)}>
+                                    &times;
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+                <div className="total-summary"> 
+                    <label>Total:</label> 
+                    <span className="total-display">${calcularTotal().toFixed(2)}</span>
+                </div>
+
+                <div className="actions">
+                    <button className="btn-submit" onClick={guardarPedido}> 
+                        Guardar Pedido
+                    </button>
+                </div>
+
+            //🎯 MODAL DE SELECCIÓN DE PRODUCTOS (Corregido)
+            {showModal && (
+      <div className="modal-overlay" onClick={() => setShowModal(false)}> 
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowModal(false)}>&times;</button>
+            <h3>Seleccionar Productos</h3>
+            
+            //INICIO DE LA ITERACIÓN DE CATEGORÍAS
+            {Object.entries(menuPorCategoria).map(([categoria, productos]) => (
+                <div key={categoria} className="menu-categoria">
+                    //Esta etiqueta muestra el nombre de la categoría (p. ej., "Dulces") 
+                    <h4>{categoria}</h4> 
+                    
+                    <ul className="product-modal-list">
+                        {productos.map((prod) => (
+                            // ... (resto de las lineas de producto)
+                            <li key={prod.id} className="product-modal-item">
+                                <div className="info">
+                                    <strong>{prod.nombre}</strong> (${prod.precio})
+                                </div>
+                                <div className="actions">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value={modalCantidades[prod.id] || 1} 
+                                        onChange={(e) => handleModalQtyChange(prod.id, e.target.value)}
+                                        className="input-qty"
+                                    />
+                                    <button 
+                                        className="btn-add-to-cart"
+                                        onClick={() => agregarProductoDesdeModal(prod)}
+                                    >
+                                        Agregar
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
+                        <div className="modal-footer">
+                            <button className="btn-secondary" onClick={() => setShowModal(false)}>Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+    */}
+    </>
+  )
 }
 
 export default AgregarPedido;

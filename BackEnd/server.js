@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
+const mesasRoutes = require('./routes/mesasRoutes');
 // Importación de los test
 const TestPedidoBD = require('./Test/TestPedidoBD');
 const TestProductoBD = require('./Test/TestProductoBD');
@@ -31,6 +32,7 @@ app.use('/api', (req, res, next) => {
 // Registrar rutas
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/productos', productosRoutes);
+app.use('/api/mesas', mesasRoutes);
 
 const PORT = 3001;
 // Esto me lo dio chat para depurar, así que podríamos sacarlo

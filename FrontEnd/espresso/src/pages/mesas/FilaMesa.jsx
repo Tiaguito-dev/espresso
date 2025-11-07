@@ -2,69 +2,103 @@
 
 import React from 'react';
 
-export default function FilaMesa({ mesa, funcionCambiarEstado, funcionModificar, funcionEliminar }) {
+// 🔄 Función de mapeo y normalización de estado
+const normalizarEstado = (estadoBD) => {
+    if (!estadoBD) return 'Desconocido';
     
-    // Función para determinar la clase de color del estado
-    const getColorClase = (estado) => {
-        switch (estado) {
-            case "Disponible":
-                return "estado-disponible";
-            case "Ocupada":
-                return "estado-ocupada";
-            case "Lista para ordenar":
-                return "estado-ordenar";
-            case "Lista para pagar":
-                return "estado-pagar";
-            default:
-                return "estado-default";
-        }
-    };
+    const estadoLower = estadoBD.toLowerCase();
 
-    // Función para obtener el texto del botón de cambio de estado
-    const getBotonTexto = (estado) => {
-        switch (estado) {
-            case "Disponible":
-                return "Ocupar";
-            case "Ocupada":
-                return "Tomar Orden";
-            case "Lista para ordenar":
-                return "Cobrar";
-            case "Lista para pagar":
-                return "Liberar";
-            default:
-                return "Cambiar";
-        }
-    };
+    switch (estadoLower) {
+        case "disponible":
+            return "Disponible";
+        case "ocupada":
+            return "Ocupada";
+        case "fuera de servicio": // 🚨 El valor que el Backend almacena
+            return "No Disponible"; // 🚨 El valor que el Frontend espera mostrar
+        default:
+            // Capitalizar el resto si lo hay, aunque sea desconocido
+            return estadoBD.charAt(0).toUpperCase() + estadoBD.slice(1).toLowerCase();
+    }
+}
+
+// Estilos de estado para la celda (AHORA USA EL ESTADO NORMALIZADO)
+const getEstadoClass = (estadoNormalizado) => {
+    switch (estadoNormalizado) {
+        case "Disponible":
+            return "estado-disponible";
+        case "Ocupada":
+            return "estado-ocupada";
+        case "No Disponible":
+            return "estado-no-disponible"; 
+        default:
+            return "estado-desconocido";
+    }
+};
+
+export default function FilaMesa({ mesa, funcionCambiarEstado, funcionModificar, funcionLiberar, funcionPonerNoDisponible }) {
     
+    const mesaId = mesa.nroMesa; 
+    
+    // 🚨 CLAVE: Normalizamos el estado de la DB para todas las comparaciones y la visualización
+    const estadoNormalizado = normalizarEstado(mesa.estadoMesa);
+
+    const estaNoDisponible = estadoNormalizado === "No Disponible"; 
+    const estaOcupada = estadoNormalizado === "Ocupada";
+
     return (
         <tr>
-            <td>{mesa.id}</td>
-            <td>{mesa.numero}</td>
+            {/* 1. Columnas ID/Número */}
+            <td>{mesa.nroMesa}</td> 
+            <td>{mesa.nroMesa}</td>
+            
+            {/* 2. Columna Mozo a cargo */}
             <td>{mesa.mozoACargo || '-'}</td>
-            <td>
-                <span className={`estado-badge ${getColorClase(mesa.estado)}`}>
-                    {mesa.estado}
+            
+            {/* 3. Columna Estado */}
+            <td> 
+                <span className={`${getEstadoClass(estadoNormalizado)} estado-badge`}>
+                    {estadoNormalizado} {/* 🚨 Usa el estado normalizado para mostrar */}
                 </span>
             </td>
-            <td className="acciones">
+            
+            {/* 4. Columna Acciones */}
+            <td> 
+                {/* Botón Ciclo de Estado (Visible si NO está No Disponible) */}
+                {!estaNoDisponible && (
+                    <button 
+                        className="btn-accion btn-cambiar-estado" 
+                        onClick={() => funcionCambiarEstado(mesaId)}
+                    >
+                        {estaOcupada ? "Poner Disponible" : "Poner Ocupada"} {/* 🚨 Usa la variable normalizada */}
+                    </button>
+                )}
+
+                {/* Botón Modificar (siempre visible) */}
                 <button 
-                    className="btn btn-estado" 
-                    onClick={() => funcionCambiarEstado(mesa.id)}
-                >
-                    {getBotonTexto(mesa.estado)}
-                </button>
-                <button 
-                    className="btn btn-modificar" 
-                    onClick={() => funcionModificar(mesa.id)}
+                    className="btn-accion btn-modificar" 
+                    onClick={() => funcionModificar(mesaId)}
                 >
                     Modificar
                 </button>
-                <button 
-                    className="btn btn-eliminar" 
-                    onClick={() => funcionEliminar(mesa.id)}
-                >
-                    Dar de Baja
-                </button>
+                
+                {/* Botón para liberar (activar) o poner fuera de servicio */}
+                {!estaNoDisponible ? (
+                    // Si está Disponible u Ocupada -> Poner No Disponible
+                    <button 
+                        className="btn-accion btn-eliminar-suave" 
+                        onClick={() => funcionPonerNoDisponible(mesaId)} 
+                    >
+                        Poner No Disponible
+                    </button>
+                ) : (
+                    // Si está No Disponible -> Poner Disponible (usa funcionLiberar)
+                    <button 
+                        className="btn-accion btn-liberar" 
+                        onClick={() => funcionLiberar(mesaId)} 
+                    >
+                        Poner Disponible
+                    </button>
+                )}
             </td>
         </tr>
     );

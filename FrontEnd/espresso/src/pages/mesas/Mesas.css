@@ -1,163 +1,237 @@
 /* ===== CONTENEDOR GENERAL ===== */
 .container {
-  padding: 20px;
-  background-color: #f8f3ef;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(80, 50, 30, 0.2);
+    padding: 20px;
+    background-color: #f8f3ef; /* Fondo crema claro */
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(80, 50, 30, 0.2);
 }
 
-/* ===== BOTONES ===== */
-.btn {
-  border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.3s;
-  margin: 0 3px;
-  color: #fff;
+/* --- SECCIÓN DE BOTONES DE ACCIÓN (NUEVOS ESTILOS) --- */
+/* Estilo base para todos los botones de acción dentro de la tabla */
+.btn-accion {
+    border: none;
+    border-radius: 6px; /* Bordes un poco más suaves */
+    padding: 5px 10px;
+    font-size: 0.85rem; /* Letra un poco más pequeña */
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.3s;
+    margin: 0 3px; /* Separación horizontal entre botones */
+    color: #fff;
+    white-space: nowrap; /* Evita que el texto del botón se rompa */
 }
 
-/* Efecto hover suave */
-.btn:hover {
-  transform: scale(1.05);
+.btn-accion:hover {
+    transform: scale(1.03);
+    opacity: 0.9;
 }
 
-/* Estilos específicos */
-.btn-estado {
-  background-color: #7b9e46; /* Verde oliva */
-}
-
-.btn-estado:hover {
-  background-color: #688539;
+/* Estilos específicos para los botones de la tabla */
+.btn-cambiar-estado {
+    background-color: #7b9e46; /* Verde oliva */
 }
 
 .btn-modificar {
-  background-color: #3b82f6; /* Celeste cafetería */
-}
-
-.btn-modificar:hover {
-  background-color: #2563eb;
+    background-color: #3b82f6; /* Azul / Celeste */
 }
 
 .btn-eliminar {
-  background-color: #d9534f; /* Rojo suave */
+    background-color: #d9534f; /* Rojo */
 }
 
-.btn-eliminar:hover {
-  background-color: #b52b27;
-}
 
 /* ===== TABLA ===== */
 .tabla-contenedor {
-  margin-top: 20px;
-  overflow-x: auto;
+    margin-top: 20px;
+    overflow-x: auto;
 }
 
 .tabla-mesas {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-  background-color: #fffaf5;
-  border-radius: 10px;
-  overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    background-color: #fffaf5;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .tabla-mesas th {
-  background-color: #a97457;
-  color: white;
-  text-align: left;
-  padding: 10px;
+    background-color: #a97457; /* Marrón header */
+    color: white;
+    text-align: center; /* 🔄 CENTRADO: Encabezados centrados */
+    padding: 10px;
 }
 
 .tabla-mesas td {
-  border-bottom: 1px solid #e5d4c4;
-  padding: 8px 10px;
+    border-bottom: 1px solid #e5d4c4;
+    padding: 8px 10px;
+    text-align: center; /* 🔄 CENTRADO: Celdas de datos centradas */
+    vertical-align: middle; /* Alineación vertical */
 }
+
+/* Las celdas con texto más largo pueden ir alineadas a la izquierda */
+.tabla-mesas td:nth-child(3) { /* Columna 'Mozo a cargo' */
+    text-align: center; 
+}
+
 
 .tabla-mesas tr:hover {
-  background-color: #f2ebe7;
+    background-color: #f2ebe7;
 }
 
-/* ===== ESTADOS ===== */
+/* ===== ESTADOS (Badges) ===== */
+.tabla-mesas td:nth-child(4) { /* Columna 'Estado' */
+    width: 15%; /* Darle un ancho fijo para que se vea bien */
+}
+
 .estado-badge {
-  padding: 5px 8px;
-  border-radius: 6px;
-  font-weight: bold;
-  text-align: center;
-  display: inline-block;
-  min-width: 120px;
-  text-transform: capitalize;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    /* QUITADO: text-align: center; -> ya lo hace la celda (td) */
+    display: block; /* Ocupa todo el espacio de la celda para centrado total */
+    min-width: 120px;
+    margin: 0 auto; /* 🔄 CENTRADO: Centra el badge dentro de la celda */
+    text-transform: capitalize;
 }
 
+/* ⚠️ NOTA: Usamos las clases de estado que ya definiste en Mesas.css */
 .estado-disponible {
-  background-color: #81c784;
-  color: #1b5e20;
+    background-color: #81c784;
+    color: #1b5e20;
 }
 
 .estado-ocupada {
-  background-color: #ffb74d;
-  color: #5d4037;
+    background-color: #ffb74d;
+    color: #5d4037;
 }
 
-.estado-Listo-Para-Ordenar {
-  background-color: #64b5f6;
-  color: #0d47a1;
+/* Usamos 'Listo Para Ordenar' (con espacios) para el CSS si así se guardó en la BD/Mock */
+.estado-Listo-Para-Ordenar { 
+    background-color: #64b5f6;
+    color: #0d47a1;
 }
 
 .estado-Listo-Para-Cobrar {
-  background-color: #e57373;
-  color: #b71c1c;
+    background-color: #e57373;
+    color: #b71c1c;
 }
 
-.estado-default {
-  background-color: #d7ccc8;
-  color: #4e342e;
+/* ===== ACCIONES ===== */
+.tabla-mesas td:nth-child(5) { /* Columna 'Acciones' */
+    width: 30%; /* Darle espacio suficiente a los 3 botones */
+    /* El contenido ya está centrado gracias al ajuste de 'td' */
 }
+
 
 /* ===== MENSAJE VACÍO ===== */
 .mensaje-vacio {
-  text-align: center;
-  font-weight: 500;
-  color: #6d4c41;
-  background-color: #fffaf5;
-  padding: 15px;
-  border-radius: 10px;
+    text-align: center;
+    font-weight: 500;
+    color: #6d4c41;
+    background-color: #fffaf5;
+    padding: 15px;
+    border-radius: 10px;
 }
 
 /* ===== BOTÓN AGREGAR MESA ===== */
 .btn-agregar {
-  background-color: #a97457;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 15px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
+    background-color: #a97457;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .btn-agregar:hover {
-  background-color: #8c5b42;
+    background-color: #8c5b42;
 }
 
-/* ===== FILTROS ===== */
+/* ===== FILTROS Y TOGGLE ===== */
+.toggle-filtros {
+    background-color: #e5d4c4;
+    color: #6d4c41;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.3s;
+}
+
+.toggle-filtros:hover {
+    background-color: #d1b5a2;
+}
+
 .filtros-estado {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
 .estados {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 8px;
 }
 
 .filtros {
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-  margin-top: 10px;
+    display: flex; /* Para alinear los inputs de búsqueda */
+    gap: 10px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.filtros input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    flex-grow: 1;
+}
+
+
+.btn-accion.btn-liberar {
+    background-color: #007bff; /* Color azul para liberar */
+    color: white;
+}
+
+.btn-accion.btn-liberar:hover {
+    background-color: #0056b3;
+}
+
+
+
+/* 🚨 NUEVO ESTILO DE ESTADO: No Disponible */
+.estado-no-disponible {
+    background-color: #6c757d; /* Gris oscuro */
+    color: white;
+    border: 1px solid #6c757d;
+}
+
+/* 🚨 NUEVO ESTILO DE BOTÓN: Poner No Disponible (Simula el eliminar suave) */
+.btn-accion.btn-eliminar-suave {
+    background-color: #dc3545; /* Rojo para advertir */
+    color: white;
+}
+
+.btn-accion.btn-eliminar-suave:hover {
+    background-color: #c82333;
+}
+
+/* 🚨 ESTILO DE BOTÓN: Liberar (Poner Disponible desde No Disponible) */
+.btn-accion.btn-liberar {
+    background-color: #007bff; /* Azul */
+    color: white;
+}
+
+.btn-accion.btn-liberar:hover {
+    background-color: #0056b3;
 }

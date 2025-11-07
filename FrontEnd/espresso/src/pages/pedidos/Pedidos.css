@@ -183,7 +183,8 @@ body {
     display: flex;
     gap: 5px; /* Espacio entre botones */
     justify-content: center;
-    flex-wrap: wrap; /* Permite que los botones salten de línea si la pantalla es pequeña */
+    /* flex-wrap: wrap; */
+    white-space: nowrap;
 }
 
 /* Clase base para los botones de acción de la fila */
@@ -195,6 +196,9 @@ body {
     font-size: 0.85em;
     font-weight: bold;
     transition: background-color 0.2s, opacity 0.2s;
+    min-width: 80px;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 /* Estilo para botones deshabilitados (Finalizado/Cancelado) */
@@ -210,6 +214,7 @@ body {
 .btn-cambio-estado {
     background-color: #90caf9; /* Azul claro */
     color: #333; 
+    min-width: 120px;
 }
 .btn-cambio-estado:hover {
     background-color: #64b5f6;
@@ -233,3 +238,14 @@ body {
     background-color: #e57373;
 }
 
+.proceso-completo-label {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: #757575; /* Gris */
+    background-color: #e0e0e0; /* Gris claro */
+    min-width: 80px; /* Mantener la alineación */
+    text-align: center;
+    display: inline-block;
+}

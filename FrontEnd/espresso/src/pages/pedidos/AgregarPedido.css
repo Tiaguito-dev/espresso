@@ -1,6 +1,4 @@
-/* ================================
-   📦 CONTENEDOR PRINCIPAL
-================================== */
+/* ===== CONTENEDOR PRINCIPAL ===== */
 .agregar-pedido {
   max-width: 900px;
   margin: 24px auto;
@@ -12,9 +10,7 @@
   color: #333;
 }
 
-/* ================================
-   🧾 ENCABEZADO
-================================== */
+/* ===== ENCABEZADO ===== */
 .agregar-pedido h2 {
   color: #5a3e2b;
   text-align: left;
@@ -24,14 +20,40 @@
   padding-bottom: 6px;
 }
 
-/* ================================
-   🧍 CAMPOS GENERALES (Mesa y Mozo)
-================================== */
+/* ===== CAMPOS GENERALES (Mesa y Mozo) ===== */
+/* src/pages/pedidos/AgregarPedido.css - CSS Unificado y Mejorado */
+
+/* =======================================================
+   📦 CONTENEDOR PRINCIPAL
+========================================================== */
+.pedido-form-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', Arial, sans-serif;
+    color: #333;
+}
+
+.form-title {
+    color: #5a3e2b; /* Marrón oscuro */
+    text-align: left;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    border-bottom: 3px solid #a97457; /* Marrón claro */
+    padding-bottom: 8px;
+    font-weight: 700;
+}
+
+/* =======================================================
+   🧍 CAMPOS GENERALES (Mesa, Mozo, ID)
+========================================================== */
 .form-row {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
 }
 
 .form-field {
@@ -59,9 +81,7 @@
   outline: none;
 }
 
-/* ================================
-   ☕ SECCIÓN DE PRODUCTOS
-================================== */
+/* ===== SECCIÓN DE PRODUCTOS ===== */
 .productos-section {
   margin-top: 20px;
   padding: 16px;
@@ -76,9 +96,7 @@
   font-size: 1.2rem;
 }
 
-/* ----------------
-   Botones básicos
----------------- */
+/* ------ Botones básicos ------ */
 .btn {
   background: #a97457;
   color: white;
@@ -94,16 +112,14 @@
   background: #8a5d44;
 }
 
-/* ================================
-   🛒 LISTA DE PRODUCTOS
-================================== */
-.lista-productos {
+/* ===== LISTA DE PRODUCTOS ===== */
+.lista-productosPedidos {
   list-style: none;
   padding: 0;
   margin-top: 12px;
 }
 
-.producto-line {
+.producto-lista {
   display: flex;
   gap: 12px;
   align-items: center;
@@ -120,7 +136,8 @@
   flex: 2;
   text-align: left;
   font-weight: 600;
-  color: #3a2a20;
+  color: black;
+  font-family: "Century gothic";
 }
 
 /* Contenedor de cantidad + subtotal */
@@ -164,9 +181,7 @@
   background: #c62828;
 }
 
-/* ================================
-   💰 TOTAL Y GUARDAR
-================================== */
+/* ===== TOTAL Y GUARDAR ===== */
 .total-row {
   display: flex;
   justify-content: flex-end;
@@ -199,9 +214,7 @@
   background: #1976d2;
 }
 
-/* ================================
-   🪟 MODAL DE PRODUCTOS
-================================== */
+/* ===== MODAL DE PRODUCTOS ===== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -229,9 +242,7 @@
   font-size: 1.3rem;
 }
 
-/* ----------------
-   Listado de categorías
----------------- */
+/* ------ Listado de categorías ------ */
 .categoria {
   margin-top: 12px;
 }
@@ -242,9 +253,7 @@
   font-size: 1.05rem;
 }
 
-/* ----------------
-   Ítems del menú
----------------- */
+/* ----- Ítems del menú ----- */
 .menu-item {
   display: flex;
   justify-content: space-between;
@@ -270,9 +279,7 @@
   font-size: 0.95rem;
 }
 
-/* ----------------
-   Acciones del menú
----------------- */
+/* ----- Acciones del menú ------ */
 .menu-item-actions {
   display: flex;
   gap: 8px;
@@ -319,9 +326,7 @@
   background: #8a5d44;
 }
 
-/* ================================
-   ✨ ANIMACIONES
-================================== */
+/* ===== ANIMACIONES ===== */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -333,29 +338,225 @@
   }
 }
 
-/* ================================
-   📱 ADAPTABILIDAD
-================================== */
+/* ===== ADAPTABILIDAD ===== */
 @media (max-width: 600px) {
   .agregar-pedido {
     padding: 18px;
   }
 
   .form-row {
+.form-group {
+    flex: 1;
+    display: flex;
     flex-direction: column;
-  }
+}
 
-  .producto-line {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.form-group label {
+    font-weight: 600;
+    color: #5a3e2b;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
 
-  .producto-qty-wrapper {
+.form-control {
     width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    border-color: #a97457;
+    box-shadow: 0 0 5px rgba(169, 116, 87, 0.5);
+    outline: none;
+}
+
+.read-only {
+    background-color: #f8f8f8;
+    color: #888;
+}
+
+/* =======================================================
+   ☕ SECCIÓN DE PRODUCTOS (Detalle del Pedido)
+========================================================== */
+.productos-card {
+    margin-top: 20px;
+    padding: 20px;
+    background: #faf7f5; /* Fondo más suave */
+    border-radius: 10px;
+    border: 1px solid #e8e8e8;
+}
+
+.productos-card h3 {
+    margin: 0 0 15px;
+    color: #5a3e2b;
+    font-size: 1.3rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+/* Fila para agregar producto */
+.add-item-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.select-producto {
+    flex: 3;
+}
+
+.input-qty {
+    flex: 1;
+    text-align: center;
+}
+
+.btn-add {
+    flex: 1.5;
+    background-color: #4caf50; /* Verde */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-add:hover {
+    background-color: #388e3c;
+}
+
+/* Lista de Productos Agregados */
+.product-list {
+    list-style: none;
+    padding: 0;
+}
+
+.product-item {
+    display: flex;
     justify-content: space-between;
   }
 
   .btn-guardar {
     width: 100%;
+  }
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.product-item span:first-child {
+    flex: 2;
+}
+
+.item-price {
+    font-weight: 700;
+    color: #a97457; /* Marrón claro */
+}
+
+.btn-remove {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1em;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.btn-remove:hover {
+    background-color: #c82333;
+}
+
+/* =======================================================
+   💰 TOTAL Y BOTÓN GUARDAR
+========================================================== */
+.total-summary {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 0;
+    border-top: 2px solid #a97457;
+    margin-top: 25px;
+}
+
+.total-summary label {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #5a3e2b;
+}
+
+.total-display {
+    width: 150px;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: right;
+    color: #a97457;
+}
+
+.btn-submit {
+    width: 100%;
+    background-color: #5a3e2b; /* Color principal */
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.btn-submit:hover {
+    background-color: #442f22;
+}
+
+/* =======================================================
+   📱 ADAPTABILIDAD
+========================================================== */
+@media (max-width: 600px) {
+    .pedido-form-container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .add-item-row {
+        flex-wrap: wrap;
+    }
+
+    .select-producto, .input-qty {
+        flex: 1 1 45%; /* Permite que la cantidad y el selector se dividan */
+    }
+    
+    .btn-add {
+        flex: 1 1 100%;
+    }
+
+    .total-summary {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .total-summary label {
+        margin-bottom: 5px;
+    }
   }
 }

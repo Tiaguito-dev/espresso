@@ -27,7 +27,7 @@ class AdministradorPedidos {
             for (const linea of lineasBD) {
                 const productoObj = await this.menu.buscarProductoPorId(linea.id_producto);
 
-                // console.log(`Producto obtenido para la línea de pedido ${linea.id_producto}:`, productoObj);
+                console.log(`Producto obtenido para la línea de pedido ${linea.id_producto}:`, productoObj);
 
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
@@ -52,103 +52,97 @@ class AdministradorPedidos {
             }));
         }
         // Imprimo las lineas de pedido para verificar 
-        console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
+        // console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
         return pedidosObj;
     }
 
     async crearPedido(datosPedido) {
-        const { mesa: nroMesa, lineas, observacion } = datosPedido;
+    // 1. Obtener datos necesarios
+    const { mesa: nroMesa, lineas, observacion, mozo: codMozo } = datosPedido;
 
-        if (!lineas || !Array.isArray(lineas) || lineas.length === 0) {
-            throw new Error('Se requier al menos una linea de pedido');
-        }
-
-        const mesaObj = await this.mesas.buscarMesaPorNumero(nroMesa);
-        if (!mesaObj) {
-            throw new Error(`Mesa ${nroMesa} no encontrada`);
-        }
-
-        let montoTotal = 0;
-        const lineasBD = [];
-        const lineasObj = [];
-
-        console.log(datosPedido)
-
-        for (const linea of lineas) {
-            const productoObj = await this.menu.buscarProductoPorId(linea.idProducto);
-            if (!productoObj) {
-                throw new Error(`Producto con id ${linea.idProducto} no encontrado`);
-            }
-            const subtotal = productoObj.getPrecio() * linea.cantidad;
-            montoTotal = montoTotal + subtotal;
-
-            lineasBD.push({
-                idProducto: productoObj.id,
-                cantidad: linea.cantidad,
-                monto: subtotal,
-                nombreProducto: productoObj.getNombre()
-            });
-
-            lineasObj.push(new LineaPedido({
-                producto: productoObj,
-                cantidad: linea.cantidad
-            }));
-
-            const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
-            console.log(ultimoNro);
-            const nroPedido = (ultimoNro ? ultimoNro : 0) + 1;
-
-            const now = new Date();
-            const fecha = now.toISOString().replace('T', ' ').replace('Z', '+00');
-            console.log(fecha);
-
-
-            const datosPedido = {
-                nroPedido: nroPedido,
-                fecha: fecha, //chequear q funque
-                mesa: mesaObj,
-                lineasPedido: lineasObj
-            };
-
-            let nuevoPedido;
-            try {
-                nuevoPedido = new Pedido(datosPedido);
-            } catch (error) {
-                throw new Error(`Error de vaidacion: ${error.message}`);
-            }
-
-            await PedidoBD.crearPedido({
-                nroPedido: nroPedido,
-                // fecha: fecha, no anda el campo fecha
-                observacion: observacion || null,
-                monto: montoTotal,
-                idMozo: 1,
-                idMesa: mesaObj.nroMesa,
-            });
-
-            /*const pruebaPedido = {
-                nroPedido: nroPedido,
-                //fecha: fecha,
-                observacion: observacion || null,
-                monto: montoTotal,
-                idMozo: 1,
-                idMesa: mesaObj.nroMesa,
-            }
-
-            console.log('Creando pedido en BD:', pruebaPedido);
-
-            await PedidoBD.crearPedido(pruebaPedido);*/
-
-            for (const lineaBD of lineasBD) {
-                await PedidoBD.crearLineaPedido({
-                    idPedido: nroPedido,
-                    ...lineaBD
-                });
-            }
-
-            return nuevoPedido;
-        }
+    if (!lineas || !Array.isArray(lineas) || lineas.length === 0) {
+        throw new Error('Se requiere al menos una linea de pedido');
     }
+
+    const mesaObj = await this.mesas.buscarMesaPorNumero(nroMesa);
+    if (!mesaObj) {
+        throw new Error(`Mesa ${nroMesa} no encontrada`);
+    }
+
+    let montoTotal = 0;
+    const lineasBD = [];
+    const lineasObj = [];
+
+    // 2. PRIMER BUCLE: (Correcto) Solo para validación y cálculo de monto
+    for (const linea of lineas) {
+        const productoObj = await this.menu.buscarProductoPorId(linea.idProducto);
+        if (!productoObj) {
+            throw new Error(`Producto con id ${linea.idProducto} no encontrado`);
+        }
+        const subtotal = productoObj.getPrecio() * linea.cantidad;
+        montoTotal = montoTotal + subtotal;
+
+        lineasBD.push({
+            idProducto: productoObj.id,
+            cantidad: linea.cantidad,
+            monto: subtotal,
+            nombre: productoObj.getNombre()
+        });
+
+        lineasObj.push(new LineaPedido({
+            producto: productoObj,
+            cantidad: linea.cantidad
+        }));
+    } 
+    
+    // =========================================================================
+    // 🎯 BLOQUE DE CREACIÓN DE PEDIDO PRINCIPAL (MOVIDO FUERA DEL LOOP)
+    // =========================================================================
+    const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
+    // 🎯 Asigna el nroPedido una sola vez
+    const nroPedido = (ultimoNro ? ultimoNro : 0) + 1; 
+
+    const now = new Date();
+    const fecha = now.toISOString().replace('T', ' ').replace('Z', '+00'); 
+
+    const datosPedidoObjeto = { 
+        nroPedido: nroPedido,
+        fecha: fecha,
+        total: montoTotal,
+        mesa: mesaObj,
+        lineasPedido: lineasObj
+    };
+
+    let nuevoPedido;
+    try {
+        nuevoPedido = new Pedido(datosPedidoObjeto); 
+    } catch (error) {
+        throw new Error(`Error de validación: ${error.message}`);
+    }
+
+    // 3. PERSISTENCIA EN BD DEL PEDIDO PRINCIPAL (una sola vez)
+    await PedidoBD.crearPedido({
+        nroPedido: nroPedido,
+        observacion: observacion || null,
+        monto: montoTotal,
+        mozo: codMozo, 
+        mesa: mesaObj.nroMesa,
+    });
+    // =========================================================================
+
+    // 4. SEGUNDO BUCLE: (Correcto) Solo para persistir las líneas de pedido
+    for (const lineaBD of lineasBD) {
+        await PedidoBD.crearLineaPedido({
+            pedido: nroPedido,
+            codigo: lineaBD.idProducto, 
+            cantidad: lineaBD.cantidad,
+            monto: lineaBD.monto,
+            nombre: lineaBD.nombre
+        });
+    }
+
+    return nuevoPedido;
+}
 
     async getPedidos() {
         const pedidos = await PedidoBD.obtenerPedidosHoy();
@@ -204,10 +198,6 @@ class AdministradorPedidos {
         return pedidoObj[0];
     }
 
-    eliminarPedidoPorNumero(nroPedido) {
-
-    }
-
     async modificarEstadoPedido(nroPedido, nuevoEstado) {
         const pedido = await this.buscarPedidoPorNumero(nroPedido);
         if (!pedido) {
@@ -247,5 +237,7 @@ class AdministradorPedidos {
         return pedido;
     }
 }
+
+
 
 module.exports = AdministradorPedidos;

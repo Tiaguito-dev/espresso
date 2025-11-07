@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getProductos, updateProducto, deleteProducto } from "../../services/productosService";
+import { getProductos, updateProducto, deleteProducto, updateEstadoProducto } from "../../services/productosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 import "../menu/ClienteMenu.css";
@@ -35,7 +35,7 @@ export default function Menu() {
         setEstadoFiltro(estado);
     };
 
-    const cambiarEstado = async (id) => {
+    {/*const cambiarEstado = async (id) => {
         const nuevoEstado = prompt(
             "¿El producto está disponible? (true/false):"
         );
@@ -51,14 +51,45 @@ export default function Menu() {
         } catch (error) {
             console.error("Error al actualizar el estado del producto:", error);
         }
+    }; */}
+
+    const cambiarEstado = async (id) => {
+    
+        const productoActual = productos.find(p => p.id === id);
+
+        if (!productoActual) {
+            console.error("No se encontró el producto con id:", id);
+            return;
+        }
+
+        const nuevoEstado = !productoActual.disponible;
+
+        const confirmacion = window.confirm(
+            `¿Desea cambiar el estado del producto a: ${nuevoEstado ? 'Disponible' : 'No disponible'}?`
+        );
+
+        if (!confirmacion) {
+            return;
+        }
+
+        try {
+
+            await updateEstadoProducto(id, { disponible: nuevoEstado });
+            
+            fetchProductos(); 
+            
+        } catch (error) {
+            console.error("Error al actualizar el estado del producto:", error);
+            alert("Hubo un error al actualizar el estado.");
+        }
     };
 
     // Filtrar productos según el estado seleccionado
     const productosFiltrados = (() => {
         switch (estadoFiltro) {
-            case "disponibles":
+            case "disponible":
                 return productos.filter(p => p.disponible === true);
-            case "no-disponibles":
+            case "no-disponible":
                 return productos.filter(p => p.disponible === false);
             default:
                 return productos;
@@ -67,13 +98,13 @@ export default function Menu() {
 
     //elimino un producto    
     const eliminarProducto = async (id) => {
-        if(window.confirm("¿Seguro que desea eliminar el producto?")) {
-            try{
+        if (window.confirm("¿Seguro que desea eliminar el producto?")) {
+            try {
                 await deleteProducto(id);
                 alert("Producto eliminado correctamente");
-                setProductos(prevProductos => 
-                prevProductos.filter(p => String(p.id) !== String(id))
-            );
+                setProductos(prevProductos =>
+                    prevProductos.filter(p => String(p.id) !== String(id))
+                );
             } catch (error) {
                 console.error("Error al eliminar el producto");
                 alert("No se pudo eliminar el producto");
@@ -94,7 +125,7 @@ export default function Menu() {
                 Filtros
             </button>
 
-            <button className="btn-ver-menu"onClick={() => navigate("/menu/menuEspresso/")}>
+            <button className="btn-ver-menu" onClick={() => navigate("/menu/menuEspresso/")}>
                 Ver menú Espresso
             </button>
 
@@ -122,8 +153,8 @@ export default function Menu() {
                 </button>
             </div>
 
-            
-            <TablaProducto 
+
+            <TablaProducto
                 productos={productosFiltrados}
                 arrayCampos={["Codigo", "Nombre", "Categoria", "Descripcion", "Precio", "Disponible", "Acciones"]}
                 funcionCambiarEstado={cambiarEstado}
@@ -131,6 +162,6 @@ export default function Menu() {
                 funcionEliminar={eliminarProducto}
             ></TablaProducto>
         </div>
-        
+
     );
 }

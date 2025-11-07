@@ -4,9 +4,6 @@ import { createProducto, updateProducto, buscarPorId, obtenerCategorias } from "
 import { useNavigate } from "react-router-dom";
 import "../pedidos/AgregarPedido.css";
 
-//este import es de ClienteMenu para obtener los produtps
-import { getProductos } from '../../services/productosService';
-
 function FormProducto() {
     const { id } = useParams();
     const [producto, setProducto] = useState({
@@ -18,41 +15,17 @@ function FormProducto() {
         disponible: true
     });
 
-    const [categorias, setCategorias] = useState([]); 
-    const [nuevaCategoria, setNuevaCategoria] = useState(""); 
+    const [categorias, setCategorias] = useState([]);
+    const [nuevaCategoria, setNuevaCategoria] = useState("");
     const [usarNuevaCategoria, setUsarNuevaCategoria] = useState(false);
     const navigate = useNavigate();
     const existeId = Boolean(id);
-
-    //aca arranca lo recuperar los productos y las categoruas para poder deplegarlas cuando agrego un producto. 
-    const [productos, setProductos] = useState([]);
-
-
-    const categoriasNuevo = ["Todos los productos",
-        ...Array.from(
-        new Set(productos.map(p => p.categoria.nombre.trim()))
-        ),
-    ];
-
-    useEffect(() => {
-        const fetchProductos = async () => {
-            try {
-                const data = await getProductos();
-                setProductos(data.filter(productoItem => productoItem.disponible));
-            } catch (error) {
-                console.error("Error al obtener el menú:", error);
-            }
-        };
-        fetchProductos();
-    }, []);
-    //fin    
-    
-
 
     useEffect(() => {
         const fetchCategorias = async () => {
             try {
                 const data = await obtenerCategorias();
+                console.log("categorias traidas del back", data);
                 setCategorias(data || []);
             } catch (error) {
                 console.error("Error al traer categorías:", error);
@@ -65,10 +38,11 @@ function FormProducto() {
     useEffect(() => {
         if (existeId) {
             buscarPorId(id).then((data) => {
+                console.log("producto traido por id:", data)
                 setProducto({
                     id: data.id || "",
                     nombre: data.nombre || "",
-                    categoria: data.categoria || "",
+                    categoria: data.categoria.nombre || "",
                     descripcion: data.descripcion || "",
                     precio: data.precio || "",
                     disponible: data.disponible || true
@@ -90,9 +64,7 @@ function FormProducto() {
                     disponible: producto.disponible
                 };
 
-                console.log("Producto ID a actualizar:", id);
                 console.log("Datos enviados a updateProducto:", productoParaActualizar);
-                window.location.href = '/menu';
                 await updateProducto(id, productoParaActualizar);
                 console.log("Producto actualizado correctamente");
                 alert('Producto actualizado correctamente');
@@ -162,8 +134,8 @@ function FormProducto() {
                                 }}
                             >
                                 <option value="">Seleccione categoría</option>
-                                {categoriasNuevo.map((categoriaItem, index) => (
-                                    <option key={index} value={categoriaItem}>{categoriaItem}</option>
+                                {categorias.map((categoriaItem) => (
+                                    <option key={categoriaItem.id} value={categoriaItem.id}>{categoriaItem.nombre}</option>
                                 ))}
                                 <option value="nueva">Agregar nueva...</option>
                             </select>
