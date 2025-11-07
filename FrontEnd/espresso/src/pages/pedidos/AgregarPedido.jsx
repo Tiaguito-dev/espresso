@@ -6,7 +6,7 @@ import "./AgregarPedido.css";
 import Popup from "../../components/VentanaPopUp";
 import SelectorProductos from "./SelectorProductos";
 
-import { fetchMozos } from "../../services/mozosService"; 
+{/*import { fetchMozos } from "../../services/mozosService"; */}
 
 function AgregarPedido() {
   const [mesa, setMesa] = useState("");
