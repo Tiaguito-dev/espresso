@@ -1,7 +1,7 @@
 const Usuario = require('./Usuario.js');
 const administradorPerfiles = require('./AdministradorPerfiles.js');
 const UsuarioBD = require('../repositories/UsuarioBD');
-
+const Perfil = require('./Perfil.js');
 
 class AdministradorUsuarios {
     // SIMPLIFICADO: Ya no necesita obtener todos los perfiles
@@ -89,4 +89,4 @@ class AdministradorUsuarios {
 
 }
 
-module.exports = new AdministradorUsuarios();
+module.exports = AdministradorUsuarios;

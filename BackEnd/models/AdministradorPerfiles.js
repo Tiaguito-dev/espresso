@@ -34,7 +34,11 @@ class AdministradorPerfiles {
         return nuevoPerfil;
     }
     async buscarPorNombre(nombre) {
-        const perfilBD = await PerfilBD.obtenerPerfilPorNombre(nombre);
+        if (typeof nombre !== 'string') {
+            return null;
+        }
+        const nombreLimpio = nombre.trim().toLowerCase();
+        const perfilBD = await PerfilBD.obtenerPerfilPorNombre(nombreLimpio);
         return this.convertirPerfilBD(perfilBD);
     }
 

@@ -5,6 +5,9 @@ const cors = require('cors');
 const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
 const authRoutes = require('./routes/auth');
+const usuariosRoutes = require('./routes/usuariosRoutes');
+
+
 // Importación de los test
 const TestPedidoBD = require('./Test/TestPedidoBD');
 const TestProductoBD = require('./Test/TestProductoBD');
@@ -32,7 +35,8 @@ app.use('/api', (req, res, next) => {
 // Registrar rutas
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/productos', productosRoutes);
-app.use('/api/registrar',);
+app.use('/api/auth', authRoutes);
+app.use('/api/usuarios', usuariosRoutes);
 
 // FALTAN LAS RUTAS DE MESAS Y TODO ESO. Es decir, faltan conectar cosas
 

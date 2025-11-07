@@ -1,6 +1,8 @@
-const administradorUsuarios = require('../models/AdministradorUsuarios.js');
+const AdministradorUsuarios = require('../models/AdministradorUsuarios.js');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'clave';
+
+const administradorUsuarios = new AdministradorUsuarios();
 
 exports.registrar = async (req, res) => {
     try {
@@ -54,6 +56,6 @@ exports.login = async (req, res) => {
             perfil: usuario.perfil.nombre // Solo el nombre del perfil
         });
     } catch (error) {
-        res.status(500).json({ mensaje: 'Error en el servidor' });
+        res.status(500).json({ mensaje: 'Error en el servidor', error: error.message});
     }
 }
