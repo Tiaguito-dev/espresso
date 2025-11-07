@@ -6,7 +6,7 @@ const pedidosRoutes = require('./routes/pedidosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
 const authRoutes = require('./routes/auth');
 const usuariosRoutes = require('./routes/usuariosRoutes');
-
+const mesasRoutes = require('./routes/mesasRoutes');
 
 // Importación de los test
 const TestPedidoBD = require('./Test/TestPedidoBD');
@@ -37,6 +37,7 @@ app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/mesas', mesasRoutes);
 
 // FALTAN LAS RUTAS DE MESAS Y TODO ESO. Es decir, faltan conectar cosas
 
