@@ -32,6 +32,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
             <td>{pedido.nroPedido}</td>
             <td>{pedido.mesa.nroMesa}</td>
             <td>{pedido.mozo}</td>
+            <td>4</td>
             {/* Si fecha no viene, puedes mostrar un guión '-' */}
             <td>{pedido.fecha ? pedido.fecha : '-'}</td> 
             
@@ -40,7 +41,9 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
             
 
             <td>${pedido.total}</td>
-            
+
+            <td>$10000</td>
+      
             {/* Columna de Acciones */}
             <td>
                 <div className="acciones-container">

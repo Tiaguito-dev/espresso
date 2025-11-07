@@ -40,7 +40,7 @@ export default function PedidosLista() {
     // 🔄 Cambiar estado del pedido (Pendiente -> Listo -> Finalizado)
     const cambiarEstado = async (id) => {
         try {
-            const pedidoActual = pedidos.find((p) => p.id === id);
+            const pedidoActual = pedidos.find((p) => p.nroPedido === id);
             if (!pedidoActual) return;
 
             let siguienteEstado;
