@@ -46,6 +46,7 @@ class AdministradorPedidos {
                 total: pedido.monto,
                 estadoPedido: pedido.estado,
                 mesa: mesaObj,
+                observacion: pedido.observacion,
                 lineasPedido: lineasObj
             }));
         }
@@ -54,7 +55,7 @@ class AdministradorPedidos {
         return pedidosObj;
     }
 
-    async crearPedido(datosPedido) {
+    async crearPedido(datosPedido, usuarioToken) {
         const { mesa: nroMesa, lineas, observacion } = datosPedido;
 
         if (!lineas || !Array.isArray(lineas) || lineas.length === 0) {
@@ -91,62 +92,54 @@ class AdministradorPedidos {
                 producto: productoObj,
                 cantidad: linea.cantidad
             }));
-
-            const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
-            console.log(ultimoNro);
-            const nroPedido = (ultimoNro ? ultimoNro : 0) + 1;
-
-            const now = new Date();
-            const fecha = now.toISOString().replace('T', ' ').replace('Z', '+00');
-            console.log(fecha);
-
-
-            const datosPedido = {
-                nroPedido: nroPedido,
-                fecha: fecha, //chequear q funque
-                mesa: mesaObj,
-                lineasPedido: lineasObj
-            };
-
-            let nuevoPedido;
-            try {
-                nuevoPedido = new Pedido(datosPedido);
-            } catch (error) {
-                throw new Error(`Error de vaidacion: ${error.message}`);
-            }
-
-            await PedidoBD.crearPedido({
-                nroPedido: nroPedido,
-                // fecha: fecha, no anda el campo fecha
-                observacion: observacion || null,
-                monto: montoTotal,
-                mozo: 1,
-                mesa: mesaObj.nroMesa,
-            });
-
-            /*const pruebaPedido = {
-                nroPedido: nroPedido,
-                //fecha: fecha,
-                observacion: observacion || null,
-                monto: montoTotal,
-                idMozo: 1,
-                idMesa: mesaObj.nroMesa,
-            }
-
-            console.log('Creando pedido en BD:', pruebaPedido);
-
-            await PedidoBD.crearPedido(pruebaPedido);*/
-
-            for (const lineaBD of lineasBD) {
-                await PedidoBD.crearLineaPedido({
-                    idPedido: nroPedido,
-                    ...lineaBD
-                });
-            }
-
-            return nuevoPedido;
         }
+        const ultimoNro = await PedidoBD.obtenerUltimoNroPedido();
+        console.log(ultimoNro);
+        const nroPedido = (ultimoNro ? ultimoNro : 0) + 1;
+
+        const now = new Date();
+        const fecha = now.toISOString().replace('T', ' ').replace('Z', '+00');
+        console.log(fecha);
+
+        const datosNuevoPedido = {
+            nroPedido: nroPedido,
+            fecha: fecha, //chequear q funque
+            mesa: mesaObj,
+            lineasPedido: lineasObj,
+            observacion: observacion || null
+        };
+
+        let nuevoPedido;
+        try {
+            nuevoPedido = new Pedido(datosNuevoPedido);
+        } catch (error) {
+            throw new Error(`Error de validacion: ${error.message}`);
+        }
+
+        console.log('nroPedido calculado:', nroPedido);
+
+        await PedidoBD.crearPedido({
+            pedido: nroPedido,
+            // fecha: fecha, no anda el campo fecha
+            observacion: observacion || null,
+            monto: montoTotal,
+            mozo: usuarioToken.codigo,
+            mesa: mesaObj.nroMesa,
+        });
+
+        for (const lineaBD of lineasBD) {
+            await PedidoBD.crearLineaPedido({
+                pedido: nroPedido,
+                codigo: lineaBD.idProducto,
+                cantidad: lineaBD.cantidad,
+                monto: lineaBD.monto,
+                nombre: lineaBD.nombre
+            });
+        }
+
+        return nuevoPedido;
     }
+    
 
     async getPedidos() {
         const pedidos = await PedidoBD.obtenerPedidosHoy();

@@ -8,7 +8,7 @@ const { verificarToken, verificarPerfil } = require('../middlewares/auth');
 router.get('/', pedidosController.obtenerPedidos);
 
 // Ruta para crear un nuevo pedido
-router.post('/', pedidosController.crearPedido);
+router.post('/', verificarToken, pedidosController.crearPedido);
 
 // Ruta para actualizar un pedido
 router.put('/:id', pedidosController.actualizarPedido);

@@ -44,7 +44,7 @@ const verificarPerfil = (perfilesPermitidos) => {
         }
 
         // Utiliza el req.user que antes había seteado la otra función
-        if (!perfilesPermitidos.includes(req.user.perfil)) {
+        if (!perfilesPermitidos.includes(req.usuario.perfil)) {
             return res.status(403).json({
                 mensaje: `Acceso denegado. Perfil requerido: ${perfilesPermitidos.join(' o ')}`
             });

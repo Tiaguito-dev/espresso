@@ -17,7 +17,8 @@ exports.obtenerPedidos = async (req, res) => {
 
 exports.crearPedido = async (req, res) => {
     try {
-        const nuevoPedido = await administradorPedidos.crearPedido(req.body);
+        console.log('Usuario autenticado:', req.usuario);
+        const nuevoPedido = await administradorPedidos.crearPedido(req.body, req.usuario);
         res.status(201).json(nuevoPedido);
     } catch(error) {
         res.status(400).json({ message: error.message });
@@ -32,7 +33,7 @@ exports.actualizarPedido = async (req, res) => {
 
         const pedido = await administradorPedidos.modificarEstadoPedido(nroPedido, nuevoEstado);
         
-        res.json({ message: `Pedido actualizado a ${estadoFinal}`, pedido: pedido });
+        res.json({ message: `Pedido actualizado a ${pedido.estadoPedido}`, pedido: pedido });
         
     }catch(error){
         if (error.message === "Pedido no encontrado.") {
