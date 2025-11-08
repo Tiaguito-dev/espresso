@@ -69,7 +69,7 @@ class Pago {
             idPago: this.idPago,
             nroPedido: this.pedido.getNroPedido(),
             monto: this.monto,
-            fecha: this.fechaPago,
+            fecha: this.fecha,
             metodo: this.metodo
         }
     }
