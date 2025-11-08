@@ -10,7 +10,7 @@ const auth = require('../middlewares/auth');
 router.get(
   '/mi-perfil', 
   auth.verificarToken, 
-  usuariosController.obtenerMiPerfil
+  usuariosController.obtenerPerfil
 );
 
 module.exports = router;

@@ -51,7 +51,7 @@ class Pedido {
         this.estadoPedido = data.estadoPedido || 'pendiente'; //si no tiene estado, lo inicializa en pendiente
         this.mesa = data.mesa;
         this.total = data.total;
-
+        this.observacion = data.observacion || null;
         this.lineasPedido = data.lineasPedido || []; // inicializar como un array vacío si no contiene las lineas de pedido NOTA: A DEFINIR UCANDO SE HACE ESTO
     }
     toJSON() {
@@ -60,6 +60,7 @@ class Pedido {
             fecha: this.fecha,
             total: this.total,
             estadoPedido: this.estadoPedido,
+            observacion: this.observacion,
             mesa: this.mesa,
             lineasPedido: this.lineasPedido
     };

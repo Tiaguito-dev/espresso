@@ -8,14 +8,14 @@ class AdministradorMesas {
         if (!mesas) return null;
         if (Array.isArray(mesas)){
             return mesas.map(m => new Mesa({
-                nroMesa: m.mesa,
-                estadoMesa: m.estado
+                nroMesa: m.nro_mesa,
+                estadoMesa: m.estado_mesa
             }));
         }
 
         return new Mesa({
             nroMesa: mesas.nro_mesa,
-            estadoMesa: mesas.estado
+            estadoMesa: mesas.estado_mesa
         });
     }
 
@@ -63,7 +63,7 @@ class AdministradorMesas {
             estado: nuevaMesa.estadoMesa
         };
 
-        await MesaBD.crearMesa(mesaBD);
+        await MesaBD.crearMesa(mesaBD.mesa);
         return nuevaMesa;
     }
 
@@ -72,7 +72,7 @@ class AdministradorMesas {
         if(!mesa){
             throw new Error(`No fue posible eliminar la mesa ${nroMesa} porque no existe.`);
         }
-        await MesaBD.eliminarMesaPorNumero(nroMesa);
+        await MesaBD.eliminarMesa(nroMesa);
         return true;
     }
 
@@ -87,7 +87,7 @@ class AdministradorMesas {
         if (!estadosValidos.includes(nuevoEstado)) {
             throw new Error(`El estado '${nuevoEstado}' no es válido.`);
         }
-        await MesaBD.modificarEstadoMesa(nroMesa, nuevoEstado);
+        await MesaBD.modificarEstadoMesa({ nroMesa: nroMesa, estadoMesa: nuevoEstado });
         mesaAModificar.cambiarEstadoMesa(nuevoEstado);
         return mesaAModificar;        
     }

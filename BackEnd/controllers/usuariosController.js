@@ -3,8 +3,8 @@ const administradorUsuarios = new AdministradorUsuarios();
 
 exports.obtenerPerfil = async (req, res) => {
     try {
-        const usuarioId = req.usuario.id;
-        const usuario = await administradorUsuarios.buscarPorId(usuarioId);
+        const usuarioId = req.usuario.codigo;
+        const usuario = await administradorUsuarios.buscarPorCodigo(usuarioId);
         if (!usuario) {
             return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         }

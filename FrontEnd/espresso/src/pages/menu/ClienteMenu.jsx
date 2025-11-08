@@ -3,49 +3,47 @@ import { getProductos } from '../../services/productosService';
 import "../menu/ClienteMenu.css"
 import Categoria from './Categoria';
 
-
-
-
 export default function MenuCliente() {
-    
+
     const [productos, setProductos] = useState([]);
     //const [categorias, setCategorias] = useState([]);
-    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null); 
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+
 
 
     //esta funcion era la nueva version del codigo, porque me faltaba el fetchCategorias. PERO con la version vieja funciona, lo dejor por las duda por si en un futuro lo llegamos a precisar 
-/*
-    useEffect(() => {
-        const fetchProductos = async () => {
-            try {
-                const data = await getProductos();
-                setProductos(data.filter(productoItem => productoItem.disponible));
-            } catch (error) {
-                console.error("Error al obtener el menú:", error);
-            }
-        };
-
-        const fetchCategorias = async () => {
-            try {
-                const data = await getCategorias();
-                setCategorias(data); 
-            } catch (error) {
-                console.error("Error al obtener las categorías:", error);
-            }
-        };
-        fetchProductos();
-        fetchCategorias();
-    }, []);
-
-    const categoriasDinamicas = ["Todos los productos",
-        ...categorias.map(c => c.nombre.trim())
-    ];
-*/
+    /*
+        useEffect(() => {
+            const fetchProductos = async () => {
+                try {
+                    const data = await getProductos();
+                    setProductos(data.filter(productoItem => productoItem.disponible));
+                } catch (error) {
+                    console.error("Error al obtener el menú:", error);
+                }
+            };
     
+            const fetchCategorias = async () => {
+                try {
+                    const data = await getCategorias();
+                    setCategorias(data); 
+                } catch (error) {
+                    console.error("Error al obtener las categorías:", error);
+                }
+            };
+            fetchProductos();
+            fetchCategorias();
+        }, []);
+    
+        const categoriasDinamicas = ["Todos los productos",
+            ...categorias.map(c => c.nombre.trim())
+        ];
+    */
+
 
     const categoriasDinamicas = ["Todos los productos",
         ...Array.from(
-        new Set(productos.map(p => p.categoria.nombre.trim()))
+            new Set(productos.map(p => p.categoria.nombre.trim()))
         ),
     ];
 
@@ -62,13 +60,13 @@ export default function MenuCliente() {
     }, []);
 
 
-    
+
     const handleCategoria = (categoria) => {
         setCategoriaSeleccionada(prev =>
             prev === categoria ? null : categoria
         );
     };
-    
+
     return (
         <div className="menu-container">
             <img className='logo' src="/logoEspresso.png" alt="logo de Espresso" />
@@ -85,34 +83,34 @@ export default function MenuCliente() {
                                     productoItem.categoria &&
                                     productoItem.categoria.nombre.trim().toLowerCase() ===
                                     categoriaItem.trim().toLowerCase()
-                );
+                            );
 
                     return (
-                        <div key={index} className="item-acordeon"> 
-                            <Categoria 
+                        <div key={index} className="item-acordeon">
+                            <Categoria
                                 nombre={categoriaItem}
                                 onClick={handleCategoria}
                                 categoriaActiva={activa}
                             />
 
                             <div className={`lista-productos ${activa ? 'desplegado' : ''}`}>
-                            {productosDeCategoria.length > 0 ? (
+                                {productosDeCategoria.length > 0 ? (
                                     productosDeCategoria.map(productoItem => (
-                                    <div key={productoItem.id} className="producto">
-                                    <h3>{productoItem.nombre}</h3>
-                                    <p>{productoItem.descripcion}</p>
-                                    <span>${productoItem.precio}</span>
-                                    </div>
+                                        <div key={productoItem.id} className="producto">
+                                            <h3>{productoItem.nombre}</h3>
+                                            <p>{productoItem.descripcion}</p>
+                                            <span>${productoItem.precio}</span>
+                                        </div>
                                     ))
                                 ) : (
-                                <p>No hay productos disponibles en {categoriaItem}.</p>
+                                    <p>No hay productos disponibles en {categoriaItem}.</p>
                                 )}
                             </div>
                         </div>
                     );
                 })}
             </div>
-            
+
         </div>
     );
 
