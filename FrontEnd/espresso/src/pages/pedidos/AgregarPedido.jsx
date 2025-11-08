@@ -10,9 +10,9 @@ function AgregarPedido() {
 
 	const [pedidoInfo, setPedidoInfo] = useState(
 		{
+			observacion: "",
 			mesa: "",
-			mozo: "",
-			observacion: ""
+			mozo: ""
 		}
 	);
 	const [productosDisponibles, setProductosDisponibles] = useState([]);
@@ -140,7 +140,7 @@ function AgregarPedido() {
 			mesa: parseInt(pedidoInfo.mesa, 10),
 			observacion: pedidoInfo.observacion,
             lineas: productosPedido.map(producto => ({
-                productoId: producto.id,
+                idProducto: producto.id,
                 cantidad: producto.cantidad,
             }))
 		}
@@ -151,9 +151,9 @@ function AgregarPedido() {
 			setMensajeExito("Pedido creado con exito.");
 			
 			setPedidoInfo({
+				observacion: "",
 				mesa: "",
-				mozo: "",
-				observacion: ""
+				mozo: ""
 			});
 			setProductosPedido([]);
 

@@ -22,6 +22,8 @@ class AdministradorPedidos {
 
             // ESTO LO HACE BIENconsole.log(`Líneas recibidas de BD para el pedido ${pedido.nro_pedido}:`, lineasBD);
 
+            console.log("recupera los pedidos de la bd bien");
+
             const lineasObj = [];
 
             for (const linea of lineasBD) {
@@ -71,7 +73,7 @@ class AdministradorPedidos {
         const lineasBD = [];
         const lineasObj = [];
 
-        console.log(datosPedido)
+        console.log(datosPedido);
 
         for (const linea of lineas) {
             const productoObj = await this.menu.buscarProductoPorId(linea.idProducto);
@@ -143,6 +145,7 @@ class AdministradorPedidos {
 
     async getPedidos() {
         const pedidos = await PedidoBD.obtenerPedidosHoy();
+        console.log(pedidos);
         return this.convertirPedidoBD(pedidos);
     }
     /*

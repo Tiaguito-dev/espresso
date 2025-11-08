@@ -7,10 +7,14 @@ const administradorPedidos = new AdministradorPedidos();
 
 exports.obtenerPedidos = async (req, res) => {
     try{
+        console.log("entra a obtener pedidos");
         const pedidos = await administradorPedidos.getPedidos();
         //console.log("Datos a enviar de pedidos:", pedidos);
+        console.log("deriva la llamada");
         res.json(pedidos);
+        console.log("envia la respuesta");
     }catch(error){
+        console.log("tira error en el controller")
         res.status(500).json({ message: 'Error al obtener pedidos', error: error.message});
     }
 };
