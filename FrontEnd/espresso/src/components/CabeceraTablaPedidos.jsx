@@ -1,5 +1,3 @@
-// src/pages/pedidos/CabeceraTablaPedidos.jsx
-
 import React from "react";
 
 function CabeceraTablaPedidos({ arrayCampos }) {

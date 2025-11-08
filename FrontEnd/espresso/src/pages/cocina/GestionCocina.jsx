@@ -5,6 +5,7 @@ import "../pedidos/PedidosLista.css";
 import Filtro from "./../menu/Filtro";
 import Acordeon from "./Acordeon";
 import CabeceraTabla from "../pedidos/CabeceraTabla";
+import DetallePedido from "../caja/DetallePedido";
 
 
 function GestionCocina() {
@@ -66,26 +67,6 @@ function GestionCocina() {
         }
     };
 
-
-//Detalle en ventana emergente
-
-    const [estadoDetalle, setEstadoDetalle] = useState(false);
-    const [pedidoDetalle, setPedidoDetalle] = useState(null);
-
-    const abrirDetalle = (pedido) => {
-        setPedidoDetalle(pedido);
-        setEstadoDetalle(true);
-    };
-
-    const cerrarDetalle = () => {
-        setEstadoDetalle(false);
-        setPedidoDetalle(null);
-    };
-
-//Manejo de errores por si no se encuentra un pedido (se tiene que definir si o si para poder pasar el id del pedido)
-    const idPedido = pedidoDetalle ? pedidoDetalle.nroPedido : 'No se encuentra el pedido';
-
-
 //Detalle de acordeon
 //    const [pedidoAcordeon, setPedidoAcordeon] = useState(null);
 
@@ -100,6 +81,26 @@ function GestionCocina() {
 
 //Defino los campos del acordeon
     const camposAcordeon = ["ID", "Producto", "Cantidad"];
+
+
+//Ventana emergente para las observaciones
+
+    const [estadoObservacion, setEstadoObservacion] = useState(false);
+    const [pedidoObservacion, setPedidoObservacion] = useState(null);
+
+    const abrirObservacion = (pedido) => {
+        setPedidoObservacion(pedido);
+        setEstadoObservacion(true);
+    };
+
+    const cerrarObservacion = () => {
+        setEstadoObservacion(false);
+        setPedidoObservacion(null);
+    };
+
+//Manejo de errores por si no se encuentra un pedido (se tiene que definir si o si para poder pasar el id del pedido)
+    const idPedido = pedidoObservacion ? pedidoObservacion.nroPedido : 'No se encuentra el pedido';
+
 
 
     return (
@@ -164,6 +165,12 @@ function GestionCocina() {
                         
                         <td className="acciones">
                             <button
+                                className="info"
+                                onClick={() => abrirObservacion(pedido)}
+                            >
+                                Ver detalle
+                            </button>
+                            <button
                                 className="modificar"
                                 onClick={() => cambiarEstado(pedido.nroPedido)}
                             >
@@ -175,6 +182,17 @@ function GestionCocina() {
                             >
                                 Marcar Listo
                             </button>
+
+                            <DetallePedido funcionAbrir={estadoObservacion} funcionCerrar={cerrarObservacion}>
+                                <h2>Detalle del Observacion #{idPedido}</h2>
+                                {pedidoObservacion && (
+                                    <>
+                                        <div className="filtros">
+                                            <p>{pedidoObservacion.observacion}</p>
+                                        </div>
+                                    </>
+                                )}
+                            </DetallePedido>
                         </td>
                     </tr>
                 ))}
