@@ -24,7 +24,7 @@ const verificarToken = (req, res, next) => {
             codigo: decoded.codigo,
             nombre: decoded.nombre,
             correo: decoded.correo,
-            nombrePerfil: decoded.perfil
+            perfilNombre: decoded.perfilNombre
         };
 
         next();
@@ -44,7 +44,7 @@ const verificarPerfil = (perfilesPermitidos) => {
         }
 
         // Utiliza el req.user que antes había seteado la otra función
-        if (!perfilesPermitidos.includes(req.usuario.perfil)) {
+        if (!perfilesPermitidos.includes(req.usuario.perfilNombre)) {
             return res.status(403).json({
                 mensaje: `Acceso denegado. Perfil requerido: ${perfilesPermitidos.join(' o ')}`
             });
