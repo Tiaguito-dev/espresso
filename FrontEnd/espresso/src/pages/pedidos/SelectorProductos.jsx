@@ -5,7 +5,7 @@ import './SelectorProductos.css';
 function SelectorProductos({ menu, seleccionados, onCheckChange, onClose }) {
   
   
-  const categorias = [...new Set(menu.map(producto => producto.categoria.nombre))];
+  const categorias = [...new Set(menu.map(p=> p.categoria.nombre))];
 
   return (
     <div className="selector-productos">
@@ -20,18 +20,18 @@ function SelectorProductos({ menu, seleccionados, onCheckChange, onClose }) {
           
           {menu
             .filter(p => p.categoria.nombre === categoria) 
-            .map(producto => (
+            .map(prod => (
               
-              <div key={producto.id} className="selector-item">
+              <div key={prod.id} className="selector-item">
                 <input
                   type="checkbox"
-                  id={`check-${producto.id}`} 
-                  checked={seleccionados[producto.id] || false}
+                  id={`check-${prod.id}`} 
+                  checked={seleccionados[prod.id] || false}
 
-                  onChange={() => onCheckChange(producto.id)}
+                  onChange={() => onCheckChange(prod.id)}
                 />
-                <label htmlFor={`check-${producto.id}`}>
-                  {prod.nombre} <span>(${producto.precio})</span>
+                <label htmlFor={`check-${prod.id}`}>
+                  {prod.nombre} <span>(${prod.precio})</span>
                 </label>
               </div>
           ))}

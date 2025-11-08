@@ -11,7 +11,12 @@ exports.obtenerMesas = async (req, res) => {
     }catch(error){
         res.status(500).json({ message: 'Error al obtener mesas', error: error.message });
     }
+/*
+exports.obtenerMesas = (req, res) => {
+    res.json(administradorMesas.getMesas());
+    console.log("error en el obtener");
 };
+*/
 
 exports.obtenerMesaPorNumero = async (req, res) => {
     try {
@@ -67,4 +72,4 @@ exports.eliminarMesa = async (req, res) => {
     }catch(error){
             res.status(404).json({ message: `No fue posible eliminar la mesa ${nroMesa}` });
     }
-}
+}}

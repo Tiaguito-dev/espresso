@@ -6,6 +6,8 @@ import "./AgregarPedido.css";
 import Popup from "../../components/VentanaPopUp";
 import SelectorProductos from "./SelectorProductos";
 
+{/*import { fetchMozos } from "../../services/mozosService"; */}
+
 function AgregarPedido() {
   const [mesa, setMesa] = useState("");
   const [mozo, setMozo] = useState("");
@@ -48,19 +50,20 @@ function AgregarPedido() {
   }, []);
 
   const handleCheckChange = (id) => {
-    setSeleccionados((prev) => ({
-      ...prev,
-      [id]: !prev[id]
+    setSeleccionados((estadoAnterior) => ({
+      ...estadoAnterior,
+      [id]: !estadoAnterior[id]
     }));
   };
 
+  // el useMemo guarda en un array el menu completo la primera vez que el componente se renderiza, entonces en el caso de que la pagina sea recargada y el menu no se modificó, utiliza el array que ya tiene guardado (esto funciona mas que nada cuando el menu es muy grande y tiene muchos elementos para cargar [por el momento no es nuetsro caso, pero bueno en algun momento vamos a tener que cargar bastantes productos])
   const menuDisponible = useMemo(() => {
     return menuCompleto.filter(producto => producto.disponible);
   }, [menuCompleto]);
 
   const agregarItemsAlPedido = () => {
     const itemsParaAgregar = menuDisponible.filter(
-      (prod) => seleccionados[prod.id]
+      (producto) => seleccionados[producto.id]
     );
 
     if (itemsParaAgregar.length === 0) {
@@ -72,7 +75,7 @@ function AgregarPedido() {
       const productosActualizados = [...prevProductos];
 
       itemsParaAgregar.forEach((item) => {
-        const existente = productosActualizados.find((p) => p.id === item.id);
+        const existente = productosActualizados.find((producto) => producto.id === item.id);
 
         if (existente) {
           existente.cantidad += 1;
@@ -87,7 +90,7 @@ function AgregarPedido() {
   }
 
   const handleCerrarPopUp = () => {
-    setSeleccionados({}); // Limpia la selección por si acaso
+    setSeleccionados({});
     setPopUpAbierto(false);
   };
 

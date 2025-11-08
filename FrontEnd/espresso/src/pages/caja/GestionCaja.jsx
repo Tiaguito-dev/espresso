@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 import Filtro from "./../menu/Filtro";
 import DetallePedido from './DetallePedido';
+import CabeceraTabla from "../pedidos/CabeceraTabla";
 
 
 function GestionCaja() {
@@ -85,6 +86,12 @@ function GestionCaja() {
     const idPedido = pedidoDetalle ? pedidoDetalle.nroPedido : 'No se encuentra el pedido';
 
 
+//Definicion de las columnas de la tabla principal
+    const camposTabla = ["N° Pedido", "N° Mozo", "N° Mesa", "Precio Total", "Estado", "Acciones"];
+
+//Definicion de las columnas de la tabla de detalle
+    const camposDetalle = ["ID", "Producto", "Cantidad"];
+
     return (
         <div className="container">
         {/* Botón filtros */}
@@ -93,8 +100,8 @@ function GestionCaja() {
         </button>
         {mostrarFiltros && (
             <div className="filtros">
-            <input type="text" placeholder="Buscar por Mozo" />
-            <input type="text" placeholder="Buscar por Mesa" />
+                <input type="text" placeholder="Buscar por Mozo" />
+                <input type="text" placeholder="Buscar por Mesa" />
             </div>
         )}
 
@@ -109,29 +116,16 @@ function GestionCaja() {
         </div>
 
         <table>
-            <thead>
-                <tr>
-                    <th>N° Pedido</th>
-                    <th>N° Mozo</th>
-                    <th>N° Mesa</th>
-                    <th>Precio total</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+
+            <CabeceraTabla arrayCampos={camposTabla}></CabeceraTabla>
+
             <tbody>
                 {pedidosFiltrados.map((pedido) => (
                     <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido}>
                         <td>{pedido.nroPedido}</td>
                         <td>Martina</td>
                         <td>{pedido.mesa.nroMesa}</td>
-{
-/*
-                        <td>${pedido.total}</td>
-*/
-}
-                        <td>$1000</td>
-                        
+                        <td>{pedido.total}</td>     
                         <td>
                             <span className={`estado ${pedido.estadoPedido.toLowerCase()}`}>
                                 {pedido.estadoPedido}
@@ -163,14 +157,11 @@ function GestionCaja() {
                                     <>
                                         <strong>Numero de Mesa: {pedidoDetalle.mesa.nroMesa}</strong>
                                         <table>
-                                            <thead>
-                                                <th>id</th>
-                                                <th>Producto</th>
-                                                <th>Cantidad</th>
-                                            </thead>
+
+                                            <CabeceraTabla arrayCampos={camposDetalle}></CabeceraTabla>
+
                                             <tbody>
                                                 {pedidoDetalle.lineasPedido.map((producto) => (
-                                            
                                                         <tr>
                                                             <td>{producto.nombreProducto}</td>
                                                             <td>{producto.cantidad}</td>
@@ -179,11 +170,10 @@ function GestionCaja() {
                                                 ))}
                                             </tbody>
                                         </table>
-                                        <p><strong>Total: $1000</strong></p>
+                                        <p><strong>Total: {pedidoDetalle.total}</strong></p>
                                     </>
                                 )}
                             </DetallePedido>
-                            
                         </td>
                     </tr>
                 ))}

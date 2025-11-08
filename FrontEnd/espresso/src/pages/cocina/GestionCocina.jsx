@@ -3,8 +3,8 @@ import { getPedidos, updatePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 import Filtro from "./../menu/Filtro";
-import DetallePedido from '../caja/DetallePedido';
 import Acordeon from "./Acordeon";
+import CabeceraTabla from "../pedidos/CabeceraTabla";
 
 
 function GestionCocina() {
@@ -95,6 +95,12 @@ function GestionCocina() {
 
 //    const idAcordeon = pedidoAcordeon ? pedidoAcordeon.id : 'No se encuentra el pedido';
 
+//Defino los campos de la tabla principal
+    const camposTabla = ["N° Pedido", "N° Mozo", "N° Mesa", "", "Estado", "Acciones"];
+
+//Defino los campos del acordeon
+    const camposAcordeon = ["ID", "Producto", "Cantidad"];
+
 
     return (
         <div className="container">
@@ -120,39 +126,27 @@ function GestionCocina() {
         </div>
 
         <table>
-            <thead>
-                <tr>
-                    <th>N° Pedido</th>
-                    <th>N° Mozo</th>
-                    <th>N° Mesa</th>
-                    <th></th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+
+            <CabeceraTabla arrayCampos={camposTabla}></CabeceraTabla>
+
             <tbody>
                 {pedidosFiltrados.map((pedido) => (
                     <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido} className="fila-cocina">
 
                         <td>{pedido.nroPedido}</td>
-                        <td></td>
+                        <td>Martin</td>
                         <td>{pedido.mesa.nroMesa}</td>
 
                         <td> 
                             <Acordeon> 
                                 <table className="tabla-acordeon">
-                                    <thead>
-                                        <tr className="fila">
-                                            <th>ID</th>
-                                            <th>Producto</th>
-                                            <th>Cantidad</th>
-                                        </tr>
-                                    </thead>
+                                    
+                                    <CabeceraTabla arrayCampos={camposAcordeon}></CabeceraTabla>
+
                                     <tbody>
-                                        {/* Usar pedido.productos, NO pedidoAcordeon.productos */}
                                         {pedido.lineasPedido.map((producto, index) => (
                                             <tr key={index} className="fila">
-                                                <td>{index}</td>
+                                                <td>{producto.idProducto}</td>
                                                 <td>{producto.nombreProducto}</td>
                                                 <td>{producto.cantidad}</td>
                                             </tr>
