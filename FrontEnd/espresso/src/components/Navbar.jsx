@@ -13,7 +13,7 @@ export default function Navbar() {
   return (
     <nav>
       <div className="espresso">espresso</div>
-      <button className={`hamburguesa ${menuAbierto ? "open" : ""}`}
+      <button className={`hamburguesa ${menuAbierto ? "open" : ""}`} 
       onClick={() => setMenuAbierto(!menuAbierto)}
       aria-label="Abrir menú">
         <span></span>

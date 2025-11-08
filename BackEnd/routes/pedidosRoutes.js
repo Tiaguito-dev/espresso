@@ -12,7 +12,4 @@ router.post('/', pedidosController.crearPedido);
 // Ruta para actualizar un pedido
 router.put('/:id', pedidosController.actualizarPedido);
 
-// 🎯 RUTA NECESARIA para OBTENER UN pedido por su ID (e.g., /api/pedidos/1)
-router.get('/:id', pedidosController.obtenerPedidoPorId);
-
 module.exports = router;

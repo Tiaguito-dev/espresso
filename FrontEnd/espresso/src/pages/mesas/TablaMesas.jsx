@@ -1,23 +1,16 @@
-// src/pages/mesas/TablaMesas.jsx (SIN CAMBIOS FUNCIONALES CRÍTICOS)
+// src/pages/mesas/TablaMesas.jsx
 
 import React from 'react';
-import FilaMesa from './FilaMesa';
-import './Mesas.css'; 
+import FilaMesa from './FilaMesa'; // Importamos el componente de fila
 
-export default function TablaMesas({ 
-    mesas, 
-    arrayCampos, 
-    funcionCambiarEstado, 
-    funcionModificar, 
-    funcionLiberar,            
-    funcionPonerNoDisponible    
-}) {
+export default function TablaMesas({ mesas, arrayCampos, funcionCambiarEstado, funcionModificar, funcionEliminar }) {
     return (
-        <div className="table-container">
+        <div className="tabla-contenedor">
             {mesas.length === 0 ? (
-                <p className="no-data-message">No se encontraron mesas que coincidan con los filtros.</p>
+                <p className="mensaje-vacio">No hay mesas para mostrar.</p>
             ) : (
-                <table className="mesas-table">
+                <table className="tabla-mesas">
+                    {/* Encabezados */}
                     <thead>
                         <tr>
                             {arrayCampos.map((campo, index) => (
@@ -25,17 +18,17 @@ export default function TablaMesas({
                             ))}
                         </tr>
                     </thead>
+                    {/* Cuerpo de la tabla */}
                     <tbody>
                         {mesas.map((mesa) => (
-                               <FilaMesa
-                                    key={mesa.nroMesa} // Usa nroMesa como key
-                                    mesa={mesa}
-                                    funcionCambiarEstado={funcionCambiarEstado}
-                                    funcionModificar={funcionModificar}
-                                    funcionLiberar={funcionLiberar}
-                                    funcionPonerNoDisponible={funcionPonerNoDisponible}
-                                />
-                            ))}
+                            <FilaMesa
+                                key={mesa.id}
+                                mesa={mesa}
+                                funcionCambiarEstado={funcionCambiarEstado}
+                                funcionModificar={funcionModificar}
+                                funcionEliminar={funcionEliminar}
+                            />
+                        ))}
                     </tbody>
                 </table>
             )}
