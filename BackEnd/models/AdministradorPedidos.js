@@ -43,7 +43,10 @@ class AdministradorPedidos {
             pedidosObj.push(new Pedido({
                 nroPedido: pedido.nro_pedido,
                 fecha: pedido.fecha_registro, //.slice(0, 10),
-                total: pedido.monto,
+
+                // Manu aca habia un error, llamaba a pedido.monto que devolvia undefined
+                total: pedido.total,
+
                 estadoPedido: pedido.estado,
                 mesa: mesaObj,
                 lineasPedido: lineasObj
