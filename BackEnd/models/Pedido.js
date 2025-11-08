@@ -52,6 +52,7 @@ class Pedido {
         this.mesa = data.mesa;
         this.total = data.total;
         this.observacion = data.observacion || null;
+        this.mozo = data.mozo || null;
         this.lineasPedido = data.lineasPedido || []; // inicializar como un array vacío si no contiene las lineas de pedido NOTA: A DEFINIR UCANDO SE HACE ESTO
     }
     toJSON() {
@@ -59,6 +60,7 @@ class Pedido {
             nroPedido: this.nroPedido,
             fecha: this.fecha,
             total: this.total,
+            mozo: this.mozo,
             estadoPedido: this.estadoPedido,
             observacion: this.observacion,
             mesa: this.mesa,
