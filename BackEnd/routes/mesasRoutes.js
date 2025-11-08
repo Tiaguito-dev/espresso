@@ -1,4 +1,4 @@
-// routes/pedidosRoutes.js
+// routes/ mesasRoutes.js
 const express = require('express');
 const router = express.Router();
 const mesaController = require('../controllers/mesasController');
