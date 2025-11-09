@@ -2,6 +2,98 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
 
 
+/*================== INICIAR SESION CSS ==================*/
+
+.login-contenedor {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex: 1;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 100vh;
+    background-color: #FBF7EF;
+    gap: 2rem;
+    font-family: 'Nunito', sans-serif;
+}
+
+h3 {
+    margin-top: auto;
+    font-size: 30px;
+}
+
+.login-contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex-basis: 40%;
+    max-width: 450px;
+    align-items: center;
+}
+
+.imagen-espresso img {
+    width: auto;
+    height: 90px;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.2rem;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.grupos, .campos {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.formulario-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333333;
+}
+
+.formulario-control {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.boton-login {
+    padding: 0.85rem;
+    background-color: #9C6644;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.imagen-login {
+    flex-basis: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagen-login img {
+    width: 100%;
+    max-width: 400px;
+    height:auto;
+}
+
 /*================== HOME CSS ==================*/
 
 .home-contenedor {
@@ -21,6 +113,7 @@
     padding: 10px;
     font-size: 3rem;
     color: #7F5539;
+    margin-top: 70px;
 }
 
 .texto-home {
@@ -66,6 +159,7 @@
   background-color: #555555;
   border-radius: 14px;
   height: 420px;
+  margin-top: auto;
 }
 
 .carrusel-imagen {
@@ -189,5 +283,170 @@
 }
 
 
+/*================== NAVBAR CSS ==================*/
+.navbar {
+  background-color: #B5C99A;
+  padding: 12px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 75px;
+
+}
+
+.titulo-navbar {
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 3rem;
+  color: #fff;
+  font-weight: 200;
+  line-height: 1;
+  order: 2;
+  margin-left: 0px;
+}
+
+.menu-hamburguesa {
+  display: flex; 
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 25px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  top: 25px;
+  left: 20px;
+  z-index: 110;
+  order: 1;
+}
+
+.menu-hamburguesa span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: white; 
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar-links {
+  list-style: none;
+  margin: 0;
+  position: fixed;
+  top: 99px; 
+  left: 0;
+  height: calc(100vh - 75px);
+  width: 280px;
+  max-width: 80%;
+  z-index: 99;
+  background-color: #B5C99A; 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  gap: 15px;
+  padding: 30px 20px;
+  transform: translateX(-100%);
+  visibility: hidden;
+  overflow-y: auto;
+  /*align-items: flex-start;*/
+  transition: transform 0.3s ease-in-out,
+              visibility 0.3s ease-in-out;
+
+}
+
+.navbar-links.open {
+  transform: translateX(0);
+  visibility: visible;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.navbar-links li {
+  display: block; 
+  width: 100%;
+  text-align: left;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.navbar a:hover {
+  background-color: #97A97C;
+}
+
+.navbar a.active {
+  background-color: #d7ccc8;
+  background-color: #CFE1B9;
+};
+
+@media (min-width: 768px) {
+
+  .navbar {
+    justify-content: space-between;
+    gap: 0;
+    height: auto;
+  }
+  
+  .menu-hamburguesa {
+    display: none;
+  }
+
+  .titulo-navbar {
+    line-height: normal;
+    order: 0;
+    margin-left: 0;
+  }
+
+  .navbar-links {
+    position: static;
+    transform: none; 
+    visibility: visible;;
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0; 
+    flex-direction: row;
+    gap: 25px;
+    max-height: none;
+    overflow: visible;
+    height: auto;
+    width: auto;
+    top: auto;
+    left: auto;
+    z-index: auto;
+  }
+
+  .navbar-links li {
+    display: inline;
+    width: auto;
+    text-align: center;
+  }
+
+  .navbar a {
+    color: black; 
+    display: inline-block; 
+  }
+
+  .navbar a:hover {
+    background-color: #97A97C;
+  }
+  
+  .navbar a.active {
+    background-color: #CFE1B9;
+    color: white;
+  }
+}
 
 

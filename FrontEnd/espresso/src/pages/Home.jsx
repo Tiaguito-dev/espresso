@@ -1,5 +1,4 @@
 import BotonHome from "./BotonHome";
-{/*import "./Home.css";*/}
 import "../UnicoCSS.css"
 import Carrusel from "../components/CarruselImagen";
 import Footer from "../components/Footer";

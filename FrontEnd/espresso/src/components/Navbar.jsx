@@ -1,5 +1,5 @@
 import { isRouteErrorResponse, NavLink } from "react-router-dom";
-import './Navbar.css';
+import "../UnicoCSS.css";
 import { useState, useContext } from "react";
 import { UsuarioContext } from "../contexts/UsuarioContext";
 
@@ -14,9 +14,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav>
-      <div className="espresso">espresso</div>
-      <button className={`hamburguesa ${menuAbierto ? "open" : ""}`}
+    <nav className="navbar">
+      <div className="titulo-navbar">espresso</div>
+      <button className={`menu-hamburguesa ${menuAbierto ? "open" : ""}`}
         onClick={() => setMenuAbierto(!menuAbierto)}
         aria-label="Abrir menú">
         <span></span>
@@ -24,7 +24,7 @@ export default function Navbar() {
         <span></span>
       </button>
 
-      <ul className={`nav-links ${menuAbierto ? "open" : ""}`}>
+      <ul className={`navbar-links ${menuAbierto ? "open" : ""}`}>
         <li><NavLink to="/" end onClick={cerrarMenu}>Inicio</NavLink></li>
         <li><NavLink to="/menu/menuEspresso/" onClick={cerrarMenu}>Ver Menú Espresso</NavLink></li>
         {/* ESTO ES ÚNICAMENTE PARA EXPERIENCIA DE USUARIO */}
