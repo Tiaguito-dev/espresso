@@ -26,6 +26,12 @@ router.get('/',
     pedidosController.obtenerPedidos
 );
 
+router.get('/:id',
+    verificarToken,
+    verificarPerfil(['mozo', 'cocinero', 'admin']),
+    pedidosController.obtenerPedidoPorId
+);
+
 router.post('/:id/lineas',
     verificarToken,
     verificarPerfil(['mozo', 'admin']),
