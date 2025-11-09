@@ -7,7 +7,7 @@ class AdministradorPerfiles {
         if (!perfilBD) return null;
         return new Perfil({
             codigo: perfilBD.codigo,
-            nombre: perfilBD.nombre
+            nombre: perfilBD.nombre.trim()
             /* NO VAMOS A TARBAJAR CON LISTA DE PERMISOS AHORA*/
             // permisos: perfilBD.permisos // es un array de strings
         });
