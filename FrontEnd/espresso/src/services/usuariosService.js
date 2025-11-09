@@ -1,9 +1,3 @@
-import getAuthHeaders from "pedidosService.js";
-
-// HACER EL CAMBIO DE TODOS LOS HEADERS
-
-
-
 const API_BASE = "http://localhost:3001/api";
 
 /* --------------------------- LOGIN --------------------------- */
@@ -65,7 +59,7 @@ export const obtenerMiPerfil = async () => {
 export const obtenerUsuarios = async () => {
   const token = localStorage.getItem("token");
   const response = await fetch(`${API_BASE}/usuarios`, {
-    headers: getAuthHeaders(),
+    headers: { Authorization: `Bearer ${token}` },
   });
 
   if (!response.ok) {

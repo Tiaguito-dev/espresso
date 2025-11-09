@@ -14,6 +14,8 @@ import FormPedido from "./pages/pedidos/FormPedido.jsx";
 import Login from "./pages/login/Login.jsx";
 import UsuariosLista from "./pages/usuarios/UsuariosLista";
 import FormUsuario from "./pages/usuarios/FormUsuario";
+import GestionPagos from "./pages/pagos/GestionPagos.jsx";
+import AgregarPago from "./pages/pagos/AgregarPago.jsx";
 // Estos son componentes validadores
 import ValidarSesion from "./components/ValidarSesion.jsx"
 import ValidarPerfil from "./components/ValidarPerfil.jsx"
@@ -41,7 +43,7 @@ function App() {
             <Route element={<ValidarPerfil perfilesPermitidos={["mozo", "admin"]} />}>
               <Route path="/pedidos" element={<PedidosLista />} />
               <Route path="/pedidos/agregar" element={<AgregarPedido />} />
-              <Route path="/pedidos/editar/:id" element={<FormPedido />} />
+              <Route path="/pedidos/modificar/:id" element={<FormPedido />} />
             </Route>
 
             {/* Rutas para Cocinero */}
@@ -52,6 +54,8 @@ function App() {
             {/* Rutas para Cajero */}
             <Route element={<ValidarPerfil perfilesPermitidos={["cajero", "admin"]} />}>
               <Route path="/caja" element={<GestionCaja />} />
+              <Route path="/pagos" element={<GestionPagos />} />
+              <Route path="/pagos/agregar" element={<AgregarPago />} />
             </Route>
 
             {/* Rutas para Admin */}

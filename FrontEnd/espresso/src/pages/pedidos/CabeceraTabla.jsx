@@ -1,5 +1,4 @@
 function CabeceraTabla({ arrayCampos }) {
-
     
     return (
         <tr>

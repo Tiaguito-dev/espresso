@@ -10,9 +10,9 @@ function AgregarPedido() {
 
 	const [pedidoInfo, setPedidoInfo] = useState(
 		{
-			observacion: "",
-			mesa: "",
-			mozo: ""
+			nroPedido: "",
+			monto: "",
+			metodo: ""
 		}
 	);
 	const [productosDisponibles, setProductosDisponibles] = useState([]);
