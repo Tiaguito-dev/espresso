@@ -1,5 +1,3 @@
-// src/pages/pedidos/FilaPedido.jsx
-
 import React from "react";
 
 // No necesitamos BotonAccion si estamos creando los botones directamente aquí
@@ -38,7 +36,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
             {/* Celda del Estado con Color */}
             <td><span className={claseEstado}>{pedido.estadoPedido}</span></td>
             
-            <td>$10000</td>
+            <td>${pedido.total}</td>
             
             {/* Columna de Acciones */}
             <td>
@@ -61,8 +59,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
                         onClick={() => funcionModificar(pedido.nroPedido)}
                         className="btn-fila-accion btn-modificar-fila" 
                         disabled={isFinishedOrCanceled}
-                        style={{ opacity: isFinishedOrCanceled ? 0.6 : 1, 
-                                 cursor: isFinishedOrCanceled ? 'not-allowed' : 'pointer' }}
+                        style={{ opacity: isFinishedOrCanceled ? 0.6 : 1}}
                     >
                         Modificar
                     </button>

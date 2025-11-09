@@ -1,13 +1,9 @@
-// src/pages/pedidos/PedidosLista.jsx
-
 import React, { useState, useEffect } from "react";
-// Asegúrate de que updatePedido esté correctamente exportado aquí
 import { getPedidos, updatePedido, deletePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
 import "./Pedidos.css";
-
 import Filtro from "../menu/Filtro";
-import TablaPedidos from "../../components/TablaPedidos"; // Importamos el componente contenedor de la tabla
+import TablaPedidos from "../../components/TablaPedidos";
 
 export default function PedidosLista() {
     const [pedidos, setPedidos] = useState([]);
@@ -88,13 +84,13 @@ export default function PedidosLista() {
     const pedidosFiltrados = (() => {
         switch (estadoFiltro) {
             case "pendiente":
-                return pedidos.filter((p) => p.estadoPedido === "Pendiente");
+                return pedidos.filter((pedido) => pedido.estadoPedido === "Pendiente");
             case "listo":
-                return pedidos.filter((p) => p.estadoPedido === "Listo");
+                return pedidos.filter((pedido) => pedido.estadoPedido === "Listo");
             case "finalizado":
-                return pedidos.filter((p) => p.estadoPedido === "Finalizado");
+                return pedidos.filter((pedido) => pedido.estadoPedido === "Finalizado");
             case "cancelado":
-                return pedidos.filter((p) => p.estadoPedido === "Cancelado");
+                return pedidos.filter((pedido) => pedido.estadoPedido === "Cancelado");
             default:
                 return pedidos;
         }
@@ -106,7 +102,6 @@ export default function PedidosLista() {
 
     return (
         <div className="container">
-            {/* Botón de filtros */}
             <button className="toggle-filtros" onClick={toggleFiltros}>
                 Filtros
             </button>
@@ -118,10 +113,8 @@ export default function PedidosLista() {
                 </div>
             )}
 
-            {/* Estados + botón agregar */}
             <div className="filtros-estado">
                 <div className="estados">
-
                     <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
                     <Filtro estadoActual={estadoFiltro} estadoValor="pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
                     <Filtro estadoActual={estadoFiltro} estadoValor="listo" nombreFiltro="Listo" onClick={filtrarEstado} />
@@ -130,14 +123,12 @@ export default function PedidosLista() {
                 </div>
                 <button
                     className="btn-agregar"
-                    // Ruta para crear un nuevo pedido (normalmente sin ID)
                     onClick={() => navigate("/pedidos/agregar")}
                 >
                     + Agregar Pedido
                 </button>
             </div>
 
-            {/* Uso del componente TablaPedidos, que ahora maneja el renderizado */}
             <TablaPedidos
                 pedidos={pedidosFiltrados}
                 arrayCampos={arrayCampos} // Pasamos los encabezados

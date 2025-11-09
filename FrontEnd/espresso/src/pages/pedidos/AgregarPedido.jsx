@@ -1,294 +1,322 @@
-// src/pages/pedidos/AgregarPedido.jsx
 import React, { use, useEffect, useMemo, useState } from "react";
 import { createPedido } from "../../services/pedidosService"; 
 import { getProductos } from "../../services/productosService";
+import { getMesas } from "../../services/mesasService";
 import "./AgregarPedido.css";
-import Popup from "../../components/VentanaPopUp";
-import SelectorProductos from "./SelectorProductos";
 
-{/*import { fetchMozos } from "../../services/mozosService"; */}
+
 
 function AgregarPedido() {
-  const [mesa, setMesa] = useState("");
-  const [mozo, setMozo] = useState("");
-  const [productos, setProductos] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [modalCantidades, setModalCantidades] = useState({});
-  
-  const [popUpAbierto, setPopUpAbierto] = useState(false);
-  const [menuCompleto, setMenuCompleto] = useState([]);
-  const [seleccionados, setSeleccionados] = useState({});
 
-  /*
-    const [productos, setProductos] = useState([]);
-    es lo mismo que hacer esto:
+	const [pedidoInfo, setPedidoInfo] = useState(
+		{
+			mesa: "",
+			mozo: "",
+			observacion: ""
+		}
+	);
+	const [productosDisponibles, setProductosDisponibles] = useState([]);
+	const [mesasDisponibles, setMesasDisponibles] = useState([]);
+	const [productosPedido, setProductosPedido] = useState([]);
+	const [productoSeleccionadoId, setProductoSeleccionadoId] = useState("");
+	const [cargando, setCargando] = useState(false);
+	const [error, setError] = useState(false);
+	const [mensajeExito, setMensajeExito] = useState(null);
 
-    let productos = [];
-    function setProductos(nuevosProductos) {
-      productos = nuevosProductos;
-      // React se encarga de re-renderizar el componente
-    }
-  */
 
-  // Definición del "menú" (idealmente esto también vendría del back-end)
-  
-  {/*const menu = {
-    Bebidas: [{ id: "cafe", nombre: "Café", precio: 200 }],
-    Comida: [{ id: "medialuna", nombre: "Medialuna", precio: 300 }],
-  };*/}
+	const cargarMesas = async () => {
+		try {
+			const dataMesas = await getMesas();
+			const mesasLibres = dataMesas.filter(
+				(mesa) => mesa.estadoMesa == "disponible"
+			);
+			setMesasDisponibles(mesasLibres);
 
-  useEffect(() => {
-    const fetchMenu = async() => {
-      try {
-        const data = await getProductos();
-        setMenuCompleto(data);
-      } catch (error) {
-        console.error("Error al obtener el menu:", error);
-      }
-    };
-    fetchMenu();
-  }, []);
+			if (mesasLibres.length == 0) {
+				setPedidoInfo(
+					prev => ({ ...prev, mesa: ""})
+				);
+				setError(
+					prevError => (prevError ? prevError + " | No hay mesas disponibles." : "No hay mesas disponibles.")
+				);
+			}
+		} catch (error) {
+			setError(
+				prevError => (prevError ? prevError + " | Error al cargar mesas." : "Error al cargar mesas.")
+			);
+		}
+	}
 
-  const handleCheckChange = (id) => {
-    setSeleccionados((estadoAnterior) => ({
-      ...estadoAnterior,
-      [id]: !estadoAnterior[id]
-    }));
-  };
+	const cargarProductos = async () => {
+		try {
+			const dataProductos = await getProductos();
+			setProductosDisponibles(dataProductos);
+			if (dataProductos.length > 0) {
+				setProductoSeleccionadoId(dataProductos[0].id);
+			}
+		} catch (error) {
+			setError(prevError => (prevError ? prevError + " | Error al cargar productos." : "Error al cargar productos."));
+		}
+	}
 
-  // el useMemo guarda en un array el menu completo la primera vez que el componente se renderiza, entonces en el caso de que la pagina sea recargada y el menu no se modificó, utiliza el array que ya tiene guardado (esto funciona mas que nada cuando el menu es muy grande y tiene muchos elementos para cargar [por el momento no es nuetsro caso, pero bueno en algun momento vamos a tener que cargar bastantes productos])
-  const menuDisponible = useMemo(() => {
-    return menuCompleto.filter(producto => producto.disponible);
-  }, [menuCompleto]);
+	useEffect(() => {
+		const cargarDatosIniciales = async() => {
+			setCargando(true);
+			setError(null);
+			await Promise.all([
+				cargarProductos(),
+				cargarMesas()
+			]);
+			setCargando(false);
+		}
+		cargarDatosIniciales();
+	}, []);
 
-  const agregarItemsAlPedido = () => {
-    const itemsParaAgregar = menuDisponible.filter(
-      (producto) => seleccionados[producto.id]
-    );
 
-    if (itemsParaAgregar.length === 0) {
-      alert("No seleccionaste ningun producto");
-      return;
-    }
+//funcion que recupera todos los cambios en el formulario
+	const actualizarVistaPedido = (evento) => {
+		//guarda el nombre del campo y valor que envio el evento
+		const { name, value } = evento.target;
+		setPedidoInfo(
+			//setea en el state del pedido el campo con su valor
+			prevInfo => ({ ...prevInfo, [name]: value})
+		);
+	}
 
-    setProductos((prevProductos) => {
-      const productosActualizados = [...prevProductos];
 
-      itemsParaAgregar.forEach((item) => {
-        const existente = productosActualizados.find((producto) => producto.id === item.id);
+	const actualizarLineasProducto = () => {
+		if (!productoSeleccionadoId) return;
+		const existeProducto = productosPedido.find(producto => producto.id == productoSeleccionadoId);
+		
+		if (existeProducto) {
+			alert("El producto ya esta en el pedido. Debe modificar la cantidad.");
+			return
+		}
+		const productoParaAgregar = productosDisponibles.find(producto => producto.id == productoSeleccionadoId);
+		if (productoParaAgregar) {
+			setProductosPedido(prevProductos => [...prevProductos, { ...productoParaAgregar, cantidad: 1}]);
+		}
+	}
 
-        if (existente) {
-          existente.cantidad += 1;
-        } else {
-          productosActualizados.push({...item, cantidad: 1});
-        }
-      });
-      return productosActualizados;
-    });
-    setSeleccionados({});
-    setPopUpAbierto(false);
-  }
+	const actualizarCantidadProducto = (idProducto, nuevaCantidad) => {
+		const cantidad = Math.max(1, parseInt(nuevaCantidad, 10) || 1);
+		setProductosPedido(prevProductos =>
+			prevProductos.map(producto => (producto.id === idProducto ? { ...producto, cantidad: cantidad } : producto))
+		);
+	}
 
-  const handleCerrarPopUp = () => {
-    setSeleccionados({});
-    setPopUpAbierto(false);
-  };
-
-  const handleModalQtyChange = (id, value) => {
-    setModalCantidades((prev) => ({ ...prev, [id]: Math.max(1, parseInt(value || 1)) }));
-  };
-
-  const agregarProductoDesdeModal = (prod) => {
-    const qty = modalCantidades[prod.id] ? Number(modalCantidades[prod.id]) : 1;
-    const existente = productos.find((p) => p.id === prod.id);
-    if (existente) {
-      setProductos((prev) =>
-        prev.map((p) => (p.id === prod.id ? { ...p, cantidad: p.cantidad + qty } : p))
-      );
-    } else {
-      setProductos((prev) => [...prev, { ...prod, cantidad: qty }]);
-    }
-  };
-
-  const eliminarProducto = (id) => {
-    setProductos((prev) => prev.filter((p) => p.id !== id));
-  };
-
-  const cambiarCantidad = (id, nuevaCantidad) => {
-    const qty = parseInt(nuevaCantidad, 10);
-    if (!qty || qty <= 0) {
-      eliminarProducto(id);
-      return;
-    }
-    setProductos((prev) => prev.map((p) => (p.id === id ? { ...p, cantidad: qty } : p)));
-  };
-
-  const calcularTotal = () =>
-    productos.reduce((acc, p) => acc + p.precio * Number(p.cantidad), 0);
-
-  const guardarPedido = async () => {
-    if (!mesa || !mozo || productos.length === 0) {
-      alert("Completá todos los campos.");
-      return;
-    }
-
-    const pedido = {
-      mesa,
-      mozo,
-      productos,
-      total: calcularTotal(),
-      estado: "Pendiente",
-      historial: "Pendiente",
+	const eliminarProductoLista = (idProducto) => {
+        setProductosPedido(prevProductos => prevProductos.filter(producto => producto.id !== idProducto));
     };
 
-    try {
-      await createPedido(pedido);
-      alert("Pedido guardado con éxito!");
-      // Limpiar formulario después de guardar
-      setMesa("");
-      setMozo("");
-      setProductos([]);
-      setModalCantidades({});
-      setShowModal(false);
-    } catch (error) {
-      console.error("Error al guardar el pedido:", error);
-      alert("Hubo un error al guardar el pedido.");
-    }
-  };
+	const totalPedido = useMemo(() => {
+		return productosPedido.reduce((total, producto) => {
+			const precio = parseFloat(producto.precio) || 0;
+			const cantidad = parseInt(producto.cantidad, 10) || 0;
+			return total + (precio * cantidad);
+		}, 0);
+	}, [productosPedido]);
 
-  return (
-    <div className="agregar-pedido">
-      <h2>Agregar Pedido</h2>
+	const enviarFormulario = async (evento) => {
+		evento.preventDefault();
+		setError(null);
+		setMensajeExito(null);
 
-      <div className="form-row">
-        <div className="form-field">
-          <label>Mesa</label>
-          <input
-            type="text"
-            value={mesa}
-            onChange={(e) => setMesa(e.target.value)}
-            placeholder="N° de mesa"
-          />
-        </div>
+		if (!pedidoInfo.mesa) {
+			setError("Por favor, seleccione una mesa disponible.");
+			return;
+		}
+		if (!pedidoInfo.mozo) {
+			setError("Por favor, complete el numero de mozo.");
+			return;
+		}
+		if (!productosPedido.lenght == 0) {
+			setError("El pedido esta vacio. Agregue al menos un producto.");
+			return;
+		}
 
-        <div className="form-field">
-          <label>Mozo</label>
-          <input
-            type="text"
-            value={mozo}
-            onChange={(e) => setMozo(e.target.value)}
-            placeholder="Nombre del mozo"
-          />
-        </div>
-      </div>
+		const pedidoData = {
+			...pedidoInfo,
+			mesa: parseInt(pedidoInfo.mesa, 10),
+			observacion: pedidoInfo.observacion,
+            lineas: productosPedido.map(producto => ({
+                productoId: producto.id,
+                cantidad: producto.cantidad,
+            }))
+		}
 
-      <div className="productos-section">
-        <button className="btn-agregar" onClick={() => setPopUpAbierto(true)}>
-          + Agregar productos
-        </button>
-        <h3>Productos seleccionados</h3>
-        {productos.length === 0 ? (
-          <p className="empty">No hay productos agregados.</p>
-        ) : (
-          <ul className="lista-productosPedido">
-            {productos.map((p) => (
-              <li key={p.id} className="producto-line">
-                <div className="producto-info">
-                  <strong>{p.nombre}</strong> (${p.precio})
+		try {
+			setCargando(true);
+			const respuesta = await createPedido(pedidoData);
+			setMensajeExito("Pedido creado con exito.");
+			
+			setPedidoInfo({
+				mesa: "",
+				mozo: "",
+				observacion: ""
+			});
+			setProductosPedido([]);
+
+			if (productosDisponibles.length > 0){
+				setProductoSeleccionadoId(productosDisponibles[0].id);
+			}
+
+			await cargarMesas();
+		} catch (error) {
+			setError("Error al enviar el pedido: " + error.message);
+		} finally {
+			setCargando(false);
+		}
+	} 
+
+
+	return (
+		<div className="agregar-pedido-container">
+            <h1>Agregar Pedido</h1>
+
+            {/* Mensajes de estado */}
+            {cargando && <p>Cargando...</p>}
+            {error && <p className="error-message">{error}</p>}
+            {mensajeExito && <p className="success-message">{mensajeExito}</p>}
+
+            <form onSubmit={enviarFormulario} className="pedido-form">
+                
+                <div className="form-group">
+                    <label htmlFor="mesa">Numero de Mesa</label>
+                    <select 
+                        name="mesa" 
+                        id="mesa"
+                        value={pedidoInfo.mesa} // <-- Enlazado al estado (inicialmente "")
+                        onChange={actualizarVistaPedido}
+                        required // <-- Evita envío si el valor es ""
+                        disabled={cargando || mesasDisponibles.length === 0}
+                    >
+                        {/* 3. PLACEHOLDER (como solicitaste) */}
+                        <option value="">-- Seleccione una mesa --</option>
+
+                        {/* Si no hay mesas, el map no se ejecuta.
+                          El 'disabled' y el 'required' manejan el resto.
+                        */}
+                        {mesasDisponibles.map(mesa => (
+                            <option key={mesa.nroMesa} value={mesa.nroMesa}>
+                                Mesa {mesa.nroMesa}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                
+                <div className="form-group">
+                    <label htmlFor="mozo">Numero de Mozo</label>
+                    <input 
+                        type="text" 
+                        name="mozo" 
+                        id="mozo"
+                        value={pedidoInfo.mozo}
+                        onChange={actualizarVistaPedido}
+                        required
+                        disabled={cargando}
+                    />
+                </div>
+                
+                <div className="form-group">
+                    <label htmlFor="observacion">Observaciones del Pedido</label>
+                    <input 
+                        type="text" 
+                        name="observacion" 
+                        id="observacion"
+                        value={pedidoInfo.observacion}
+                        onChange={actualizarVistaPedido}
+                        disabled={cargando}
+                    />
                 </div>
 
-                <div className="producto-qty">
-                  <input
-                    type="number"
-                    min="1"
-                    value={p.cantidad}
-                    onChange={(e) => cambiarCantidad(p.id, e.target.value)}
-                  />
-                  <span className="subtotal">= ${p.precio * p.cantidad}</span>
+                <hr />
+
+                {/* --- Sección Agregar Productos --- */}
+                <div className="form-group-inline">
+                    <select 
+                        value={productoSeleccionadoId}
+                        onChange={(evento) => setProductoSeleccionadoId(evento.target.value)}
+                        disabled={cargando || productosDisponibles.length === 0}
+                    >
+                        {productosDisponibles.length === 0 && <option>Cargando...</option>}
+                        {productosDisponibles.map(producto => (
+                            <option key={producto.id} value={producto.id}>
+                                {producto.nombre} - ${producto.precio}
+                            </option>
+                        ))}
+                    </select>
+                    <input 
+                        type="button" 
+                        value="Agregar Producto" 
+                        onClick={actualizarLineasProducto} 
+                        disabled={cargando}
+                    />
                 </div>
 
-                <button className="btn-eliminar-item" onClick={() => eliminarProducto(p.id)}>
-                  Eliminar
+                {/* --- Tabla de Productos Agregados --- */}
+                <div className="tabla-productos">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unit.</th>
+                                <th>Subtotal</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {productosPedido.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5">No hay productos en el pedido.</td>
+                                </tr>
+                            ) : (
+                                productosPedido.map(producto => (
+                                    <tr key={producto.id}>
+                                        <td>{producto.nombre}</td>
+                                        <td>
+                                            <input 
+                                                type="number" 
+                                                value={producto.cantidad}
+                                                onChange={(evento) => actualizarCantidadProducto(producto.id, evento.target.value)}
+                                                min="1"
+                                                className="input-cantidad"
+                                                disabled={cargando}
+                                            />
+                                        </td>
+                                        <td>${parseFloat(producto.precio).toFixed(2)}</td>
+                                        <td>${(parseFloat(producto.precio) * parseInt(producto.cantidad, 10)).toFixed(2)}</td>
+                                        <td>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => eliminarProductoLista(producto.id)}
+                                                className="btn-quitar"
+                                                disabled={cargando}
+                                            >
+                                                Quitar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* --- Total y Envío --- */}
+                <div className="total-section">
+                    <p>
+                        <strong>Total: ${totalPedido.toFixed(2)}</strong>
+                    </p>
+                </div>
+
+                <button type="submit" disabled={cargando || productosPedido.length === 0}>
+                    {cargando ? "Procesando..." : "Agregar Pedido"}
                 </button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <div className="total-row">
-          <strong>Total:</strong> <span>${calcularTotal()}</span>
+            </form>
         </div>
-
-        <div className="actions">
-          <button className="btn-guardar" onClick={guardarPedido}>
-            Guardar Pedido
-          </button>
-        </div>
-
-        <Popup isOpen={popUpAbierto} onClose={handleCerrarPopUp}>
-        <SelectorProductos
-          menu={menuDisponible}
-          seleccionados={seleccionados}
-          onCheckChange={handleCheckChange}
-          onClose={handleCerrarPopUp}
-        />
-        
-        <div className="popup-actions">
-          <button className="btn-cerrar" onClick={handleCerrarPopUp}>
-            Cancelar
-          </button>
-          <button className="btn-agregar" onClick={agregarItemsAlPedido}>
-            Agregar Seleccionados
-          </button>
-        </div>
-      </Popup>
-      </div>
-      {/* Modal del menú 
-      {showModal && (
-        <div className="modal-backdrop" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Menú</h3>
-
-            {Object.keys(menu).map((cat) => (
-              <div key={cat} className="categoria">
-                <h4>{cat}</h4>
-                {menu[cat].map((prod) => (
-                  <div key={prod.id} className="menu-item">
-                    <div className="menu-item-info">
-                      <span className="nombre">{prod.nombre}</span>
-                      <span className="precio">${prod.precio}</span>
-                    </div>
-
-                    <div className="menu-item-actions">
-                      <input
-                        type="number"
-                        min="1"
-                        value={modalCantidades[prod.id] || 1}
-                        onChange={(e) => handleModalQtyChange(prod.id, e.target.value)}
-                        className="qty-input"
-                      />
-                      <button
-                        className="btn-agregar"
-                        onClick={() => agregarProductoDesdeModal(prod)}
-                      >
-                        Agregar
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-
-            <div className="modal-close">
-              <button className="btn-cerrar" onClick={() => setShowModal(false)}>
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
-    </div>
-  );
+	)
 }
 
 export default AgregarPedido;

@@ -3,11 +3,13 @@ const Gateway = require('../DB/Gateway');
 // === SECCIÓN DE QUERYS ===
 const selectPedidosFecha = 'SELECT * FROM pedido WHERE date(fecha_registro)= date($1)';
 const selectPedidoPorNro = 'SELECT * FROM pedido WHERE nro_pedido = $1';
-const insertPedido = 'INSERT INTO pedido (nro_pedido, observacion, total, id_mozo, id_mesa) VALUES ($1, $2, $3, (SELECT id_usuario FROM usuario WHERE cod_usuario = $4), (SELECT id_mesa FROM mesa WHERE nro_mesa = $5))';
+const insertPedido = 'INSERT INTO pedido (nro_pedido, observacion, total, id_mozo, id_mesa) VALUES ($1, $2, $3, (SELECT id_usuario FROM usuario WHERE codigo = $4), (SELECT id_mesa FROM mesa WHERE nro_mesa = $5))';
 const selectUltimoNroPedido = 'SELECT MAX(nro_pedido) FROM pedido';
-const updateEstadoPedidoPorId = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
-const insertLineaPedido = 'INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, monto, nombre_producto) VALUES ((SELECT id_pedido FROM pedido WHERE nro_pedido = $1),(SELECT id_producto FROM producto WHERE id = $2), $3, $4, $5);';
-const selectLineasPorNroPedido = ("SELECT linea.id_linea_pedido, linea.cantidad, linea.subtotal, producto.nombre, linea.id_pedido, producto.id,linea.id_producto FROM pedido JOIN linea_pedido AS linea ON pedido.id_pedido = linea.id_pedido JOIN producto ON linea.id_producto = producto.id_producto WHERE pedido.nro_pedido = $1;");
+const updateEstadoPedidoPorNro = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
+const insertLineaPedido = `INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, subtotal) VALUES ((SELECT id_pedido FROM pedido WHERE nro_pedido = $1), (SELECT id FROM producto WHERE id = $2), $3, $4);`;
+
+const selectLineasPorNroPedido = ("SELECT linea.id_linea_pedido, linea.cantidad, linea.subtotal, producto.nombre, linea.id_pedido, producto.id, linea.id_producto FROM pedido JOIN linea_pedido AS linea ON pedido.id_pedido = linea.id_pedido JOIN producto ON linea.id_producto = producto.id WHERE pedido.nro_pedido = $1;");
+
 
 // TODO: FALTA HACER ESTO
 const selectPedidoPorMozo = 'SELECT * FROM pedido WHERE nombre = $1';
@@ -43,24 +45,24 @@ exports.obtenerPedidoPorNro = async (pedido) => {
         const pedidos = await Gateway.ejecutarQuery({ text: selectPedidoPorNro, values: [pedido] });
         return pedidos[0] || null; // Retornar el primer pedido encontrado
     } catch (error) {
-        throw new Error(`Error al obtener pedido ${nroPedido} desde la base de datos: ${error.message}`);
+        throw new Error(`Error al obtener pedido ${pedido} desde la base de datos: ${error.message}`);
     }
 };
 
 // Guardo un pedido en la bd, le paso el nro de pedido ya actualizado, la fecha Y HORA de hoy , y el idMesa
 exports.crearPedido = async (data) => {
 
-    // FIXME: acá le cambién idMozo por nroMozo, pero en la bd está como cod_usuario
-    // PARA MANU: si queres que deje idMozo porque se rompe no hay problema, eso ya depende cómo queres pasarlo vos. Pero me tenes que avisar por el deconstructor
     const { pedido, observacion, monto, mozo, mesa } = data;
 
     try {
+        console.log('INSERT Pedido ->', { pedido, observacion, monto, mozo, mesa });
         await Gateway.ejecutarQuery({ text: insertPedido, values: [pedido, observacion, monto, mozo, mesa] });
         return {
             success: true,
             message: `El pedido ${pedido} se creó correctamente.`
         };
     } catch (error) {
+        console.error('Error SQL crearPedido:', error);
         throw new Error('Error al crear un pedido desde la base de datos: ' + error.message);
     }
 
@@ -74,7 +76,7 @@ exports.modificarEstadoPedido = async (pedido, estado) => {
         await Gateway.ejecutarQuery({ text: updateEstadoPedidoPorNro, values: [pedido, estado] });
         return {
             success: true,
-            message: `El estado del pedido ${pedido} se actualizó correctamente a "${nuevoEstado}".`
+            message: `El estado del pedido ${pedido} se actualizó correctamente a "${estado}".`
         };
     } catch (error) {
         throw new Error(`Error al modificar el estado del pedido ${pedido} desde la base de datos: ${error.message}`);
@@ -115,12 +117,12 @@ exports.crearLineaPedido = async (data) => {
     // const { idPedido, idProducto, cantidad, monto, nombreProducto } = datosDeLineaPedido;
     // PARA MANU: no le pases más el OID como parámetro, a partir de ahora el nroPedido y el id (de producto)
     // PARA MANU: es más, si queres ni siquiera le tenes que pasar el monto y puedo hacer que lo calcule solo
-    const { pedido, codigo, cantidad, monto, nombre } = data; // FIXME: acá debería ir codProducto en vez de id así nos dejamos de hinchar
+    const { pedido, codigo, cantidad, monto } = data; // FIXME: acá debería ir codProducto en vez de id así nos dejamos de hinchar
 
     try {
         await Gateway.ejecutarQuery({
             text: insertLineaPedido,
-            values: [pedido, codigo, cantidad, monto, nombre]
+            values: [pedido, codigo, cantidad, monto]
         });
 
         return {
@@ -128,6 +130,7 @@ exports.crearLineaPedido = async (data) => {
             message: `La línea del pedido ${pedido} se creó correctamente.`
         };
     } catch (error) {
+        console.error('DEBUG crearLineaPedido:', error);
         throw new Error('Error al crear una línea de pedido desde la base de datos: ' + error.message);
     }
 };

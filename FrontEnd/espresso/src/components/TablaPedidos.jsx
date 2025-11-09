@@ -1,5 +1,3 @@
-// src/components/TablaPedidos.jsx (o donde lo tengas)
-
 import CabeceraTablaPedidos from "./CabeceraTablaPedidos"; 
 import FilaPedido from "./FilaPedido";
 
