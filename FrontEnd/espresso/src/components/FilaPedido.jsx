@@ -25,7 +25,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
         <tr>
             <td>{pedido.nroPedido}</td>
             <td>{pedido.mesa.nroMesa}</td>
-            <td>4</td>
+            <td>{pedido.mozo}</td>
     
             <td>{pedido.fecha ? pedido.fecha : '-'}</td> 
             

@@ -86,7 +86,7 @@ function GestionCaja() {
 
 
 //Definicion de las columnas de la tabla principal
-    const camposTabla = ["N° Pedido", "N° Mozo", "N° Mesa", "Precio Total", "Estado", "Acciones"];
+    const camposTabla = ["N° Pedido", "Mozo", "N° Mesa", "Precio Total", "Estado", "Acciones"];
 
 //Definicion de las columnas de la tabla de detalle
     const camposDetalle = ["ID", "Producto", "Cantidad"];
@@ -122,7 +122,7 @@ function GestionCaja() {
                 {pedidosFiltrados.map((pedido) => (
                     <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido}>
                         <td>{pedido.nroPedido}</td>
-                        <td>Martina</td>
+                        <td>{pedido.mozo}</td>
                         <td>{pedido.mesa.nroMesa}</td>
                         <td>{pedido.total}</td>     
                         <td>

@@ -77,7 +77,7 @@ function GestionCocina() {
 //    const idAcordeon = pedidoAcordeon ? pedidoAcordeon.id : 'No se encuentra el pedido';
 
 //Defino los campos de la tabla principal
-    const camposTabla = ["N° Pedido", "N° Mozo", "N° Mesa", "", "Estado", "Acciones"];
+    const camposTabla = ["N° Pedido", "Mozo", "N° Mesa", "", "Estado", "Acciones"];
 
 //Defino los campos del acordeon
     const camposAcordeon = ["ID", "Producto", "Cantidad"];
@@ -135,7 +135,7 @@ function GestionCocina() {
                     <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido} className="fila-cocina">
 
                         <td>{pedido.nroPedido}</td>
-                        <td>Martin</td>
+                        <td>{pedido.mozo}</td>
                         <td>{pedido.mesa.nroMesa}</td>
 
                         <td> 
