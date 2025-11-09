@@ -54,10 +54,9 @@ function GestionCaja() {
 
 //Funciones para cambios de estados fijos
 
-    const cambiarEstadoListo = async (id) => {
-        const nuevoEstado = "Listo";
+    const cambiarEstadoFinalizado = async (id) => {
+        const nuevoEstado = "Finalizado";
         if (!nuevoEstado) return;
-
         try {
             await updatePedido(id, { estado: nuevoEstado });
             fetchPedidos(); // Vuelve a cargar los pedidos para ver el cambio

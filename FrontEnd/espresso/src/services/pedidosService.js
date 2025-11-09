@@ -2,7 +2,7 @@
 const API_URL = 'http://localhost:3001/api/pedidos';
 
 // Esta funcion la agrego porque el header se repite en cada petición
-const getAuthHeaders = () => {
+export const getAuthHeaders = () => {
   const header = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${localStorage.getItem('token')}`

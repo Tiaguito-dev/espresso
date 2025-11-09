@@ -1,6 +1,15 @@
 // src/services/productosService.js
 const API_URL = 'http://localhost:3001/api/productos';
 
+// Esta funcion la agrego porque el header se repite en cada petición
+const getAuthHeaders = () => {
+  const header = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  }
+  return header
+};
+
 export const getProductos = async () => {
     console.log('Obteniendo todos los productos'); // Flag
     const response = await fetch(API_URL);
@@ -22,7 +31,7 @@ export const buscarPorId = async (id) => {
 export const createProducto = async (productoData) => {
     const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(productoData),
     });
     if (!response.ok) {
@@ -35,7 +44,7 @@ export const updateProducto = async (id, productoData) => {
     console.log('Actualizando el producto con ID:', id, 'Data:', productoData); // Línea de depuración
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(productoData),
     });
     if (!response.ok) {
@@ -48,6 +57,7 @@ export const deleteProducto = async (id) => {
     console.log('Eliminando producto con ID:', id);
     const response = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
+        headers: getAuthHeaders()
     });
     if (!response.ok) {
 
@@ -79,9 +89,7 @@ export const updateEstadoProducto =  async (id, estadoData) => {
     try {
         const response = await fetch(`${API_URL}/${id}/estado`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(estadoData),
         });
 
