@@ -1,70 +1,131 @@
+//http://localhost:3001/api/productos/categorias
+//http://localhost:3001/api/productos
+
+
 const Menu = require('../models/Menu');
-const Producto = require('../models/Producto');
-const productosIniciales = require('../DB/productos.json');
+//const Producto = require('../models/Producto');
+//const productosIniciales = require('../DB/productos.json');
 const { json } = require('express');
 
 const menu = new Menu();
-menu.cargarProductos(productosIniciales);
 
-exports.obtenerProductos = (req, res) => {
-    res.json(menu.getProductos());
-};
-
-exports.obtenerProductoPorId = (req, res) => {
-    // Tiene que devolver un solo producto con ese ID en particular
-    const { id } = req.params;
-    const producto = menu.buscarProductoPorId(id);
-    if (!producto) {
-        return res.status(404).json({ message: 'Producto no encontrado' });
-    }
-    res.json(producto);
-    console.log('./controllers/menuController.js \n devolviendo el producto con ID:', id);
-    console.log(producto);
-};
-
-exports.crearProducto = (req, res) => {
-    const { nombre, descripcion, precio, disponible } = req.body;
-
-    const datosDeProducto = {
-        id: Date.now.toString(), // Id temporal (lo mismo q antes)
-        nombre: nombre,
-        descripcion: descripcion,
-        precio: precio,
-        disponible: disponible
-    };
-
-    const nuevoProducto = new Producto(datosDeProducto);
-
-    const productoAgregado = menu.agregarProducto(nuevoProducto);
-
-    res.status(201).json(productoAgregado); // Responde con status 201 (Created)
-};
-
-exports.modificarProducto = (req, res) => {
-    const { id } = req.params;
-    const datosModificados = req.body;
-
-    const productoParaModificar = menu.buscarProductoPorId(id);
-
-    if (!productoParaModificar){
-        return res.status(404),json({ message: 'Producto para modificar no encontrado'});
-    }
-
-    productoParaModificar.nombre = datosModificados.nombre ?? productoParaModificar.nombre;
-    productoParaModificar.descripcion = datosModificados. descripcion ?? productoParaModificar.descripcion;
-    productoParaModificar.precio = datosModificados.precio ?? productoParaModificar.precio;
-    productoParaModificar.disponible = datosModificados.disponible ?? productoParaModificar.disponible;
-
-    res.status(200).json(productoParaModificar);
-};
-
-exports.eliminarProducto = (req, res) => {
-    const { id } = req.params;  
-    const exito = menu.eliminarProductoPorId(id);
-
-    if (exito){
-        res.status(200).json({ message: `El producto ${id} fue eliminado exitosamente` });
-    } else {
-        res.status(404).json({message:`No fue posible elminar el producto ${id}`});
+exports.obtenerProductos = async (req, res) => {
+    try {
+        const productos = await menu.getProductos();
+        console.log("ESTOY EN MENU CONTROLLER", productos);
+        res.json(productos);
+    } catch (error) {
+        res.status(500).json({ message: 'Error a obtener productos', error: error.message });
     }
 };
+
+exports.obtenerCategorias = async (req, res) => {
+    try {
+        const categorias = await menu.getCategorias();
+        res.json(categorias);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener categorias', error: error.message });
+    }
+};
+
+exports.obtenerProductoPorId = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const producto = await menu.buscarProductoPorId(id);
+        if (!producto) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+        res.json(producto);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al buscar producto', error: error.message });
+    }
+};
+
+exports.crearProducto = async (req, res) => {
+    try {
+        const productoAgregado = await menu.agregarProducto(req.body);
+        res.status(201).json(productoAgregado);
+    } catch (error) {
+        console.error('Error en crearProducto:', error);
+        if (error.message.startsWith('Datos de producto inválidos')) {
+            return res.status(400).json({ message: error.message });
+        }
+        res.status(500).json({ message: 'Error al crear el producto', error: error.message });
+    }
+};
+
+exports.modificarProducto = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const datosModificados = req.body;
+        console.log(`--- 1. CONTROLLER: ID recibido de la URL (req.params.id): '${id}' ---`);
+        console.log('--- 1. CONTROLLER (req.body) ---', datosModificados);
+        const productoExiste = await menu.buscarProductoPorId(id);
+        console.log(`--- 1.5. CONTROLLER: Resultado de buscarProductoPorId:`, productoExiste);
+        if (!productoExiste) {
+            return res.status(404).json({ message: 'Producto para modificar no encontrado' });
+        }
+        console.log('--- 1.8. CONTROLLER: Llamando a menu.modificarProducto... ---');
+        const productoModificado = await menu.modificarProducto(id, datosModificados);
+
+        res.status(200).json(productoModificado);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al modificar prodcuto', error: error.message });
+    }
+};
+
+exports.eliminarProducto = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const exito = await menu.eliminarProductoPorId(id);
+
+        if (exito) {
+            res.status(200).json({ message: `El producto ${id} fue eliminado exitosamente` });
+        } else {
+            res.status(404).json({ message: `No fue posible elminar el producto ${id}` });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error al eliminar producto', error: error.message });
+    }
+};
+
+exports.crearCategoria = async (req, res) => {
+    try {
+        const { nombre } = req.body;
+
+        if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
+            return res.status(400).json({ message: 'El nombre de la categoría es inválido o está vacío.' });
+        }
+
+        const nuevaCategoria = await menu.obtenerOCrearCategoria(nombre.trim());
+
+        res.status(201).json(nuevaCategoria);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al crear la categoría', error: error.message });
+    }
+};
+
+exports.modificarEstadoProducto = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { disponible } = req.body; 
+
+        if (typeof disponible !== 'boolean') {
+             return res.status(400).json({ message: 'El valor de "disponible" debe ser true o false.' });
+        }
+        
+        const productoExiste = await menu.buscarProductoPorId(id);
+        if (!productoExiste) {
+            return res.status(404).json({ message: 'Producto no encontrado para modificar estado' });
+        }
+
+        const productoActualizado = await menu.modificarEstadoProducto(id, { disponible });
+
+        res.status(200).json(productoActualizado);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al modificar estado del producto', error: error.message });
+    }
+}; 

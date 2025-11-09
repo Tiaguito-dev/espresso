@@ -1,0 +1,137 @@
+/*@import url('https://fonts.googleapis.com/css2?family=Sofia&display=swap');*/
+
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
+
+/*boton para ver el menu*/
+
+.btn-ver-menu{
+    background: #97A97C;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.btn-ver-menu:hover {
+  background: #3A442B;
+}
+
+.menu-container {
+  text-align: center;
+  font-family: century gothic;
+  padding: 20px;
+  background-color: white;
+  min-height: 90vh;
+}
+
+h1 {
+  margin: 20px;
+  font-size: 50px;
+  color: black;
+  /*font-family: 'Sofia', cursive;*/
+  margin-top: 0px;
+  font-weight: 500;
+}
+
+.contenedor-categorias {
+  margin: 0 auto;
+  max-width: 900px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-acordeon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  width: 100%; 
+}
+
+.btn-categoria {
+  font-family: inherit;
+  font-size: large;
+  border-radius: 10px;
+  background-color: #5E6E47;
+  /*background-color: rgb(98, 54, 31);*/
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 350px; 
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  margin: 0 auto; 
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
+  font-weight: lighter;
+}
+
+.btn-categoria:hover {
+  background-color: #3A442B;
+}
+
+
+.btn-categoria.activa {
+  background-color: #3A442B;
+  border-radius: 10px 10px 10px 10px;
+}
+
+
+.lista-productos {
+  background-color: #f9f8ef;
+  border-radius: 10px 10px 10px 10px;
+  width: 100%;
+  max-width: 800px;
+  margin: 8px 0 auto; 
+  text-align: center;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 15px;
+  box-sizing: border-box;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease;
+
+}
+
+.lista-productos.desplegado {
+  max-height: 1000px; 
+  padding-top: 15px; 
+  padding-bottom: 15px;
+}
+
+.producto {
+  padding: 8px 0;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.producto:last-child {
+  border-bottom: none;
+}
+
+.producto h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #87986A;
+}
+
+.producto p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+.producto span {
+  font-weight: bold;
+  color: #4C5939;
+}
+
+.logo {
+  width: 400px;
+  height: 100px;
+}

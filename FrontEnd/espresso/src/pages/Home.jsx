@@ -4,7 +4,11 @@ import "./Home.css";
 function Home() {
   return (
     <div>
-      <h1 className="titulo-home">Bienvenido a Espresso</h1>
+      <div className="bienvenida">
+        <h1 className="titulo-home">Bienvenido a</h1>
+        <div className="titulo">espresso</div>
+      </div>
+      
       <p className="texto-home">
         Sistema de gestión de pedidos. Usa la barra de navegacion o selecciona una opción aquí abajo.
       </p>
@@ -22,9 +26,23 @@ function Home() {
           ruta="/menu"
           texto="Gestion de Menu"
         ></BotonHome>
+      </div>
+      <div className="home-container">
+        <BotonHome
+          ruta="/caja"
+          texto="Gestion de Caja"
+        ></BotonHome>
+        <BotonHome
+          ruta="/cocina"
+          texto="Gestion de Cocina"
+        ></BotonHome>
         <BotonHome
           ruta="/mesas"
           texto="Gestion mesas"
+        ></BotonHome>
+        <BotonHome
+          ruta="/usuarios"
+          texto="Gestion de Perfiles"
         ></BotonHome>
       </div>
     </div>

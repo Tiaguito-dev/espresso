@@ -9,9 +9,9 @@ const validarDataPedido = (data) => {
         return errores; //este es el unico que retorna aca porque no tiene sentido seguir validando si no es un objeto
     }
 
-    if (!data.nroPedido){
+    if (!data.nroPedido) {
         errores.push('El número de pedido es obligatorio');
-    } else if (typeof data.nroPedido !== 'number' ) {
+    } else if (typeof data.nroPedido !== 'number') {
         errores.push('El número de pedido debe ser un número'); //PREGUNTA si puede ser negativo
     }
 
@@ -20,10 +20,11 @@ const validarDataPedido = (data) => {
     }
     //PREGUUNTAR si habria que validar que fecha sea Date
 
-    if (data.estadoPedido){
+    if (data.estadoPedido) {
         const estadosValidos = ['pendiente', 'listo', 'finalizado', 'cancelado'];
-        if (!estadosValidos.includes(data.estadoPedido)) {
-            errores.push(`El estado del pedido debe ser uno de los siguientes: ${estadosValidos.join(', ')}`);
+        const estadoRecibido = data.estadoPedido.toLowerCase();
+        if (!estadosValidos.includes(estadoRecibido)) {
+            errores.push(`Estado de pedido no válido. Recibido: '${data.estadoPedido}'. Válidos: ${estadosValidos.join(', ')}`);
         }
     }
 
@@ -38,7 +39,7 @@ const validarDataPedido = (data) => {
 }
 
 class Pedido {
-    constructor (data) {
+    constructor(data) {
 
         const errores = validarDataPedido(data);
         if (errores.length > 0) {
@@ -48,16 +49,31 @@ class Pedido {
         this.nroPedido = data.nroPedido;
         this.fecha = data.fecha;
         this.estadoPedido = data.estadoPedido || 'pendiente'; //si no tiene estado, lo inicializa en pendiente
-        this.mesa = mesa;
-        
+        this.mesa = data.mesa;
+        this.total = data.total;
+        this.observacion = data.observacion || null;
+        this.mozo = data.mozo || null;
         this.lineasPedido = data.lineasPedido || []; // inicializar como un array vacío si no contiene las lineas de pedido NOTA: A DEFINIR UCANDO SE HACE ESTO
     }
+    toJSON() {
+        return {
+            nroPedido: this.nroPedido,
+            fecha: this.fecha,
+            total: this.total,
+            mozo: this.mozo,
+            estadoPedido: this.estadoPedido,
+            observacion: this.observacion,
+            mesa: this.mesa,
+            lineasPedido: this.lineasPedido
+    };
+}
 
     agregarLineaPedido() {
         const lineaPedido = new LineaPedido();
         this.lineasPedido.push(lineaPedido);
     }
 
+    // TODO: Esto debería hacerlo el controller porque hay una variable que se llama monto. No debería ser un atributo derivado
     getTotal() {
         return this.lineasPedido.reduce((total, linea) => total + linea.getSubTotal(), 0);
     }
@@ -77,5 +93,7 @@ class Pedido {
     getLineasPedido() {
         return this.lineasPedido;
     }
-    
+
 }
+
+module.exports = Pedido;

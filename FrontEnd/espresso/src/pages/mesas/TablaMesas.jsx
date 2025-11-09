@@ -1,37 +1,32 @@
-// src/pages/mesas/TablaMesas.jsx
-
 import React from 'react';
-import FilaMesa from './FilaMesa'; // Importamos el componente de fila
+import FilaMesa from './FilaMesa';
 
-export default function TablaMesas({ mesas, arrayCampos, funcionCambiarEstado, funcionModificar, funcionEliminar }) {
-    return (
-        <div className="tabla-contenedor">
-            {mesas.length === 0 ? (
-                <p className="mensaje-vacio">No hay mesas para mostrar.</p>
-            ) : (
-                <table className="tabla-mesas">
-                    {/* Encabezados */}
-                    <thead>
-                        <tr>
-                            {arrayCampos.map((campo, index) => (
-                                <th key={index}>{campo}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    {/* Cuerpo de la tabla */}
-                    <tbody>
-                        {mesas.map((mesa) => (
-                            <FilaMesa
-                                key={mesa.id}
-                                mesa={mesa}
-                                funcionCambiarEstado={funcionCambiarEstado}
-                                funcionModificar={funcionModificar}
-                                funcionEliminar={funcionEliminar}
-                            />
-                        ))}
-                    </tbody>
-                </table>
-            )}
-        </div>
-    );
+export default function TablaMesas({ mesas, arrayCampos, funcionCambiarEstado, funcionEliminar }) {
+  return (
+    <div className="tabla-contenedor">
+      {mesas.length === 0 ? (
+        <p className="mensaje-vacio">No hay mesas para mostrar.</p>
+      ) : (
+        <table className="tabla-mesas">
+          <thead>
+            <tr>
+              {arrayCampos.map((campo, i) => (
+                <th key={i}>{campo}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {mesas.map((mesa) => (
+              <FilaMesa
+                key={mesa.nroMesa} // Usamos nroMesa como key
+                mesa={mesa}
+                funcionCambiarEstado={funcionCambiarEstado}
+                funcionEliminar={funcionEliminar}
+              />
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 }

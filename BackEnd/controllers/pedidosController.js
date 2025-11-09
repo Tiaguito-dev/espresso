@@ -1,84 +1,44 @@
-// controllers/pedidosController.js
-import FormPedido from './pages/pedidos/FormPedido';
-// Array para simular la base de datos de pedidos
-let pedidos = [
-  {
-    id: '001',
-    mesa: 5,
-    mozo: 'Juan',
+//http://localhost:3001/api/pedidos
 
-    total: 800,
-    estado: 'Listo',
-  },
-  {
-    id: '002',
-    mesa: 3,
-    mozo: 'María',
-    productos: [
-      { id: "hamburguesa", nombre: "Hamburguesa", precio: 1500, cantidad: 1 },
-      { id: "agua", nombre: "Agua", precio: 500, cantidad: 1 },
-    ],
-    total: 2000,
-    estado: 'Pendiente',
-  },
-  {
-    id: '003',
-    mesa: 10,
-    mozo: 'Pedro',
-    productos: [
-      { id: "te", nombre: "Té", precio: 250, cantidad: 1 },
-    ],
-    total: 250,
-    estado: 'Finalizado',
-  },
-  {
-    id: '004',
-    mesa: 8,
-    mozo: 'Ana',
-    productos: [
-      { id: "sandwich", nombre: "Sándwich", precio: 800, cantidad: 1 },
-      { id: "jugo", nombre: "Jugo", precio: 600, cantidad: 1 },
-    ],
-    total: 1400,
-    estado: 'Listo',
-  },
-];
+const AdministradorPedidos = require('../models/AdministradorPedidos');
 
-exports.obtenerPedidos = (req, res) => {
-  res.json(pedidos);
-};
+const administradorPedidos = new AdministradorPedidos();
 
-exports.crearPedido = (req, res) => {
-  const nuevoPedido = { ...req.body, id: Date.now().toString() };
-  pedidos.push(nuevoPedido);
-  res.status(201).json(nuevoPedido);
-};
 
-exports.actualizarPedido = (req, res) => {
-  const { id } = req.params;
-  // Se espera que el frontend envíe { nuevoEstado: "..." } para cambio específico.
-  const { nuevoEstado } = req.body;
-  const pedidoIndex = pedidos.findIndex((p) => p.id === id);
-
-  if (pedidoIndex === -1) {
-    return res.status(404).json({ message: "Pedido no encontrado" });
-  }
-
-  const pedido = pedidos[pedidoIndex];
-  let estadoFinal = pedido.estado;
-
-  // 1. Lógica cuando se envía un estado específico (como "Cancelado")
-  if (nuevoEstado) {
-    const estadoActualLower = pedido.estado.toLowerCase();
-
-    // No permitir cambio si ya está en estado terminal, a menos que el nuevo estado sea el mismo.
-    if ((estadoActualLower === "finalizado" || estadoActualLower === "cancelado") &&
-      nuevoEstado.toLowerCase() !== estadoActualLower) {
-      return res.status(400).json({ message: "No se puede cambiar un pedido finalizado o cancelado" });
+exports.obtenerPedidos = async (req, res) => {
+    try{
+        const pedidos = await administradorPedidos.getPedidos();
+        //console.log("Datos a enviar de pedidos:", pedidos);
+        res.json(pedidos);
+    }catch(error){
+        res.status(500).json({ message: 'Error al obtener pedidos', error: error.message});
     }
-    estadoFinal = nuevoEstado;
-  }
-
-  pedidos[pedidoIndex] = { ...pedido, estado: estadoFinal };
-  res.json({ message: `Pedido actualizado a ${estadoFinal}`, pedido: pedidos[pedidoIndex] });
 };
+
+exports.crearPedido = async (req, res) => {
+    try {
+        console.log('Usuario autenticado:', req.usuario);
+        const nuevoPedido = await administradorPedidos.crearPedido(req.body, req.usuario);
+        res.status(201).json(nuevoPedido);
+    } catch(error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+exports.actualizarPedido = async (req, res) => {
+    try{
+        const { id } = req.params;
+        const nroPedido = parseInt(id, 10);
+        const { nuevoEstado } = req.body;
+
+        const pedido = await administradorPedidos.modificarEstadoPedido(nroPedido, nuevoEstado);
+        
+        res.json({ message: `Pedido actualizado a ${pedido.estadoPedido}`, pedido: pedido });
+        
+    }catch(error){
+        if (error.message === "Pedido no encontrado.") {
+            return res.status(404).json({ message: error.message });
+        }
+        res.status(400).json({ message: error.message });
+    }
+}
