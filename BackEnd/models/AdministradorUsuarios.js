@@ -20,7 +20,7 @@ class AdministradorUsuarios {
             // Crear objeto Perfil desde los datos del JOIN
             const perfil = new Perfil({
                 codigo: usuario.perfil_codigo,
-                nombre: usuario.perfil_nombre
+                nombre: usuario.perfil_nombre.trim()
             });
             return new Usuario({
                 codigo: usuario.codigo,
@@ -87,6 +87,58 @@ class AdministradorUsuarios {
         return usuario;
     }
 
+    async obtenerTodosConPerfil() {
+        const usuariosBD = await UsuarioBD.obtenerUsuarios();
+        const usuarios = await this.convertirUsuarioBD(usuariosBD);
+
+        return usuarios;
+    }
+
+    async actualizarUsuario(codigo, datosNuevos) {
+        const { nombre, correo, contraseña, perfil } = datosNuevos;
+
+        const usuarioActual = await UsuarioBD.obtenerUsuarioPorCodigo(codigo);
+        if (!usuarioActual) {
+            throw new Error('Usuario no encontrado');
+        }
+
+        if (correo && correo !== usuarioActual.correo) {
+            const correoExistente = await UsuarioBD.existeCorreo(correo);
+            if (correoExistente) {
+                throw new Error('El correo ya está registrado por otro usuario');
+            }
+        }
+
+        let codigoPerfil;
+        if (perfil) {
+            const perfilUsuario = await administradorPerfiles.buscarPorNombre(perfil);
+            if (!perfilUsuario) {
+                throw new Error('El perfil especificado no existe');
+            }
+            codigoPerfil = perfilUsuario.codigo;
+        } else {
+            codigoPerfil = usuarioActual.perfil_codigo;
+        }
+
+        let contraseñaHash;
+        if (contraseña) {
+            contraseñaHash = await Usuario.hashContraseña(contraseña);
+        } else {
+            contraseñaHash = usuarioActual.contraseñahash;
+        }
+
+        const datosBD = {
+            nombre: nombre || usuarioActual.nombre,
+            correo: correo || usuarioActual.correo,
+            contraseñaHash: contraseñaHash,
+            codigoPerfil: codigoPerfil
+        };
+
+        await UsuarioBD.modificarUsuario(codigo, datosBD);
+
+        const datosActualizados = await this.buscarPorCodigo(codigo);
+        return datosActualizados;
+    }
 }
 
 module.exports = AdministradorUsuarios;

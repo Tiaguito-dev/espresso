@@ -1,16 +1,37 @@
-const express = require('express');
-const router = express.Router();
+  const express = require('express');
+  const router = express.Router();
 
 
-const usuariosController = require('../controllers/usuariosController');
+  const usuariosController = require('../controllers/usuariosController');
 
-const auth = require('../middlewares/auth');
+  const auth = require('../middlewares/auth');
 
 
-router.get(
-  '/mi-perfil', 
-  auth.verificarToken, 
-  usuariosController.obtenerPerfil
-);
+  router.get(
+    '/mi-perfil', 
+    auth.verificarToken, 
+    usuariosController.obtenerPerfil
+  );
 
-module.exports = router;
+  router.get(
+    '/',
+    auth.verificarToken,
+    auth.verificarPerfil(['admin']),
+    usuariosController.obtenerUsuarios
+  );
+
+  router.get(
+    '/:id',
+    auth.verificarToken,
+    auth.verificarPerfil(['admin']),
+    usuariosController.obtenerUsuarioPorId
+  );
+
+  router.put(
+    '/:id',
+    auth.verificarToken,
+    auth.verificarPerfil(['admin']),
+    usuariosController.actualizarUsuario
+  );
+
+  module.exports = router;
