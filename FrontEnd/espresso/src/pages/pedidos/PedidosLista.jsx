@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getPedidos, updatePedido, deletePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
-import "./Pedidos.css";
+import "../../UnicoCSS.css";
 import Filtro from "../menu/Filtro";
 import TablaPedidos from "../../components/TablaPedidos";
 
@@ -11,7 +11,6 @@ export default function PedidosLista() {
     const [estadoFiltro, setEstadoFiltro] = useState("todos");
     const navigate = useNavigate();
 
-    // 🔄 Cargar pedidos del back-end al inicio
     useEffect(() => {
         fetchPedidos();
     }, []);
@@ -24,7 +23,6 @@ export default function PedidosLista() {
         }
     };
 
-    // Mostrar/Ocultar filtros
     const toggleFiltros = () => {
         setMostrarFiltros(!mostrarFiltros);
     };
@@ -33,7 +31,7 @@ export default function PedidosLista() {
         setEstadoFiltro(estado);
     };
 
-    // 🔄 Cambiar estado del pedido (Pendiente -> Listo -> Finalizado)
+    
     const cambiarEstado = async (id) => {
         try {
             const pedidoActual = pedidos.find((p) => p.nroPedido === id);
@@ -49,7 +47,6 @@ export default function PedidosLista() {
                 return;
             }
 
-            // Llamada al servicio
             await updatePedido(id, { nuevoEstado: siguienteEstado });
             fetchPedidos();
         } catch (error) {
@@ -58,11 +55,9 @@ export default function PedidosLista() {
         }
     };
 
-    // Función para CANCELAR el pedido (usa updatePedido)
     const cancelarPedido = async (id) => {
         if (window.confirm("¿Seguro que desea CANCELAR el pedido? El estado pasará a 'Cancelado'.")) {
             try {
-                // Llamada al servicio para actualizar el estado
                 await updatePedido(id, { nuevoEstado: "Cancelado" });
 
                 fetchPedidos();
@@ -95,23 +90,13 @@ export default function PedidosLista() {
         }
     })();
 
-    
-    //Definimos los campos de la tabla
+
     const arrayCampos = ["ID", "Mesa", "Mozo", "Fecha", "Estado", "Total", "Acciones"];
 
 
     return (
-        <div className="container">
-            <button className="toggle-filtros" onClick={toggleFiltros}>
-                Filtros
-            </button>
-
-            {mostrarFiltros && (
-                <div className="filtros">
-                    <input type="text" placeholder="Buscar por mesa" />
-                    <input type="text" placeholder="Buscar por estado" />
-                </div>
-            )}
+        <div className="tabla-contenedor">
+            <h1 className="titulo-tabla">Gestión de Pedidos</h1>
 
             <div className="filtros-estado">
                 <div className="estados">
@@ -122,7 +107,7 @@ export default function PedidosLista() {
                     <Filtro estadoActual={estadoFiltro} estadoValor="cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
                 </div>
                 <button
-                    className="btn-agregar"
+                    className="boton-agregar"
                     onClick={() => navigate("/pedidos/agregar")}
                 >
                     + Agregar Pedido

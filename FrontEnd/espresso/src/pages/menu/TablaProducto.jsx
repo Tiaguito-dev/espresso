@@ -1,15 +1,14 @@
 import { Fragment } from "react";
-
-import CabeceraTabla from "../pedidos/CabeceraTabla";
+import CabeceraTablaPedidos from "../../components/CabeceraTablaPedidos.jsx";
 import FilaProducto from "./FilaProducto";
 
 function TablaProducto({ productos, arrayCampos, funcionCambiarEstado, funcionModificar, funcionEliminar }) {
 
     return (
         <Fragment>
-            <table>
+            <table className="tabla">
                 <thead>
-                    <CabeceraTabla arrayCampos={arrayCampos}></CabeceraTabla>
+                    <CabeceraTablaPedidos arrayCampos={arrayCampos}></CabeceraTablaPedidos>
                 </thead>
                 <tbody>
                     {console.log("ESTOY EN TABLA PRODUCTO:", productos)}

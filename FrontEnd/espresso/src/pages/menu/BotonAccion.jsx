@@ -1,26 +1,34 @@
+import IconoEliminar from "../../components/IconoEliminar";
+import IconoModificar from "../../components/IconoModificar";
+
 function BotonAccion({productoId, funcionCambiarEstado, funcionModificar, funcionEliminar}) {
+
 
     return (
         <td className="acciones">
             <button 
-                className="info" 
-                onClick={() => funcionCambiarEstado(productoId)}
+            className="info" 
+            onClick={() => funcionCambiarEstado(productoId)}
             >
                 Disponibilidad
             </button>
-            <button 
+
+            <div className="acciones-modificar-eliminar">
+                <button 
                 className="modificar" 
                 onClick={() => funcionModificar(productoId)}
-            >
-                Modificar
-            </button>
+                >
+                    <IconoModificar size={18}></IconoModificar>
+                </button>
 
-            <button
+                <button
                 className="baja"
                 onClick={() => funcionEliminar(productoId)}
-            >
-                Baja
-            </button>
+                >
+                    <IconoEliminar size={18}></IconoEliminar>
+                </button>    
+            </div>
+            
         </td>
     );
 }

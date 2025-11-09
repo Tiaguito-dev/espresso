@@ -445,3 +445,313 @@ h3 {
     color: white;
   }
 }
+
+/*================== MENU CSS ==================*/
+
+.menu-contenedor {
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  padding: 20px;
+  background-color: #FBF7EF;
+  min-height: 94.5vh;
+}
+
+.frase-menu {
+    font-size: 20px;
+    text-align: center;
+}
+
+.contenedor-categorias {
+  margin: 0 auto;
+  max-width: 900px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.menu-contenedor img {
+    margin-top: 20px;
+  width: 400px;
+  height: auto;
+  align-items: center;
+}
+
+.acordeon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  width: 100%; 
+}
+
+.lista-productos {
+  background-color: white;
+  border-radius: 10px 10px 10px 10px;
+  width: 100%;
+  max-width: 800px;
+  margin: 8px 0 auto; 
+  text-align: center;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 15px;
+  box-sizing: border-box;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease;
+}
+
+.lista-productos.desplegado {
+  max-height: 1000px; 
+  padding-top: 15px; 
+  padding-bottom: 15px;
+}
+
+.producto {
+  padding: 8px 0;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.producto:last-child {
+  border-bottom: none;
+}
+
+.producto h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 1000;
+  color: #946639;
+}
+
+.producto p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+.producto span {
+  color: #6a994e;
+  font-weight: 500;
+}
+
+.boton-ver-menu{
+    background: #9C6644;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.boton-ver-menu:hover {
+  background: #7d5135;
+}
+
+.boton-categoria {
+  font-family: inherit;
+  font-size: large;
+  border-radius: 10px;
+  background-color: #4f3621;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 350px; 
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  margin: 0 auto; 
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
+  font-weight: lighter;
+}
+
+.boton-categoria:hover {
+  background-color: #765534;
+}
+
+.boton-categoria.activa {
+  background-color: #765534;
+  border-radius: 10px 10px 10px 10px;
+}
+
+/*================== TABLA DE PEDIDOS CSS ==================*/
+
+/*body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #FBF7EF;
+    margin: 0;
+    padding: 0;
+}*/
+
+.tabla-contenedor {
+    font-family: 'Nunito', sans-serif;
+    padding: 20px;
+}
+
+.titulo-tabla {
+    margin-top: 0;
+    text-align: center;
+    color: #7F5539;
+}
+
+.filtros-estado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.estados {
+    display: flex;
+    gap: 20px; 
+    font-weight: bold;
+}
+
+.boton-agregar {
+    background-color: #6a994e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.boton-agregar:hover {
+    background-color: rgb(112, 145, 59);
+}
+
+.tabla { 
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabla th,
+.tabla td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.tabla th {
+    background-color: #B08968; 
+    font-weight: bold;
+    color: white; 
+}
+
+.tabla tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+.estado-label {
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    min-width: 90px; 
+}
+
+.estado-Pendiente {
+    background-color: #ffde7c;
+    color: #896f22; 
+}
+
+.estado-Listo {
+    background-color: #c8e6c9; 
+    color: #2e7d32; 
+}
+
+.estado-Finalizado {
+    background-color: #b2dfdb; 
+    color: #00695c; 
+}
+
+.estado-Cancelado {
+    background-color: #ffcdd2; 
+    color: #c62828; 
+}
+
+.acciones-container {
+    display: flex;
+    gap: 5px; 
+    flex-direction: column; 
+    align-items: center;
+}
+
+.boton-modificar-eliminar {
+    display: flex;
+    gap: 5px;
+}
+
+.boton-fila-accion {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: bold;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.boton-fila-accion:disabled {
+    background-color: #e0e0e0 !important; 
+    color: #757575 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+.boton-cambio-estado {
+    background-color: #90caf9; 
+    color: #333; 
+    flex-basis: 100%;
+}
+
+.boton-cambio-estado:hover {
+    background-color: #64b5f6;
+}
+
+.boton-modificar-fila {
+    background-color: #f2d91b; 
+    color: #000000; 
+}
+.boton-modificar-fila:hover {
+    background-color: #ffca28;
+}
+
+.boton-cancelar-fila {
+    background-color: #db3535;
+    color: white; 
+}
+.boton-cancelar-fila:hover {
+    background-color: #eb3f3f;
+}
+
+.acciones {
+    display: flex;
+    gap: 5px; 
+    flex-direction: column; 
+    align-items: center;
+}
+
+.acciones-modificar-eliminar {
+    display: flex;
+    gap: 5px;
+}
+
+.modificar {
+  background-color: #4baeff;
+}
+
+.baja {
+  background-color: #e63c4d;
+}
+
+.info {
+  background-color: #fedd24;
+}

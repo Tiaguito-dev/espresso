@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 import Filtro from "./../menu/Filtro";
 import Acordeon from "./Acordeon";
-import CabeceraTabla from "../pedidos/CabeceraTabla";
+import CabeceraTablaPedidos from "../../components/CabeceraTablaPedidos.jsx";
 import DetallePedido from "../caja/DetallePedido";
 
 
@@ -128,7 +128,7 @@ function GestionCocina() {
 
         <table>
 
-            <CabeceraTabla arrayCampos={camposTabla}></CabeceraTabla>
+            <CabeceraTablaPedidos arrayCampos={camposTabla}></CabeceraTablaPedidos>
 
             <tbody>
                 {pedidosFiltrados.map((pedido) => (
@@ -142,7 +142,7 @@ function GestionCocina() {
                             <Acordeon> 
                                 <table className="tabla-acordeon">
                                     
-                                    <CabeceraTabla arrayCampos={camposAcordeon}></CabeceraTabla>
+                                    <CabeceraTablaPedidos arrayCampos={camposAcordeon}></CabeceraTablaPedidos>
 
                                     <tbody>
                                         {pedido.lineasPedido.map((producto, index) => (
