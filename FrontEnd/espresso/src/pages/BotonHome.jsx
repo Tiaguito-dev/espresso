@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-{/*import "./BotonHome.css";*/}
 import "../UnicoCSS.css"
 
 function BotonHome({ ruta, texto }) {

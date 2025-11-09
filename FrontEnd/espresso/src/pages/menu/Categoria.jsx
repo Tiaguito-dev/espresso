@@ -1,8 +1,8 @@
 import React from 'react';
-import "../menu/ClienteMenu.css"
+import "../../UnicoCSS.css"
 
 export default function Categoria({ nombre, onClick, categoriaActiva }) {
-  const claseBoton = `btn-categoria ${categoriaActiva ? 'activa' : ''}`;
+  const claseBoton = `boton-categoria ${categoriaActiva ? 'activa' : ''}`;
 
   return (
     <button

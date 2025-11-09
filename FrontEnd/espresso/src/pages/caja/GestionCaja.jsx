@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../pedidos/PedidosLista.css";
 import Filtro from "./../menu/Filtro";
 import DetallePedido from './DetallePedido';
-import CabeceraTabla from "../pedidos/CabeceraTabla";
+import CabeceraTablaPedidos from "../../components/CabeceraTablaPedidos.jsx";
 
 
 function GestionCaja() {
@@ -116,7 +116,7 @@ function GestionCaja() {
 
         <table>
 
-            <CabeceraTabla arrayCampos={camposTabla}></CabeceraTabla>
+            <CabeceraTablaPedidos arrayCampos={camposTabla}></CabeceraTablaPedidos>
 
             <tbody>
                 {pedidosFiltrados.map((pedido) => (
@@ -157,7 +157,7 @@ function GestionCaja() {
                                         <strong>Numero de Mesa: {pedidoDetalle.mesa.nroMesa}</strong>
                                         <table>
 
-                                            <CabeceraTabla arrayCampos={camposDetalle}></CabeceraTabla>
+                                            <CabeceraTablaPedidos arrayCampos={camposDetalle}></CabeceraTablaPedidos>
 
                                             <tbody>
                                                 {pedidoDetalle.lineasPedido.map((producto) => (

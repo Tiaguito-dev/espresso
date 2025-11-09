@@ -1,45 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { getProductos } from '../../services/productosService';
-import "../menu/ClienteMenu.css"
 import Categoria from './Categoria';
+import "../../UnicoCSS.css"
+
+import logoEspressoMenu from "../../images/logoMenu.png";
 
 export default function MenuCliente() {
 
     const [productos, setProductos] = useState([]);
-    //const [categorias, setCategorias] = useState([]);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
-
-
-
-    //esta funcion era la nueva version del codigo, porque me faltaba el fetchCategorias. PERO con la version vieja funciona, lo dejor por las duda por si en un futuro lo llegamos a precisar 
-    /*
-        useEffect(() => {
-            const fetchProductos = async () => {
-                try {
-                    const data = await getProductos();
-                    setProductos(data.filter(productoItem => productoItem.disponible));
-                } catch (error) {
-                    console.error("Error al obtener el menú:", error);
-                }
-            };
-    
-            const fetchCategorias = async () => {
-                try {
-                    const data = await getCategorias();
-                    setCategorias(data); 
-                } catch (error) {
-                    console.error("Error al obtener las categorías:", error);
-                }
-            };
-            fetchProductos();
-            fetchCategorias();
-        }, []);
-    
-        const categoriasDinamicas = ["Todos los productos",
-            ...categorias.map(c => c.nombre.trim())
-        ];
-    */
-
 
     const categoriasDinamicas = ["Todos los productos",
         ...Array.from(
@@ -59,8 +28,6 @@ export default function MenuCliente() {
         fetchProductos();
     }, []);
 
-
-
     const handleCategoria = (categoria) => {
         setCategoriaSeleccionada(prev =>
             prev === categoria ? null : categoria
@@ -68,10 +35,10 @@ export default function MenuCliente() {
     };
 
     return (
-        <div className="menu-container">
-            <img className='logo' src="/logoEspresso.png" alt="logo de Espresso" />
-            <h1>nuestro menú</h1>
-        
+        <div className="menu-contenedor">
+            <img src={logoEspressoMenu} alt="logo de Espresso" />
+
+            <h3 className='frase-menu'>Sentite como en casa, disfrutando de lo rico que tenemos para vos</h3>
             <div className="contenedor-categorias">
                 {categoriasDinamicas.map((categoriaItem, index) => {
                     const activa = categoriaSeleccionada === categoriaItem;
@@ -86,7 +53,7 @@ export default function MenuCliente() {
                             );
 
                     return (
-                        <div key={index} className="item-acordeon">
+                        <div key={index} className="acordeon">
                             <Categoria
                                 nombre={categoriaItem}
                                 onClick={handleCategoria}

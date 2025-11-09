@@ -2,6 +2,99 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
 
 
+
+/*================== INICIAR SESION CSS ==================*/
+
+.login-contenedor {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex: 1;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 100vh;
+    background-color: #FBF7EF;
+    gap: 2rem;
+    font-family: 'Nunito', sans-serif;
+}
+
+h3 {
+    margin-top: auto;
+    font-size: 30px;
+}
+
+.login-contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex-basis: 40%;
+    max-width: 450px;
+    align-items: center;
+}
+
+.imagen-espresso img {
+    width: auto;
+    height: 90px;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.2rem;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.grupos, .campos {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.formulario-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333333;
+}
+
+.formulario-control {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.boton-login {
+    padding: 0.85rem;
+    background-color: #9C6644;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.imagen-login {
+    flex-basis: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagen-login img {
+    width: 100%;
+    max-width: 400px;
+    height:auto;
+}
+
 /*================== HOME CSS ==================*/
 
 .home-contenedor {
@@ -21,6 +114,7 @@
     padding: 10px;
     font-size: 3rem;
     color: #7F5539;
+    margin-top: 0px;
 }
 
 .texto-home {
@@ -66,6 +160,7 @@
   background-color: #555555;
   border-radius: 14px;
   height: 420px;
+  margin-top: auto;
 }
 
 .carrusel-imagen {
@@ -189,5 +284,474 @@
 }
 
 
+/*================== NAVBAR CSS ==================*/
+.navbar {
+  background-color: #B5C99A;
+  padding: 12px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 100;
+  height: 75px;
+}
 
+.titulo-navbar {
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 3rem;
+  color: #fff;
+  font-weight: 200;
+  line-height: 1;
+  order: 2;
+  margin-left: 0px;
+}
 
+.menu-hamburguesa {
+  display: flex; 
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 25px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  top: 25px;
+  left: 20px;
+  z-index: 110;
+  order: 1;
+}
+
+.menu-hamburguesa span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: white; 
+  border-radius: 3px;
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar-links {
+  list-style: none;
+  margin: 0;
+  position: fixed;
+  top: 99px; 
+  left: 0;
+  height: calc(100vh - 75px);
+  width: 280px;
+  max-width: 80%;
+  z-index: 99;
+  background-color: #B5C99A; 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  gap: 15px;
+  padding: 30px 20px;
+  transform: translateX(-100%);
+  visibility: hidden;
+  overflow-y: auto;
+  /*align-items: flex-start;*/
+  transition: transform 0.3s ease-in-out,
+              visibility 0.3s ease-in-out;
+
+}
+
+.navbar-links.open {
+  transform: translateX(0);
+  visibility: visible;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.navbar-links li {
+  display: block; 
+  width: 100%;
+  text-align: left;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.navbar a:hover {
+  background-color: #97A97C;
+}
+
+.navbar a.active {
+  background-color: #d7ccc8;
+  background-color: #CFE1B9;
+};
+
+@media (min-width: 768px) {
+
+  .navbar {
+    justify-content: space-between;
+    gap: 0;
+    height: auto;
+  }
+  
+  .menu-hamburguesa {
+    display: none;
+  }
+
+  .titulo-navbar {
+    line-height: normal;
+    order: 0;
+    margin-left: 0;
+  }
+
+  .navbar-links {
+    position: static;
+    transform: none; 
+    visibility: visible;;
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0; 
+    flex-direction: row;
+    gap: 25px;
+    max-height: none;
+    overflow: visible;
+    height: auto;
+    width: auto;
+    top: auto;
+    left: auto;
+    z-index: auto;
+  }
+
+  .navbar-links li {
+    display: inline;
+    width: auto;
+    text-align: center;
+  }
+
+  .navbar a {
+    color: black; 
+    display: inline-block; 
+  }
+
+  .navbar a:hover {
+    background-color: #97A97C;
+  }
+  
+  .navbar a.active {
+    background-color: #CFE1B9;
+    color: white;
+  }
+}
+
+/*================== MENU CSS ==================*/
+
+.menu-contenedor {
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  padding: 20px;
+  background-color: #FBF7EF;
+  min-height: 94.5vh;
+}
+
+.frase-menu {
+    font-size: 20px;
+    text-align: center;
+}
+
+.contenedor-categorias {
+  margin: 0 auto;
+  max-width: 900px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.menu-contenedor img {
+    margin-top: 20px;
+  width: 400px;
+  height: auto;
+  align-items: center;
+}
+
+.acordeon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  width: 100%; 
+}
+
+.lista-productos {
+  background-color: white;
+  border-radius: 10px 10px 10px 10px;
+  width: 100%;
+  max-width: 800px;
+  margin: 8px 0 auto; 
+  text-align: center;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 15px;
+  box-sizing: border-box;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease;
+}
+
+.lista-productos.desplegado {
+  max-height: 1000px; 
+  padding-top: 15px; 
+  padding-bottom: 15px;
+}
+
+.producto {
+  padding: 8px 0;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.producto:last-child {
+  border-bottom: none;
+}
+
+.producto h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 1000;
+  color: #946639;
+}
+
+.producto p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+.producto span {
+  color: #6a994e;
+  font-weight: 500;
+}
+
+.boton-ver-menu{
+    background: #9C6644;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.boton-ver-menu:hover {
+  background: #7d5135;
+}
+
+.boton-categoria {
+  font-family: inherit;
+  font-size: large;
+  border-radius: 10px;
+  background-color: #4f3621;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 350px; 
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  margin: 0 auto; 
+  transition: background-color 0.3s ease, border-radius 0.3s ease;
+  font-weight: lighter;
+}
+
+.boton-categoria:hover {
+  background-color: #765534;
+}
+
+.boton-categoria.activa {
+  background-color: #765534;
+  border-radius: 10px 10px 10px 10px;
+}
+
+/*================== TABLA DE PEDIDOS CSS ==================*/
+
+/*body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #FBF7EF;
+    margin: 0;
+    padding: 0;
+}*/
+
+.tabla-contenedor {
+    font-family: 'Nunito', sans-serif;
+    padding: 20px;
+}
+
+.titulo-tabla {
+    margin-top: 0;
+    text-align: center;
+    color: #7F5539;
+}
+
+.filtros-estado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.estados {
+    display: flex;
+    gap: 20px; 
+    font-weight: bold;
+}
+
+.boton-agregar {
+    background-color: #6a994e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.boton-agregar:hover {
+    background-color: rgb(112, 145, 59);
+}
+
+.tabla { 
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabla th,
+.tabla td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+.tabla th {
+    background-color: #B08968; 
+    font-weight: bold;
+    color: white; 
+}
+
+.tabla tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+.estado-label {
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    min-width: 90px; 
+}
+
+.estado-Pendiente {
+    background-color: #ffde7c;
+    color: #896f22; 
+}
+
+.estado-Listo {
+    background-color: #c8e6c9; 
+    color: #2e7d32; 
+}
+
+.estado-Finalizado {
+    background-color: #b2dfdb; 
+    color: #00695c; 
+}
+
+.estado-Cancelado {
+    background-color: #ffcdd2; 
+    color: #c62828; 
+}
+
+.acciones-container {
+    display: flex;
+    gap: 5px; 
+    flex-direction: column; 
+    align-items: center;
+}
+
+.boton-modificar-eliminar {
+    display: flex;
+    gap: 5px;
+}
+
+.boton-fila-accion {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: bold;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.boton-fila-accion:disabled {
+    background-color: #e0e0e0 !important; 
+    color: #757575 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+.boton-cambio-estado {
+    background-color: #90caf9; 
+    color: #333; 
+    flex-basis: 100%;
+}
+
+.boton-cambio-estado:hover {
+    background-color: #64b5f6;
+}
+
+.boton-modificar-fila {
+    background-color: #f2d91b; 
+    color: #000000; 
+}
+.boton-modificar-fila:hover {
+    background-color: #ffca28;
+}
+
+.boton-cancelar-fila {
+    background-color: #db3535;
+    color: white; 
+}
+.boton-cancelar-fila:hover {
+    background-color: #eb3f3f;
+}
+
+.acciones {
+    display: flex;
+    gap: 5px; 
+    flex-direction: column; 
+    align-items: center;
+}
+
+.acciones-modificar-eliminar {
+    display: flex;
+    gap: 5px;
+}
+
+.modificar {
+  background-color: #4baeff;
+}
+
+.baja {
+  background-color: #e63c4d;
+}
+
+.info {
+  background-color: #fedd24;
+}

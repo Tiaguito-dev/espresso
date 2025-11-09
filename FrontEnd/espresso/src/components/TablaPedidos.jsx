@@ -1,7 +1,6 @@
 import CabeceraTablaPedidos from "./CabeceraTablaPedidos"; 
 import FilaPedido from "./FilaPedido";
 
-// 🎯 Debe recibir 'pedidos' y pasarlo al map
 function TablaPedidos({ pedidos, arrayCampos, funcionCambiarEstado, funcionModificar, funcionEliminar}) {
 
     return (

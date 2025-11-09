@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UsuarioContext } from "../contexts/UsuarioContext";
 import { iniciarSesion } from "../services/usuariosService";
-import styles from "./FormularioLogin.module.css";
+import "../UnicoCSS.css";
 
 import imagenLogoEspresso from "../images/logoEspressoVerde.png";
 import imagenLogin from "../images/imagen login.png"
@@ -52,52 +52,58 @@ const FormularioLogin = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <h3>Iniciar Sesión</h3>
+        <div className="login-contenedor">
 
-            {/*<div className="imagen- espresso">
-                <img src={imagenLogoEspresso} alt="Imagen espresso"/>
+            <div className="login-contenido">
+                <div className="imagen-espresso">
+                    <img src={imagenLogoEspresso} alt="Imagen espresso"/>
+                </div>
+
+                <h3>¡Bienvenido de vuelta!</h3>
+
+                <form onSubmit={enviarFormulario} className="formulario">
+                    <div className="grupos">
+                        <label htmlFor="correo" className="formulario-label">
+                            Correo Electrónico
+                        </label>
+                        <input
+                            id="correo"
+                            type="email"
+                            className="formulario-control"
+                            value={correo}
+                            onChange={(event) => setCorreo(event.target.value)}
+                            placeholder="ejemplo@correo.com"
+                            required
+                        />
+                    </div>
+
+                    <div className="campos">
+                        <label htmlFor="contrasenia" className="formulario-label">
+                            Contraseña
+                        </label>
+                        <input
+                            id="contrasenia"
+                            type="password"
+                            className="formulario-control"
+                            value={contrasenia}
+                            onChange={(event) => setContrasenia(event.target.value)}
+                            placeholder="********"
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" className="boton-login">
+                        Iniciar Sesión
+                    </button>
+
+                </form>
+
             </div>
 
             <div className="imagen-login">
                 <img src={imagenLogin} alt="Imagen Login" />
-            </div>*/}
+            </div>
 
-            <form onSubmit={enviarFormulario} className={styles.form}>
-                <div className={styles.fieldGroup}>
-                    <label htmlFor="correo" className="form-label">
-                        Correo Electrónico
-                    </label>
-                    <input
-                        id="correo"
-                        type="email"
-                        className="form-control"
-                        value={correo}
-                        onChange={(event) => setCorreo(event.target.value)}
-                        placeholder="ejemplo@correo.com"
-                        required
-                    />
-                </div>
-
-                <div className={styles.fieldGroup}>
-                    <label htmlFor="contrasenia" className="form-label">
-                        Contraseña
-                    </label>
-                    <input
-                        id="contrasenia"
-                        type="password"
-                        className="form-control"
-                        value={contrasenia}
-                        onChange={(event) => setContrasenia(event.target.value)}
-                        placeholder="********"
-                        required
-                    />
-                </div>
-
-                <button type="submit" className="btn">
-                    Ingresar
-                </button>
-            </form>
         </div>
     );
 };

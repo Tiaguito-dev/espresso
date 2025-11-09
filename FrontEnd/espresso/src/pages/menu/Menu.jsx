@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getProductos, updateProducto, deleteProducto, updateEstadoProducto } from "../../services/productosService";
 import { useNavigate } from "react-router-dom";
-import "../pedidos/PedidosLista.css";
-import "../menu/ClienteMenu.css";
+import "../../UnicoCSS.css"
 
 import Filtro from "./Filtro";
 import TablaProducto from "./TablaProducto";
@@ -13,7 +12,6 @@ export default function Menu() {
     const [estadoFiltro, setEstadoFiltro] = useState("todos");
     const navigate = useNavigate();
 
-    // Cargar productos del back-end al inicio
     useEffect(() => {
         fetchProductos();
     }, []);
@@ -34,24 +32,6 @@ export default function Menu() {
     const filtrarEstado = (estado) => {
         setEstadoFiltro(estado);
     };
-
-    {/*const cambiarEstado = async (id) => {
-        const nuevoEstado = prompt(
-            "¿El producto está disponible? (true/false):"
-        );
-
-        // Convertir string a boolean
-        const disponible = nuevoEstado === "true";
-
-        if (nuevoEstado === null) return; // Usuario canceló
-
-        try {
-            await updateProducto(id, { disponible });
-            fetchProductos(); // Recargar productos
-        } catch (error) {
-            console.error("Error al actualizar el estado del producto:", error);
-        }
-    }; */}
 
     const cambiarEstado = async (id) => {
     
@@ -84,7 +64,6 @@ export default function Menu() {
         }
     };
 
-    // Filtrar productos según el estado seleccionado
     const productosFiltrados = (() => {
         switch (estadoFiltro) {
             case "disponible":
@@ -96,7 +75,6 @@ export default function Menu() {
         }
     })();
 
-    //elimino un producto    
     const eliminarProducto = async (id) => {
         if (window.confirm("¿Seguro que desea eliminar el producto?")) {
             try {
@@ -119,24 +97,13 @@ export default function Menu() {
 
 
     return (
-        <div className="container">
-            {/* Botón filtros */}
-            <button className="toggle-filtros" onClick={toggleFiltros}>
-                Filtros
-            </button>
-
-            <button className="btn-ver-menu" onClick={() => navigate("/menu/menuEspresso/")}>
+        <div className="tabla-contenedor">
+            <button className="boton-ver-menu" onClick={() => navigate("/menu/menuEspresso/")}>
                 Ver menú Espresso
             </button>
 
-            {mostrarFiltros && (
-                <div className="filtros">
-                    <input type="text" placeholder="Buscar por código" />
-                    <input type="text" placeholder="Buscar por nombre" />
-                </div>
-            )}
+            <h1 className="titulo-tabla">Gestión de Productos</h1>
 
-            {/* Estados + agregar producto */}
             <div className="filtros-estado">
                 <div className="estados">
                     <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
@@ -144,9 +111,8 @@ export default function Menu() {
                     <Filtro estadoActual={estadoFiltro} estadoValor="no-disponible" nombreFiltro="No Disponible" onClick={filtrarEstado} />
                 </div>
 
-
                 <button
-                    className="btn-agregar"
+                    className="boton-agregar"
                     onClick={() => navigate("/menu/productos/")}
                 >
                     + Agregar Producto
