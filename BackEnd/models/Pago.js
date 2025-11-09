@@ -66,7 +66,7 @@ class Pago {
 
     toJSON() {
         return {
-            idPago: this.idPago,
+            nroPago: this.nroPago,
             nroPedido: this.pedido.getNroPedido(),
             monto: this.monto,
             fecha: this.fecha,
