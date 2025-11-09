@@ -11,7 +11,9 @@ const updateEstadoPedidoPorNro = 'UPDATE pedido SET estado = $2 WHERE nro_pedido
 const insertLineaPedido = `INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, subtotal) VALUES ((SELECT id_pedido FROM pedido WHERE nro_pedido = $1), (SELECT id FROM producto WHERE id = $2), $3, $4);`;
 
 const selectLineasPorNroPedido = ("SELECT linea.id_linea_pedido, linea.cantidad, linea.subtotal, producto.nombre, linea.id_pedido, producto.id, linea.id_producto FROM pedido JOIN linea_pedido AS linea ON pedido.id_pedido = linea.id_pedido JOIN producto ON linea.id_producto = producto.id WHERE pedido.nro_pedido = $1;");
-
+const deleteLineaPorId = 'DELETE FROM linea_pedido WHERE id_linea_pedido = $1';
+const updatePedidoTotal = 'UPDATE pedido SET total = $1 WHERE nro_pedido = $2';
+const selectLineaPorId = 'SELECT * FROM linea_pedido WHERE id_linea_pedido = $1';
 
 // TODO: FALTA HACER ESTO
 const selectPedidoPorMozo = 'SELECT * FROM pedido WHERE nombre = $1';
@@ -151,3 +153,39 @@ exports.obtenerLineasPorNroPedido = async (pedido) => {
 
 // TODO: No hice un modificar línea pedido, porque no sé si los chicos la hicieron
 // TODO: No hice un select pedido por mozo
+
+exports.eliminarLineaPorId = async (idLinea) => {
+    try {
+        await Gateway.ejecutarQuery({
+            text: deleteLineaPorId,
+            values: [idLinea]
+        });
+        return { success: true, message: 'Línea eliminada.' };
+    } catch (error) {
+        throw new Error(`Error al eliminar la línea ${idLinea}: ${error.message}`);
+    }
+};
+
+exports.actualizarTotalPedido = async (nroPedido, nuevoTotal) => {
+    try {
+        await Gateway.ejecutarQuery({
+            text: updatePedidoTotal,
+            values: [nuevoTotal, nroPedido]
+        });
+        return { success: true, message: 'Total actualizado.' };
+    } catch (error) {
+        throw new Error(`Error al actualizar total del pedido ${nroPedido}: ${error.message}`);
+    }
+};
+
+exports.obtenerLineaPorId = async (idLinea) => {
+    try {
+        const lineas = await Gateway.ejecutarQuery({
+            text: selectLineaPorId,
+            values: [idLinea]
+        });
+        return lineas[0] || null;
+    } catch (error) {
+        throw new Error(`Error al obtener la línea ${idLinea}: ${error.message}`);
+    }
+};

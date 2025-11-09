@@ -26,5 +26,16 @@ router.get('/',
     pedidosController.obtenerPedidos
 );
 
+router.post('/:id/lineas',
+    verificarToken,
+    verificarPerfil(['mozo', 'admin']),
+    pedidosController.agregarLineaAPedido
+);
+
+router.delete('/:id/lineas/:idLinea',
+    verificarToken,
+    verificarPerfil(['mozo', 'admin']),
+    pedidosController.eliminarLineaDePedido
+);
 
 module.exports = router;
