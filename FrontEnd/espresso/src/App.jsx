@@ -9,9 +9,11 @@ import GestionCaja from "./pages/caja/GestionCaja.jsx";
 import GestionCocina from "./pages/cocina/GestionCocina.jsx";
 import MenuCliente from "./pages/menu/ClienteMenu.jsx";
 import MesasLista from "./pages/mesas/MesasLista.jsx";
+import FormMesas from './pages/mesas/FormMesas';
 import FormPedido from "./pages/pedidos/FormPedido.jsx";
 import Login from "./pages/login/Login.jsx";
-
+import UsuariosLista from "./pages/usuarios/UsuariosLista";
+import FormUsuario from "./pages/usuarios/FormUsuario";
 // Estos son componentes validadores
 import ValidarSesion from "./components/ValidarSesion.jsx"
 import ValidarPerfil from "./components/ValidarPerfil.jsx"
@@ -39,7 +41,7 @@ function App() {
             <Route element={<ValidarPerfil perfilesPermitidos={["mozo", "admin"]} />}>
               <Route path="/pedidos" element={<PedidosLista />} />
               <Route path="/pedidos/agregar" element={<AgregarPedido />} />
-              <Route path="/pedidos/modificar/:id" element={<FormPedido />} />
+              <Route path="/pedidos/editar/:id" element={<FormPedido />} />
             </Route>
 
             {/* Rutas para Cocinero */}
@@ -64,6 +66,17 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
           <Route path="/menu/menuEspresso" element={<MenuCliente />} />
+
+          <Route path="/mesas" element={<MesasLista />} />
+          <Route path="/mesas/nueva" element={<FormMesas />} />
+          <Route path="/mesas/modificar/:id" element={<FormMesas />} />
+
+          {/* Usuarios */}
+          <Route path="/usuarios" element={<UsuariosLista />} />
+          <Route path="/usuarios/nuevo" element={<FormUsuario />} />
+          <Route path="/usuarios/:id" element={<FormUsuario />} />
+            
+        
         </Routes>
       </div>
     </Router >

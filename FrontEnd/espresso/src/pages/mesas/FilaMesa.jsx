@@ -1,71 +1,42 @@
-// src/pages/mesas/FilaMesa.jsx
-
 import React from 'react';
 
-export default function FilaMesa({ mesa, funcionCambiarEstado, funcionModificar, funcionEliminar }) {
-    
-    // Función para determinar la clase de color del estado
-    const getColorClase = (estado) => {
-        switch (estado) {
-            case "Disponible":
-                return "estado-disponible";
-            case "Ocupada":
-                return "estado-ocupada";
-            case "Lista para ordenar":
-                return "estado-ordenar";
-            case "Lista para pagar":
-                return "estado-pagar";
-            default:
-                return "estado-default";
-        }
-    };
+export default function FilaMesa({ mesa, funcionCambiarEstado, funcionEliminar }) {
+  // Clase para badge según estado
+  const getEstadoClass = (estado) => {
+    switch (estado) {
+      case 'disponible':
+        return 'estado-badge estado-disponible';
+      case 'ocupada':
+        return 'estado-badge estado-ocupada';
+      case 'fuera de servicio':
+        return 'estado-badge estado-default';
+      default:
+        return 'estado-badge estado-default';
+    }
+  };
 
-    // Función para obtener el texto del botón de cambio de estado
-    const getBotonTexto = (estado) => {
-        switch (estado) {
-            case "Disponible":
-                return "Ocupar";
-            case "Ocupada":
-                return "Tomar Orden";
-            case "Lista para ordenar":
-                return "Cobrar";
-            case "Lista para pagar":
-                return "Liberar";
-            default:
-                return "Cambiar";
-        }
-    };
-    
-    return (
-        <tr>
-            <td>{mesa.id}</td>
-            <td>{mesa.numero}</td>
-            <td>{mesa.mozoACargo || '-'}</td>
-            <td>
-                <span className={`estado-badge ${getColorClase(mesa.estado)}`}>
-                    {mesa.estado}
-                </span>
-            </td>
-            <td className="acciones">
-                <button 
-                    className="btn btn-estado" 
-                    onClick={() => funcionCambiarEstado(mesa.id)}
-                >
-                    {getBotonTexto(mesa.estado)}
-                </button>
-                <button 
-                    className="btn btn-modificar" 
-                    onClick={() => funcionModificar(mesa.id)}
-                >
-                    Modificar
-                </button>
-                <button 
-                    className="btn btn-eliminar" 
-                    onClick={() => funcionEliminar(mesa.id)}
-                >
-                    Dar de Baja
-                </button>
-            </td>
-        </tr>
-    );
+  return (
+    <tr>
+      <td>{mesa.nroMesa}</td>
+      <td>
+        <span className={getEstadoClass(mesa.estadoMesa)}>
+          {mesa.estadoMesa}
+        </span>
+      </td>
+      <td>
+        <button
+          className="btn btn-estado"
+          onClick={() => funcionCambiarEstado(mesa.nroMesa)}
+        >
+          Cambiar Estado
+        </button>
+        <button
+          className="btn btn-Dar de baja"
+          onClick={() => funcionEliminar(mesa.nroMesa)}
+        >
+          Dar de baja
+        </button>
+      </td>
+    </tr>
+  );
 }

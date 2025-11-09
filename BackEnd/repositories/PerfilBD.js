@@ -3,7 +3,7 @@ const Gateway = require('../DB/Gateway');
 // === SECCIÓN DE QUERYS ===
 const selectPerfiles = 'SELECT * FROM perfil';
 const selectPerfilPorCodigo = 'SELECT * FROM perfil WHERE codigo = $1';
-const selectPerfilPorNombre = 'SELECT * FROM perfil WHERE nombre = $1';
+const selectPerfilPorNombre = 'SELECT * FROM perfil WHERE TRIM(LOWER(nombre)) = $1';
 const insertPerfil = 'INSERT INTO perfil (codigo, nombre) VALUES ($1, $2)';
 const selectUltimoCodigo = 'SELECT MAX(codigo) FROM perfil';
 const deletePerfilPorCodigo = 'DELETE FROM perfil WHERE codigo = $1';

@@ -4,14 +4,12 @@ const router = express.Router();
 const pedidosController = require('../controllers/pedidosController');
 const { verificarToken, verificarPerfil } = require('../middlewares/auth');
 
-// Ruta para obtener todos los pedidos
-router.get('/', pedidosController.obtenerPedidos);
-
-// Ruta para crear un nuevo pedido
-router.post('/', verificarToken, pedidosController.crearPedido);
 
 // Ruta para actualizar un pedido
-router.put('/:id', pedidosController.actualizarPedido);
+router.put('/:id', 
+    verificarToken,
+    verificarPerfil(['mozo', 'cocinero', 'admin']),
+    pedidosController.actualizarPedido);
 
 
 // Solo mozos pueden crear pedidos
@@ -28,10 +26,5 @@ router.get('/',
     pedidosController.obtenerPedidos
 );
 
-router.get('/',
-    verificarToken,
-    verificarPerfil(['mozo', 'cocinero', 'admin']),
-    pedidosController.obtenerPedidos
-);
 
 module.exports = router;

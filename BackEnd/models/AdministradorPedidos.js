@@ -47,8 +47,9 @@ class AdministradorPedidos {
                 fecha: pedido.fecha_registro, //.slice(0, 10),
                 total: pedido.total,
                 estadoPedido: pedido.estado,
+                observacion: pedido.observacion, 
+                mozo: pedido.nombre_mozo,
                 mesa: mesaObj,
-                observacion: pedido.observacion,
                 lineasPedido: lineasObj
             }));
         }

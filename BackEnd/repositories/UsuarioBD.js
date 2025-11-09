@@ -162,3 +162,18 @@ exports.existeCorreo = async (correo) => {
         throw new Error(`Error al validar correo ${correo} desde la base de datos: ${error.message}`);
     }
 };
+
+exports.obtenerTodosLosUsuarios = async () => {
+    const query = `
+        SELECT u.codigo, u.nombre, u.correo, u.contrasenia as contraseniaHash,
+               p.codigo AS perfil_codigo, p.nombre AS perfil_nombre
+        FROM usuario u
+        JOIN perfil p ON u.id_perfil = p.codigo
+    `;
+    try {
+        const usuarios = await Gateway.ejecutarQuery(query);
+        return usuarios; // Array de usuarios
+    } catch (error) {
+        throw new Error("Error al obtener todos los usuarios: " + error.message);
+    }
+};

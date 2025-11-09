@@ -1,0 +1,99 @@
+/* ===== CONTENEDOR GENERAL ===== */
+.form-mesa-container {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 25px;
+  background-color: #f8f3ef;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(80, 50, 30, 0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== TITULO ===== */
+.form-mesa-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #5d4037;
+}
+
+/* ===== FORMULARIO ===== */
+.form-mesa {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* ===== LABELS ===== */
+.form-mesa label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+  color: #6d4c41;
+}
+
+/* ===== INPUTS Y SELECT ===== */
+.form-mesa input,
+.form-mesa select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d7ccc8;
+  font-size: 0.95rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-mesa input:focus,
+.form-mesa select:focus {
+  outline: none;
+  border-color: #a97457;
+  box-shadow: 0 0 5px rgba(169, 116, 87, 0.5);
+}
+
+/* ===== BOTONES ===== */
+.form-mesa-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn-guardar {
+  background-color: #3b82f6; /* Celeste cafetería */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-guardar:hover {
+  background-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.btn-cancelar {
+  background-color: #d9534f; /* Rojo suave */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-cancelar:hover {
+  background-color: #b52b27;
+  transform: scale(1.05);
+}
+
+/* ===== MENSAJE DE ERROR ===== */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+}

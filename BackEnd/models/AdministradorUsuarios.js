@@ -20,7 +20,7 @@ class AdministradorUsuarios {
             // Crear objeto Perfil desde los datos del JOIN
             const perfil = new Perfil({
                 codigo: usuario.perfil_codigo,
-                nombre: usuario.perfil_nombre
+                nombre: usuario.perfil_nombre.trim()
             });
             return new Usuario({
                 codigo: usuario.codigo,
@@ -87,6 +87,67 @@ class AdministradorUsuarios {
         return usuario;
     }
 
+    async obtenerTodosConPerfil() {
+        const usuariosBD = await UsuarioBD.obtenerUsuarios();
+        const usuarios = await this.convertirUsuarioBD(usuariosBD);
+
+        return usuarios;
+    }
+
+    async actualizarUsuario(codigo, datosNuevos) {
+          const { nombre, correo, contraseña, perfil } = datosNuevos;
+            
+          console.log("📦 Datos recibidos en actualizarUsuario:", datosNuevos);
+            
+          const usuarioActual = await UsuarioBD.obtenerUsuarioPorCodigo(codigo);
+          if (!usuarioActual) {
+            throw new Error('Usuario no encontrado');
+          }
+      
+          // Validar correo duplicado
+          if (correo && correo !== usuarioActual.correo) {
+            const correoExistente = await UsuarioBD.existeCorreo(correo);
+            if (correoExistente) {
+              throw new Error('El correo ya está registrado por otro usuario');
+            }
+          }
+      
+          // Buscar perfil
+          let codigoPerfil;
+          if (perfil) {
+            const perfilUsuario = await administradorPerfiles.buscarPorNombre(perfil);
+            if (!perfilUsuario) {
+              throw new Error('El perfil especificado no existe');
+            }
+            codigoPerfil = perfilUsuario.codigo;
+          } else {
+            codigoPerfil = usuarioActual.perfil_codigo;
+          }
+      
+          // Manejar contraseña
+          let contraseñaHash;
+          if (contraseña) {
+            contraseñaHash = await Usuario.hashContraseña(contraseña);
+          } else {
+            // FIX: corregido el nombre del campo
+            contraseñaHash = usuarioActual.contraseñaHash || usuarioActual.contraseñahash;
+          }
+      
+          // Armar datos para la BD
+          const datosBD = {
+            nombre: nombre || usuarioActual.nombre,
+            correo: correo || usuarioActual.correo,
+            contraseñaHash,
+            codigoPerfil
+          };
+      
+          console.log("🧩 Datos que se mandan a modificarUsuario:", datosBD);
+      
+          await UsuarioBD.modificarUsuario(codigo, datosBD);
+      
+          const datosActualizados = await this.buscarPorCodigo(codigo);
+          return datosActualizados;
+        }
 }
 
 module.exports = AdministradorUsuarios;

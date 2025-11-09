@@ -44,6 +44,10 @@ function Home() {
           ruta="/menu/menuEspresso/"
           texto="Ver Nuestro Menú"
         ></BotonHome>
+        <BotonHome
+          ruta="/usuarios"
+          texto="Gestion de Perfiles"
+        ></BotonHome>
       </div>
 
         <Footer/>
