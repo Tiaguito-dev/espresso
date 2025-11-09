@@ -42,3 +42,46 @@ exports.actualizarPedido = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 }
+
+exports.agregarLineaAPedido = async (req, res) => {
+    try {
+        const nroPedido = parseInt(req.params.id, 10);
+        const datosLinea = req.body; 
+
+        if (isNaN(nroPedido)) {
+            return res.status(400).json({ message: 'El ID del pedido debe ser un número' });
+        }
+        if (!datosLinea.idProducto || !datosLinea.cantidad || datosLinea.cantidad <= 0) {
+            return res.status(400).json({ message: 'Se requiere idProducto y una cantidad válida' });
+        }
+
+        const pedidoActualizado = await administradorPedidos.agregarLinea(nroPedido, datosLinea);
+        res.status(200).json(pedidoActualizado);
+
+    } catch(error) {
+        if (error.message.includes('encontrado') || error.message.includes('pendiente')) {
+            return res.status(404).json({ message: error.message });
+        }
+        res.status(400).json({ message: error.message });
+    }
+};
+
+exports.eliminarLineaDePedido = async (req, res) => {
+    try {
+        const nroPedido = parseInt(req.params.id, 10);
+        const idLinea = parseInt(req.params.idLinea, 10);
+
+        if (isNaN(nroPedido) || isNaN(idLinea)) {
+            return res.status(400).json({ message: 'El ID del pedido y el ID de la línea deben ser números' });
+        }
+
+        const pedidoActualizado = await administradorPedidos.eliminarLinea(nroPedido, idLinea);
+        res.status(200).json(pedidoActualizado);
+
+    } catch(error) {
+        if (error.message.includes('encontrado') || error.message.includes('pendiente')) {
+            return res.status(404).json({ message: error.message });
+        }
+        res.status(400).json({ message: error.message });
+    }
+};

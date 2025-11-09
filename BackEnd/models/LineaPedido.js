@@ -29,10 +29,12 @@ class LineaPedido {
         }
         this.cantidad = data.cantidad;
         this.producto = data.producto;
+        this.id = data.id;
     }
 
     toJSON(){
         return{
+            idLinea: this.id,
             idProducto: this.producto.id,
             cantidad: this.cantidad,
             nombreProducto: this.producto.getNombre(),

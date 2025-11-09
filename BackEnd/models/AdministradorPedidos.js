@@ -30,6 +30,7 @@ class AdministradorPedidos {
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
                         //id: productoObj.id, //TODO: VER SI ESTO ANDA BIEN
+                        id: linea.id_linea_pedido,
                         producto: productoObj,
                         cantidad: linea.cantidad
                     }));
@@ -233,6 +234,61 @@ class AdministradorPedidos {
             pedido.estadoPedido = estadoFinal;
         }
         return pedido;
+    }
+
+    async agregarLinea(nroPedido, datosLinea) {
+        const { idProducto, cantidad } = datosLinea;
+
+        const pedido = await this.buscarPedidoPorNumero(nroPedido);
+        if (!pedido) {
+            throw new Error("Pedido no encontrado.");
+        }
+        if (pedido.estadoPedido.toLowerCase() !== 'pendiente') {
+            throw new Error("No se pueden agregar líneas a un pedido que no esté 'pendiente'.");
+        }
+
+        const productoObj = await this.menu.buscarProductoPorId(idProducto);
+        if (!productoObj) {
+            throw new Error(`Producto con id ${idProducto} no encontrado`);
+        }
+
+        const subtotal = productoObj.getPrecio() * cantidad;
+        const nuevoTotal = parseFloat(pedido.total) + subtotal; 
+
+        await PedidoBD.crearLineaPedido({
+            pedido: nroPedido,
+            codigo: idProducto,
+            cantidad: cantidad,
+            monto: subtotal
+        });
+
+        await PedidoBD.actualizarTotalPedido(nroPedido, nuevoTotal);
+
+        return this.buscarPedidoPorNumero(nroPedido);
+    }
+
+    async eliminarLinea(nroPedido, idLinea) {
+        const pedido = await this.buscarPedidoPorNumero(nroPedido);
+
+        if (!pedido) {
+            throw new Error("Pedido no encontrado.");
+        }
+
+        if (pedido.estadoPedido.toLowerCase() !== 'pendiente') {
+            throw new Error("No se pueden eliminar líneas de un pedido que no esté 'pendiente'.");
+        }
+
+        const linea = await PedidoBD.obtenerLineaPorId(idLinea);
+        if (!linea) {
+            throw new Error("Línea de pedido no encontrada.");
+        }
+
+        const subtotalLinea = parseFloat(linea.subtotal);
+        const nuevoTotal = parseFloat(pedido.total) - subtotalLinea;
+        
+        await PedidoBD.eliminarLineaPorId(idLinea);
+        await PedidoBD.actualizarTotalPedido(nroPedido, nuevoTotal);
+        return this.buscarPedidoPorNumero(nroPedido);
     }
 }
 
