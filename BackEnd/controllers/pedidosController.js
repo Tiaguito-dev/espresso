@@ -85,3 +85,22 @@ exports.eliminarLineaDePedido = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+    
+exports.obtenerPedidoPorId = async (req, res) => {
+    try {
+        const nroPedido = parseInt(req.params.id, 10);
+
+        if (isNaN(nroPedido)) {
+            return res.status(400).json({ message: 'El ID del pedido debe ser un número' });
+        }
+
+        const pedido = await administradorPedidos.buscarPedidoPorNumero(nroPedido);
+        if (!pedido) {
+            return res.status(404).json({ message: 'Pedido no encontrado' });
+        }
+
+        res.status(200).json(pedido);
+    } catch (error) {
+        res.status(500).json({ message: 'Error en el servidor', error: error.message });
+    }
+};
