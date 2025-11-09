@@ -4,6 +4,9 @@ import { UsuarioContext } from "../contexts/UsuarioContext";
 import { iniciarSesion } from "../services/usuariosService";
 import styles from "./FormularioLogin.module.css";
 
+import imagenLogoEspresso from "../images/logoEspressoVerde.png";
+import imagenLogin from "../images/imagen login.png"
+
 const FormularioLogin = () => {
     const { setNombreUsuario, setPerfil, setAutenticado, setCodigoUsuario } = useContext(UsuarioContext);
 
@@ -48,6 +51,14 @@ const FormularioLogin = () => {
     return (
         <div className={styles.container}>
             <h3>Iniciar Sesión</h3>
+
+            {/*<div className="imagen- espresso">
+                <img src={imagenLogoEspresso} alt="Imagen espresso"/>
+            </div>
+
+            <div className="imagen-login">
+                <img src={imagenLogin} alt="Imagen Login" />
+            </div>*/}
 
             <form onSubmit={enviarFormulario} className={styles.form}>
                 <div className={styles.fieldGroup}>
