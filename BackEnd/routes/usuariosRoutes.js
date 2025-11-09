@@ -34,4 +34,11 @@
     usuariosController.actualizarUsuario
   );
 
+  
+    router.post(
+      '/',
+      auth.verificarToken,
+      auth.verificarPerfil(['admin']),
+      usuariosController.crearUsuario
+    );
   module.exports = router;

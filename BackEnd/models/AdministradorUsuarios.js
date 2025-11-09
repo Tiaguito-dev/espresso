@@ -95,50 +95,59 @@ class AdministradorUsuarios {
     }
 
     async actualizarUsuario(codigo, datosNuevos) {
-        const { nombre, correo, contraseña, perfil } = datosNuevos;
-
-        const usuarioActual = await UsuarioBD.obtenerUsuarioPorCodigo(codigo);
-        if (!usuarioActual) {
+          const { nombre, correo, contraseña, perfil } = datosNuevos;
+            
+          console.log("📦 Datos recibidos en actualizarUsuario:", datosNuevos);
+            
+          const usuarioActual = await UsuarioBD.obtenerUsuarioPorCodigo(codigo);
+          if (!usuarioActual) {
             throw new Error('Usuario no encontrado');
-        }
-
-        if (correo && correo !== usuarioActual.correo) {
+          }
+      
+          // Validar correo duplicado
+          if (correo && correo !== usuarioActual.correo) {
             const correoExistente = await UsuarioBD.existeCorreo(correo);
             if (correoExistente) {
-                throw new Error('El correo ya está registrado por otro usuario');
+              throw new Error('El correo ya está registrado por otro usuario');
             }
-        }
-
-        let codigoPerfil;
-        if (perfil) {
+          }
+      
+          // Buscar perfil
+          let codigoPerfil;
+          if (perfil) {
             const perfilUsuario = await administradorPerfiles.buscarPorNombre(perfil);
             if (!perfilUsuario) {
-                throw new Error('El perfil especificado no existe');
+              throw new Error('El perfil especificado no existe');
             }
             codigoPerfil = perfilUsuario.codigo;
-        } else {
+          } else {
             codigoPerfil = usuarioActual.perfil_codigo;
-        }
-
-        let contraseñaHash;
-        if (contraseña) {
+          }
+      
+          // Manejar contraseña
+          let contraseñaHash;
+          if (contraseña) {
             contraseñaHash = await Usuario.hashContraseña(contraseña);
-        } else {
-            contraseñaHash = usuarioActual.contraseñahash;
-        }
-
-        const datosBD = {
+          } else {
+            // FIX: corregido el nombre del campo
+            contraseñaHash = usuarioActual.contraseñaHash || usuarioActual.contraseñahash;
+          }
+      
+          // Armar datos para la BD
+          const datosBD = {
             nombre: nombre || usuarioActual.nombre,
             correo: correo || usuarioActual.correo,
-            contraseñaHash: contraseñaHash,
-            codigoPerfil: codigoPerfil
-        };
-
-        await UsuarioBD.modificarUsuario(codigo, datosBD);
-
-        const datosActualizados = await this.buscarPorCodigo(codigo);
-        return datosActualizados;
-    }
+            contraseñaHash,
+            codigoPerfil
+          };
+      
+          console.log("🧩 Datos que se mandan a modificarUsuario:", datosBD);
+      
+          await UsuarioBD.modificarUsuario(codigo, datosBD);
+      
+          const datosActualizados = await this.buscarPorCodigo(codigo);
+          return datosActualizados;
+        }
 }
 
 module.exports = AdministradorUsuarios;

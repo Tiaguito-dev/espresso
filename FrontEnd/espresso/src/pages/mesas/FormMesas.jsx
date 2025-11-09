@@ -1,66 +1,115 @@
-// src/pages/mesas/FormMesa.jsx
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getMesaById, createMesa, updateMesa } from "../../services/mesasService";
+import "./FormMesas.css";
 
-import React, { useState } from "react";
-import "./FormMesa.css";
-
-export default function FormMesa({ onGuardar, onCancelar }) {
-  const [mesa, setMesa] = useState({
-    numero: "",
+const MESA_INICIAL = {
+    nroMesa: "",
     mozoACargo: "",
-    estado: "Disponible",
-  });
+    estado: "disponible",
+};
 
-  const handleChange = (e) => {
-    setMesa({ ...mesa, [e.target.name]: e.target.value });
-  };
+export default function FormMesas() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [mesa, setMesa] = useState(MESA_INICIAL);
+    const [loading, setLoading] = useState(!!id);
+    const [error, setError] = useState(null);
 
-  return (
-    <div className="form-mesa-container">
-      <h2>Registrar Mesa</h2>
-      <form className="form-mesa">
-        <div>
-          <label>Número de Mesa</label>
-          <input
-            type="number"
-            name="numero"
-            value={mesa.numero}
-            onChange={handleChange}
-          />
+    const esModificar = !!id;
+
+    useEffect(() => {
+        if (esModificar) {
+            const fetchMesa = async () => {
+                try {
+                    const data = await getMesaById(id);
+                    setMesa({
+                        nroMesa: data.nroMesa,
+                        mozoACargo: data.mozoACargo || "",
+                        estado: data.estadoMesa.toLowerCase(),
+                    });
+                    setLoading(false);
+                } catch (err) {
+                    console.error("Error al cargar la mesa:", err);
+                    setError("No se pudo cargar la mesa para modificar.");
+                    setLoading(false);
+                }
+            };
+            fetchMesa();
+        }
+    }, [id, esModificar]);
+
+    const handleChange = (e) => {
+        const value = e.target.name === 'nroMesa' ? Number(e.target.value) : e.target.value;
+        setMesa({ ...mesa, [e.target.name]: value });
+    };
+
+    const handleGuardar = async (e) => {
+        e.preventDefault();
+        setError(null);
+
+        if (!mesa.nroMesa || mesa.nroMesa <= 0) {
+            setError("El número de mesa (positivo) ");
+            return;
+        }
+
+        try {
+            if (esModificar) {
+                await updateMesa(id, mesa);
+                alert(`Mesa ${mesa.nroMesa} modificada con éxito.`);
+            } else {
+                await createMesa(mesa);
+                alert(`Mesa ${mesa.nroMesa} agregada con éxito.`);
+            }
+            navigate("/mesas");
+        } catch (err) {
+            console.error("Error al guardar la mesa:", err);
+            setError(`Error al guardar la mesa: ${err.message || 'Verifique los datos.'}`);
+        }
+    };
+
+    const handleCancelar = () => {
+        navigate("/mesas");
+    };
+
+    if (loading) return <div className="container">Cargando mesa...</div>;
+    if (error && esModificar) return <div className="container error-message">Error: {error}</div>;
+
+    return (
+        <div className="form-mesa-container container">
+            <h2>{esModificar ? `Modificar Mesa N° ${mesa.nroMesa || '...'}` : "Registrar Nueva Mesa"}</h2>
+            {error && <p className="error-message">{error}</p>}
+            <form className="form-mesa" onSubmit={handleGuardar}>
+                <div>
+                    <label>Número de Mesa</label>
+                    <input
+                        type="number"
+                        name="nroMesa"
+                        value={mesa.nroMesa}
+                        onChange={handleChange}
+                        required
+                        min={1}
+                        disabled={esModificar} 
+                    />
+                </div>
+                
+                <div>
+                    <label>Estado</label>
+                    <select name="estado" value={mesa.estado} onChange={handleChange}>
+                        <option value="disponible">Disponible</option>
+                        <option value="ocupada">Ocupada</option>
+                        <option value="fuera de servicio">Fuera de Servicio</option>
+                    </select>
+                </div>
+                <div className="form-mesa-buttons">
+                    <button type="submit" className="btn btn-guardar">
+                        {esModificar ? "Guardar Cambios" : "Agregar Mesa"}
+                    </button>
+                    <button type="button" className="btn btn-cancelar" onClick={handleCancelar}>
+                        Cancelar
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <div>
-          <label>Mozo a Cargo</label>
-          <input
-            type="text"
-            name="mozoACargo"
-            value={mesa.mozoACargo}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div>
-          <label>Estado</label>
-          <select name="estado" value={mesa.estado} onChange={handleChange}>
-            <option>Disponible</option>
-            <option>Ocupada</option>
-            <option>Lista para ordenar</option>
-            <option>Lista para pagar</option>
-          </select>
-        </div>
-
-        <div className="form-mesa-buttons">
-          <button
-            type="button"
-            className="btn-guardar"
-            onClick={() => onGuardar(mesa)}
-          >
-            Guardar
-          </button>
-          <button type="button" className="btn-cancelar" onClick={onCancelar}>
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+    );
 }

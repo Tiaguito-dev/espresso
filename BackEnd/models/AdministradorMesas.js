@@ -8,12 +8,14 @@ class AdministradorMesas {
         if (!mesas) return null;
         if (Array.isArray(mesas)){
             return mesas.map(m => new Mesa({
+                id: m.id_mesa,
                 nroMesa: m.nro_mesa,
                 estadoMesa: m.estado_mesa
             }));
         }
 
         return new Mesa({
+            id: mesas.id_mesa,
             nroMesa: mesas.nro_mesa,
             estadoMesa: mesas.estado_mesa
         });

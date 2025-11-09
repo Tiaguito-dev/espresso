@@ -40,6 +40,10 @@ function Home() {
           ruta="/mesas"
           texto="Gestion mesas"
         ></BotonHome>
+        <BotonHome
+          ruta="/usuarios"
+          texto="Gestion de Perfiles"
+        ></BotonHome>
       </div>
     </div>
   );

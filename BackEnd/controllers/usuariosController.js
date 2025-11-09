@@ -64,3 +64,22 @@ exports.actualizarUsuario = async (req, res) => {
         res.status(500).json({ mensaje: 'Error en el servidor', error: error.message });
     }
 };
+
+exports.crearUsuario = async (req, res) => {
+  try {
+    const datosUsuario = req.body;
+
+    const nuevoUsuario = await administradorUsuarios.registrarUsuario(datosUsuario);
+
+    res.status(201).json({
+      mensaje: 'Usuario creado exitosamente',
+      usuario: nuevoUsuario
+    });
+  } catch (error) {
+    console.error('❌ Error en crearUsuario:', error);
+    if (error.message.includes('registrado')) {
+      return res.status(400).json({ mensaje: error.message });
+    }
+    res.status(500).json({ mensaje: 'Error en el servidor', error: error.message });
+  }
+};
