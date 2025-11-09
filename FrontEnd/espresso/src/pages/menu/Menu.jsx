@@ -98,19 +98,24 @@ export default function Menu() {
 
     return (
         <div className="tabla-contenedor">
-            <button className="boton-ver-menu" onClick={() => navigate("/menu/menuEspresso/")}>
-                Ver menú Espresso
-            </button>
 
             <h1 className="titulo-tabla">Gestión de Productos</h1>
 
-            <div className="filtros-estado">
-                <div className="estados">
-                    <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
-                    <Filtro estadoActual={estadoFiltro} estadoValor="disponible" nombreFiltro="Disponible" onClick={filtrarEstado} />
-                    <Filtro estadoActual={estadoFiltro} estadoValor="no-disponible" nombreFiltro="No Disponible" onClick={filtrarEstado} />
-                </div>
+            <div className="div-botones">
+                <div className="controles-izquierda">
+                    <button className="boton-ver-menu" onClick={() => navigate("/menu/menuEspresso/")}>
+                    Ver menú Espresso
+                    </button>
 
+                    <div className="filtros-estado">
+                        <div className="estados">
+                            <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="disponible" nombreFiltro="Disponible" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="no-disponible" nombreFiltro="No Disponible" onClick={filtrarEstado} />
+                        </div>
+                    </div>
+                </div>
+                
                 <button
                     className="boton-agregar"
                     onClick={() => navigate("/menu/productos/")}
@@ -118,7 +123,6 @@ export default function Menu() {
                     + Agregar Producto
                 </button>
             </div>
-
 
             <TablaProducto
                 productos={productosFiltrados}
@@ -128,6 +132,5 @@ export default function Menu() {
                 funcionEliminar={eliminarProducto}
             ></TablaProducto>
         </div>
-
     );
 }

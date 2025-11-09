@@ -7,7 +7,7 @@ export default function TablaMesas({ mesas, arrayCampos, funcionCambiarEstado, f
       {mesas.length === 0 ? (
         <p className="mensaje-vacio">No hay mesas para mostrar.</p>
       ) : (
-        <table className="tabla-mesas">
+        <table className="tabla">
           <thead>
             <tr>
               {arrayCampos.map((campo, i) => (

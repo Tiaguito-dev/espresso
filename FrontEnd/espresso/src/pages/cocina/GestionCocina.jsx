@@ -104,100 +104,94 @@ function GestionCocina() {
 
 
     return (
-        <div className="container">
-        {/* Botón filtros */}
-        <button className="toggle-filtros" onClick={toggleFiltros}>
-            Filtros
-        </button>
-        {mostrarFiltros && (
-            <div className="filtros">
-            <input type="text" placeholder="Buscar por Mozo" />
-            <input type="text" placeholder="Buscar por Mesa" />
+        <div className="tabla-contenedor">
+            <h1 className="titulo-tabla">Gestión de Cocina</h1>
+            <div className="div-botones">
+                <div className="controles-izquierda">
+                    <div className="filtros-estado">
+                        <div className="estados">
+                            <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="Pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="Listo" nombreFiltro="Listo" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="Finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="Cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
+                        </div>
+                    </div>
+                </div>
             </div>
-        )}
+            
+            <table className="tabla">
 
-        <div className="filtros-estado">
-            <div className="estados">
-                <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
-                <Filtro estadoActual={estadoFiltro} estadoValor="Pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
-                <Filtro estadoActual={estadoFiltro} estadoValor="Listo" nombreFiltro="Listo" onClick={filtrarEstado} />
-                <Filtro estadoActual={estadoFiltro} estadoValor="Finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
-                <Filtro estadoActual={estadoFiltro} estadoValor="Cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
-            </div>
-        </div>
+                <CabeceraTablaPedidos arrayCampos={camposTabla}></CabeceraTablaPedidos>
 
-        <table>
+                <tbody>
+                    {pedidosFiltrados.map((pedido) => (
+                        <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido} className="fila-cocina">
 
-            <CabeceraTablaPedidos arrayCampos={camposTabla}></CabeceraTablaPedidos>
+                            <td>{pedido.nroPedido}</td>
+                            <td>{pedido.mozo}</td>
+                            <td>{pedido.mesa.nroMesa}</td>
 
-            <tbody>
-                {pedidosFiltrados.map((pedido) => (
-                    <tr key={pedido.nroPedido} data-estado={pedido.estadoPedido} className="fila-cocina">
+                            <td> 
+                                <Acordeon> 
+                                    <table className="tabla-acordeon">
+                                        
+                                        <CabeceraTablaPedidos arrayCampos={camposAcordeon}></CabeceraTablaPedidos>
 
-                        <td>{pedido.nroPedido}</td>
-                        <td>{pedido.mozo}</td>
-                        <td>{pedido.mesa.nroMesa}</td>
+                                        <tbody>
+                                            {pedido.lineasPedido.map((producto, index) => (
+                                                <tr key={index} className="fila">
+                                                    <td>{producto.idProducto}</td>
+                                                    <td>{producto.nombreProducto}</td>
+                                                    <td>{producto.cantidad}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </Acordeon>
+                            </td>
 
-                        <td> 
-                            <Acordeon> 
-                                <table className="tabla-acordeon">
-                                    
-                                    <CabeceraTablaPedidos arrayCampos={camposAcordeon}></CabeceraTablaPedidos>
+                            <td>
+                                <span className={`estado ${pedido.estadoPedido.toLowerCase()}`}>
+                                    {pedido.estadoPedido}
+                                </span>
+                            </td>
+                            
+                            <td className="acciones">
+                                <button
+                                    className="info"
+                                    onClick={() => abrirObservacion(pedido)}
+                                >
+                                    Ver detalle
+                                </button>
+                                <button
+                                    className="modificar"
+                                    onClick={() => cambiarEstado(pedido.nroPedido)}
+                                >
+                                    Cambiar Estado
+                                </button>
+                                <button
+                                    className="modificarFinalizado"
+                                    onClick={() => cambiarEstadoListo(pedido.nroPedido)}
+                                >
+                                    Marcar Listo
+                                </button>
 
-                                    <tbody>
-                                        {pedido.lineasPedido.map((producto, index) => (
-                                            <tr key={index} className="fila">
-                                                <td>{producto.idProducto}</td>
-                                                <td>{producto.nombreProducto}</td>
-                                                <td>{producto.cantidad}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </Acordeon>
-                        </td>
-
-                        <td>
-                            <span className={`estado ${pedido.estadoPedido.toLowerCase()}`}>
-                                {pedido.estadoPedido}
-                            </span>
-                        </td>
-                        
-                        <td className="acciones">
-                            <button
-                                className="info"
-                                onClick={() => abrirObservacion(pedido)}
-                            >
-                                Ver detalle
-                            </button>
-                            <button
-                                className="modificar"
-                                onClick={() => cambiarEstado(pedido.nroPedido)}
-                            >
-                                Cambiar Estado
-                            </button>
-                            <button
-                                className="modificar"
-                                onClick={() => cambiarEstadoListo(pedido.nroPedido)}
-                            >
-                                Marcar Listo
-                            </button>
-
-                            <DetallePedido funcionAbrir={estadoObservacion} funcionCerrar={cerrarObservacion}>
-                                <h2>Detalle del Observacion #{idPedido}</h2>
-                                {pedidoObservacion && (
-                                    <>
-                                        <div className="filtros">
-                                            <p>{pedidoObservacion.observacion}</p>
-                                        </div>
-                                    </>
-                                )}
-                            </DetallePedido>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+                                <DetallePedido funcionAbrir={estadoObservacion} funcionCerrar={cerrarObservacion}>
+                                    <h2>Detalle del Observacion #{idPedido}</h2>
+                                    {pedidoObservacion && (
+                                        <>
+                                            <div className="filtros">
+                                                <p>{pedidoObservacion.observacion}</p>
+                                            </div>
+                                        </>
+                                    )}
+                                </DetallePedido>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
     </div>
     );
 }

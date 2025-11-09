@@ -539,9 +539,7 @@ h3 {
     padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
-    margin-bottom: 15px;
     font-weight: bold;
-    margin-left: 10px;
 }
 
 .boton-ver-menu:hover {
@@ -578,13 +576,6 @@ h3 {
 
 /*================== TABLA DE PEDIDOS CSS ==================*/
 
-/*body {
-    font-family: 'Nunito', sans-serif;
-    background-color: #FBF7EF;
-    margin: 0;
-    padding: 0;
-}*/
-
 .tabla-contenedor {
     font-family: 'Nunito', sans-serif;
     padding: 20px;
@@ -594,13 +585,13 @@ h3 {
     margin-top: 0;
     text-align: center;
     color: #7F5539;
+    font-family: 'MuseoModerno', sans-serif;
 }
 
 .filtros-estado {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
 }
 
 .estados {
@@ -617,6 +608,7 @@ h3 {
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+    font-family: 'Nunito', sans-serif;
 }
 
 .boton-agregar:hover {
@@ -624,12 +616,13 @@ h3 {
 }
 
 .tabla { 
-    width: 100%;
+    width: 80%;
     border-collapse: collapse;
     background: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
 }
 
 .tabla th,
@@ -647,6 +640,21 @@ h3 {
 
 .tabla tbody tr:nth-child(even) {
     background-color: #fcfcfc;
+}
+
+.div-botones {
+  width: 80%;
+  margin: 0 auto 15px auto; 
+  display: flex;
+  align-items: center; 
+  justify-content: space-between;
+}
+
+.controles-izquierda {
+    display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  gap: 10px; 
 }
 
 .estado-label {
@@ -728,6 +736,7 @@ h3 {
     background-color: #db3535;
     color: white; 
 }
+
 .boton-cancelar-fila:hover {
     background-color: #eb3f3f;
 }
@@ -745,13 +754,66 @@ h3 {
 }
 
 .modificar {
-  background-color: #4baeff;
+  background-color: #64b5f6;
 }
 
 .baja {
-  background-color: #e63c4d;
+  background-color: #db3535;
+  color: white;
 }
 
 .info {
   background-color: #fedd24;
 }
+
+.modificarFinalizado {
+    background-color: rgb(128, 189, 36);
+}
+
+.modificarFinalizado:hover{
+    background-color: rgb(114, 163, 39);
+}
+
+.boton-estado-mesa {
+    background-color: #7F5539;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Nunito', sans-serif;
+}
+
+.boton-cambiar-estado-mesa {
+    background-color: #64b5f6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Nunito', sans-serif;
+    margin-right: 5px;
+}
+
+.baja-mesa {
+    background-color: #db3535;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.modificar-user {
+    background-color: #64b5f6;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
