@@ -74,11 +74,10 @@ export default function PedidosLista() {
         }
     };
 
-    //Navegar a modificar pedido
     const navegarAModificar = (id) => {
-        // 🎯 La ruta debe incluir el ID del pedido
         navigate(`/pedidos/modificar/${id}`);
     };
+
 
     // Filtrar por estado
     const pedidosFiltrados = (() => {
@@ -96,6 +95,7 @@ export default function PedidosLista() {
         }
     })();
 
+    
     //Definimos los campos de la tabla
     const arrayCampos = ["ID", "Mesa", "Mozo", "Fecha", "Estado", "Total", "Acciones"];
 

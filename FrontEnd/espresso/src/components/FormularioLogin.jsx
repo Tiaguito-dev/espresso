@@ -34,6 +34,9 @@ const FormularioLogin = () => {
 
         try {
             const response = await iniciarSesion(data);
+            if (response.token) {
+                localStorage.setItem('token', response.token);
+            }
             autenticarUsuario(response);
             console.log("Inicio de sesión exitoso:", response);
             if (response) {

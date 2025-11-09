@@ -59,7 +59,8 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
                         onClick={() => funcionModificar(pedido.nroPedido)}
                         className="btn-fila-accion btn-modificar-fila" 
                         disabled={isFinishedOrCanceled}
-                        style={{ opacity: isFinishedOrCanceled ? 0.6 : 1}}
+                        style={{ opacity: isFinishedOrCanceled ? 0.6 : 1, 
+                                 cursor: isFinishedOrCanceled ? 'not-allowed' : 'pointer' }}
                     >
                         Modificar
                     </button>
