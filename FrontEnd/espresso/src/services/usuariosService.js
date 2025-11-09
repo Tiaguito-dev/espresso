@@ -1,10 +1,15 @@
 const API_BASE = "http://localhost:3001/api";
 
-/* --------------------------- LOGIN --------------------------- */
+const getAuthHeaders = () => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${localStorage.getItem("token")}`,
+});
+
+/* -------------------- LOGIN ------------------------------- */
 export const iniciarSesion = async (credenciales) => {
   const response = await fetch(`${API_BASE}/auth/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(credenciales),
   });
 
@@ -23,11 +28,11 @@ export const iniciarSesion = async (credenciales) => {
   };
 };
 
-/* ---------------------- REGISTRAR USUARIO --------------------- */
+/* -------------------- REGISTRAR USUARIO -------------------- */
 export const registrarUsuario = async (usuarioData) => {
   const response = await fetch(`${API_BASE}/auth/registrar`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(usuarioData),
   });
 
@@ -36,14 +41,13 @@ export const registrarUsuario = async (usuarioData) => {
     throw new Error(err.mensaje || "Error al registrar usuario");
   }
 
-  return await response.json(); // { mensaje, usuario }
+  return await response.json();
 };
 
-/* -------------------- OBTENER PERFIL ACTUAL ------------------- */
+/* -------------------- PERFIL ACTUAL ------------------------ */
 export const obtenerMiPerfil = async () => {
-  const token = localStorage.getItem("token");
   const response = await fetch(`${API_BASE}/usuarios/mi-perfil`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -55,11 +59,10 @@ export const obtenerMiPerfil = async () => {
   return data.perfil;
 };
 
-/* -------------------- OBTENER TODOS LOS USUARIOS -------------- */
+/* -------------------- OBTENER TODOS ------------------------ */
 export const obtenerUsuarios = async () => {
-  const token = localStorage.getItem("token");
   const response = await fetch(`${API_BASE}/usuarios`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -71,11 +74,10 @@ export const obtenerUsuarios = async () => {
   return data.usuarios || [];
 };
 
-/* -------------------- OBTENER USUARIO POR ID ------------------ */
+/* -------------------- OBTENER POR ID ----------------------- */
 export const obtenerUsuarioPorId = async (id) => {
-  const token = localStorage.getItem("token");
   const response = await fetch(`${API_BASE}/usuarios/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -87,87 +89,11 @@ export const obtenerUsuarioPorId = async (id) => {
   return data.usuario || data;
 };
 
-/* -------------------- ACTUALIZAR USUARIO ---------------------- */
-export const actualizarUsuario = async (id, usuarioData) => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_BASE}/usuarios/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(usuarioData),
-  });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.mensaje || "Error al actualizar usuario");
-  }
-
-  return await response.json();
-};
-
-/* -------------------- CAMBIAR PERFIL -------------------------- */
-export const cambiarPerfilUsuario = async (codigoUsuario, nuevoPerfil) => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_BASE}/usuarios/perfil/${codigoUsuario}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ perfil: nuevoPerfil }),
-  });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.mensaje || "Error al cambiar el perfil del usuario");
-  }
-
-  return await response.json();
-};
-
-/* -------------------- ELIMINAR USUARIO ------------------------ */
-export const eliminarUsuario = async (codigoUsuario) => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_BASE}/usuarios/${codigoUsuario}`, {
-    method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.mensaje || "Error al eliminar usuario");
-  }
-
-  return await response.json();
-};
-
-/* -------------------- OBTENER PERFILES ------------------------ */
-export const obtenerPerfiles = async () => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_BASE}/usuarios/perfiles`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.mensaje || "Error al obtener perfiles");
-  }
-
-  const data = await response.json();
-  return data.perfiles || [];
-};
-
-/* -------------------- CREAR USUARIO --------------------------- */
+/* -------------------- CREAR USUARIO ------------------------ */
 export const createUsuario = async (usuarioData) => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_BASE}/usuarios`, { // 🔹 asegurate de incluir /usuarios
+  const response = await fetch(`${API_BASE}/usuarios`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify(usuarioData),
   });
 
@@ -179,15 +105,11 @@ export const createUsuario = async (usuarioData) => {
   return await response.json();
 };
 
-/* -------------------- ACTUALIZAR USUARIO ---------------------- */
+/* -------------------- ACTUALIZAR USUARIO ------------------- */
 export const updateUsuario = async (id, usuarioData) => {
-  const token = localStorage.getItem("token");
   const response = await fetch(`${API_BASE}/usuarios/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify(usuarioData),
   });
 
@@ -197,4 +119,52 @@ export const updateUsuario = async (id, usuarioData) => {
   }
 
   return await response.json();
+};
+
+/* -------------------- CAMBIAR PERFIL ----------------------- */
+export const cambiarPerfilUsuario = async (codigoUsuario, nuevoPerfil) => {
+  const response = await fetch(`${API_BASE}/usuarios/perfil/${codigoUsuario}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ perfil: nuevoPerfil }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.mensaje || "Error al cambiar el perfil del usuario");
+  }
+
+  return await response.json();
+};
+
+/* -------------------- ELIMINAR USUARIO --------------------- */
+export const eliminarUsuario = async (codigoUsuario) => {
+  const response = await fetch(`${API_BASE}/usuarios/${codigoUsuario}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.mensaje || "Error al eliminar usuario");
+  }
+
+  return await response.json();
+};
+
+/* -------------------- OBTENER PERFILES --------------------- */
+export const obtenerPerfiles = async () => {
+  const response = await fetch(`${API_BASE}/perfiles`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.mensaje || "Error al obtener perfiles");
+  }
+
+  const data = await response.json();
+
+
+  return data; // o lo que uses
 };

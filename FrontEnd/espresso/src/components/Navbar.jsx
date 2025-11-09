@@ -48,8 +48,13 @@ export default function Navbar() {
           <li><NavLink to="/cocina" onClick={cerrarMenu}>Gestión de cocina</NavLink></li>
         )}
 
+        {(perfil === "mozo" || perfil === "admin") && (
+          <li><NavLink to="/mesas" onClick={cerrarMenu}>Gestión de mesas</NavLink></li>
+        )}
 
-
+        {(perfil === "admin") && (
+          <li><NavLink to="/usuarios" onClick={cerrarMenu}>Gestión de perfiles</NavLink></li>
+        )}
       </ul>
     </nav>
   );

@@ -3,7 +3,7 @@
 
 
   const usuariosController = require('../controllers/usuariosController');
-
+  const autenticacionController = require('../controllers/autenticacionController');
   const auth = require('../middlewares/auth');
 
 
@@ -39,6 +39,6 @@
       '/',
       auth.verificarToken,
       auth.verificarPerfil(['admin']),
-      usuariosController.crearUsuario
+      autenticacionController.registrar
     );
   module.exports = router;

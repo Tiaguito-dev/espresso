@@ -14,6 +14,7 @@ export default function MesasLista() {
   const [estadoFiltro, setEstadoFiltro] = useState("todas");
   const navigate = useNavigate();
 
+  // 🔹 Cargar mesas al montar el componente
   useEffect(() => {
     fetchMesas();
   }, []);
@@ -28,14 +29,15 @@ export default function MesasLista() {
     }
   };
 
+  // 🔹 Cambiar estado de una mesa (Disponible ↔ Ocupada)
   const cambiarEstado = async (nroMesa) => {
     const mesa = mesas.find((m) => m.nroMesa === nroMesa);
     if (!mesa) return;
 
-    let nuevoEstado;
-    // Ahora podemos volver de fuera de servicio a disponible
-    if (mesa.estadoMesa === ESTADOS.DISPONIBLE) nuevoEstado = ESTADOS.OCUPADA;
-    else nuevoEstado = ESTADOS.DISPONIBLE;
+    let nuevoEstado =
+      mesa.estadoMesa === ESTADOS.DISPONIBLE
+        ? ESTADOS.OCUPADA
+        : ESTADOS.DISPONIBLE;
 
     try {
       await updateMesa(nroMesa, { estado: nuevoEstado });
@@ -49,14 +51,17 @@ export default function MesasLista() {
     }
   };
 
+  // 🔹 Dar de baja una mesa (pasar a "fuera de servicio")
   const eliminarMesa = async (nroMesa) => {
     if (!window.confirm(`¿Dar de baja mesa ${nroMesa}?`)) return;
+
     try {
-      // Pasamos a fuera de servicio
       await updateMesa(nroMesa, { estado: ESTADOS.FUERA_SERVICIO });
       setMesas((prev) =>
         prev.map((m) =>
-          m.nroMesa === nroMesa ? { ...m, estadoMesa: ESTADOS.FUERA_SERVICIO } : m
+          m.nroMesa === nroMesa
+            ? { ...m, estadoMesa: ESTADOS.FUERA_SERVICIO }
+            : m
         )
       );
     } catch (error) {
@@ -64,6 +69,7 @@ export default function MesasLista() {
     }
   };
 
+  // 🔹 Filtrado por estado
   const mesasFiltradas =
     estadoFiltro === "todas"
       ? mesas
@@ -71,26 +77,45 @@ export default function MesasLista() {
 
   const arrayCampos = ["Número", "Estado", "Acciones"];
 
+  // 🔹 Render
   return (
     <div className="container">
       <div className="filtros-estado">
         <div className="estados">
-          <button onClick={() => setEstadoFiltro("todas")} className="btn btn-estado">
+          <button
+            onClick={() => setEstadoFiltro("todas")}
+            className="btn btn-estado"
+          >
             Todas
           </button>
-          <button onClick={() => setEstadoFiltro(ESTADOS.DISPONIBLE)} className="btn btn-estado">
+
+          <button
+            onClick={() => setEstadoFiltro(ESTADOS.DISPONIBLE)}
+            className="btn btn-estado"
+          >
             Disponible
           </button>
-          <button onClick={() => setEstadoFiltro(ESTADOS.OCUPADA)} className="btn btn-estado">
+
+          <button
+            onClick={() => setEstadoFiltro(ESTADOS.OCUPADA)}
+            className="btn btn-estado"
+          >
             Ocupada
           </button>
-          <button onClick={() => setEstadoFiltro(ESTADOS.FUERA_SERVICIO)} className="btn btn-estado">
+
+          <button
+            onClick={() => setEstadoFiltro(ESTADOS.FUERA_SERVICIO)}
+            className="btn btn-estado"
+          >
             Fuera de Servicio
           </button>
         </div>
 
-        <button className="btn-agregar" onClick={() => navigate("/mesas/nueva")}>
-        + Agregar Mesa
+        <button
+          className="btn-agregar"
+          onClick={() => navigate("/mesas/nueva")}
+        >
+          + Agregar Mesa
         </button>
       </div>
 
