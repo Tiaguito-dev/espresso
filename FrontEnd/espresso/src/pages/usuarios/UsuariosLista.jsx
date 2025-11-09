@@ -36,7 +36,7 @@ export default function UsuariosLista() {
 
       {error && <p className="error-message">{error}</p>}
 
-      <button onClick={handleAgregar}>➕ Agregar Usuario</button>
+      <button onClick={handleAgregar}>Agregar Usuario</button>
 
       <table className="tabla-usuarios">
         <thead>
@@ -57,7 +57,7 @@ export default function UsuariosLista() {
                 <td>{u.correo}</td>
                 <td>{u.perfil?.nombre ?? u.perfil ?? "—"}</td>
                 <td>
-                  <button onClick={() => handleEditar(u.codigo)}>✏️ Editar</button>
+                  <button onClick={() => handleEditar(u.codigo)}> Editar</button>
                 </td>
               </tr>
             ))

@@ -29,7 +29,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionEliminar }) {
     <tr>
       <td>{pedido.nroPedido}</td>
       <td>{pedido.mesa.nroMesa}</td>
-      <td>4</td>
+      <td>{pedido.mozo}</td>
       <td>{pedido.fecha || "-"}</td>
       <td><span className={claseEstado}>{pedido.estadoPedido}</span></td>
       <td>${pedido.total}</td>

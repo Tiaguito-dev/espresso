@@ -1,7 +1,7 @@
 // src/pages/usuarios/FilaUsuarios.jsx
 import React from "react";
 
-export default function FilaUsuarios({ usuario, funcionCambiarPerfil, funcionEliminar }) {
+export default function FilaUsuarios({usuario,funcionCambiarPerfil,funcionEliminar,}) {
   // perfil puede venir como objeto { nombre } o como string
   const nombrePerfil = usuario?.perfil?.nombre ?? usuario?.perfil ?? "";
 
@@ -14,8 +14,12 @@ export default function FilaUsuarios({ usuario, funcionCambiarPerfil, funcionEli
         <span style={{ cursor: "pointer" }}>{nombrePerfil}</span>
       </td>
       <td>
-        <button onClick={() => funcionCambiarPerfil(usuario.codigo)}>Cambiar Perfil</button>
-        <button onClick={() => funcionEliminar(usuario.codigo)}>Eliminar</button>
+        <button onClick={() => funcionCambiarPerfil(usuario.codigo)}>
+          Cambiar Perfil
+        </button>
+        <button onClick={() => funcionEliminar(usuario.codigo)}>
+          Eliminar
+        </button>
       </td>
     </tr>
   );

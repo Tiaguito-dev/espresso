@@ -1,12 +1,7 @@
 // src/pages/usuarios/FormUsuario.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  obtenerUsuarioPorId,
-  createUsuario,
-  updateUsuario,
-  obtenerPerfiles,
-} from "../../services/usuariosService";
+import {obtenerUsuarioPorId,createUsuario,updateUsuario,obtenerPerfiles,} from "../../services/usuariosService";
 
 const USUARIO_INICIAL = {
   nombre: "",
@@ -20,39 +15,33 @@ export default function FormUsuario() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState(USUARIO_INICIAL);
   const [perfiles, setPerfiles] = useState([]);
-  const [loading, setLoading] = useState(!!id);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const esModificar = !!id;
+  const esModificar = Boolean(id);
 
   useEffect(() => {
-    const fetchPerfiles = async () => {
+    const cargarDatos = async () => {
       try {
-        const perfilesData = await obtenerPerfiles();
-        if (!perfilesData || perfilesData.length === 0) {
-          console.warn("Backend no devolvió perfiles, usando valores por defecto");
+        let perfilesData = await obtenerPerfiles();
+        if (!Array.isArray(perfilesData) || perfilesData.length === 0) {
+          console.warn("Backend no devolvió perfiles, usando por defecto");
           setPerfiles(["admin", "mozo", "cocina"]);
         } else {
-          setPerfiles(perfilesData);
+          console.log("✅ Perfiles cargados en el form:", perfilesData);
+          setPerfiles(perfilesData); // <-- acá se guardan los perfiles del backend
         }
-      } catch (err) {
-        console.error("Error obteniendo perfiles:", err);
-        setPerfiles(["admin", "mozo", "cocina"]); // fallback
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    const fetchUsuario = async () => {
-      try {
-        const data = await obtenerUsuarioPorId(id);
-        const perfilNombre = data?.perfil?.nombre ?? data?.perfil ?? "";
-        setUsuario({
-          nombre: data?.nombre || "",
-          correo: data?.correo || "",
-          contraseña: "", // no traer contraseña
-          perfil: perfilNombre,
-        });
+        if (esModificar) {
+          const data = await obtenerUsuarioPorId(id);
+          const perfilNombre = data?.perfil?.nombre ?? data?.perfil ?? "";
+          setUsuario({
+            nombre: data?.nombre || "",
+            correo: data?.correo || "",
+            contraseña: "", // no traer contraseña
+            perfil: perfilNombre,
+          });
+        }
       } catch (err) {
         console.error("Error cargando usuario:", err);
         setError("No se pudo cargar el usuario para modificar.");
@@ -61,9 +50,7 @@ export default function FormUsuario() {
       }
     };
 
-    // Ejecutar ambas funciones según corresponda
-    fetchPerfiles();
-    if (esModificar) fetchUsuario();
+    cargarDatos();
   }, [id, esModificar]);
 
   const handleChange = (e) => {
@@ -81,30 +68,36 @@ export default function FormUsuario() {
     }
 
     try {
-      const payload = { ...usuario, perfil: usuario.perfil?.nombre ?? usuario.perfil };
+      const payload = { ...usuario };
+      if (!usuario.contraseña) delete payload.contraseña; 
+
       if (esModificar) {
-        if (!payload.contraseña) delete payload.contraseña;
         await updateUsuario(id, payload);
-        alert(`Usuario ${id} modificado con éxito.`);
+        alert("Usuario modificado con éxito.");
       } else {
         await createUsuario(payload);
         alert("Usuario agregado con éxito.");
       }
+
       navigate("/usuarios");
     } catch (err) {
       console.error("Error guardando usuario:", err);
-      setError(`Error al guardar el usuario: ${err.message || "Verifique los datos."}`);
+      setError(
+        err.message ||
+          "Ocurrió un error al guardar el usuario. Verifique los datos."
+      );
     }
   };
 
   const handleCancelar = () => navigate("/usuarios");
 
-  if (loading) return <div className="container">Cargando usuario...</div>;
+  if (loading) return <div className="container">Cargando datos...</div>;
 
   return (
     <div className="form-mesa-container">
-      <h2>{esModificar ? `Modificar Usuario ${usuario.nombre || "..."}` : "Registrar Nuevo Usuario"}</h2>
+      <h2>{esModificar ? "Modificar Usuario" : "Registrar Nuevo Usuario"}</h2>
       {error && <p className="error-message">{error}</p>}
+
       <form onSubmit={handleGuardar}>
         <input
           type="text"
@@ -122,37 +115,38 @@ export default function FormUsuario() {
           placeholder="Correo"
           required
         />
-        {!esModificar && (
-          <input
-            type="password"
-            name="contraseña"
-            value={usuario.contraseña}
-            onChange={handleChange}
-            placeholder="Contraseña"
-            required
-          />
-        )}
-        {esModificar && (
-          <input
-            type="password"
-            name="contraseña"
-            value={usuario.contraseña}
-            onChange={handleChange}
-            placeholder="Nueva contraseña (opcional)"
-          />
-        )}
-        <select name="perfil" value={usuario.perfil} onChange={handleChange} required>
+
+        <input
+          type="password"
+          name="contraseña"
+          value={usuario.contraseña}
+          onChange={handleChange}
+          placeholder={esModificar ? "Nueva contraseña (opcional)" : "Contraseña"}
+          required={!esModificar}
+        />
+
+        <select
+          name="perfil"
+          value={usuario.perfil}
+          onChange={handleChange}
+          required
+        >
           <option value="">Seleccione un perfil</option>
           {perfiles.map((p) => (
-            <option key={p.codigo ?? p.nombre ?? p} value={p.nombre ?? p}>
-              {p.nombre ?? p}
+            <option key={p.codigo} value={p.nombre}>
+              {p.nombre}
             </option>
           ))}
         </select>
-        <button type="submit">{esModificar ? "Guardar Cambios" : "Agregar Usuario"}</button>
-        <button type="button" onClick={handleCancelar}>
-          Cancelar
-        </button>
+        
+        <div className="form-buttons">
+          <button type="submit">
+            {esModificar ? "Guardar Cambios" : "Agregar Usuario"}
+          </button>
+          <button type="button" onClick={handleCancelar}>
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );
