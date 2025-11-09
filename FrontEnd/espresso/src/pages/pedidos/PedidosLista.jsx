@@ -38,10 +38,10 @@ export default function PedidosLista() {
             if (!pedidoActual) return;
 
             let siguienteEstado;
-            if (pedidoActual.estadoPedido === "Pendiente") {
-                siguienteEstado = "Listo";
-            } else if (pedidoActual.estadoPedido === "Listo") {
-                siguienteEstado = "Finalizado";
+            if (pedidoActual.estadoPedido === "pendiente") {
+                siguienteEstado = "listo";
+            } else if (pedidoActual.estadoPedido === "listo") {
+                siguienteEstado = "finalizado";
             } else {
                 alert(`El pedido ya está ${pedidoActual.estadoPedido} y no se puede avanzar.`);
                 return;
@@ -58,7 +58,7 @@ export default function PedidosLista() {
     const cancelarPedido = async (id) => {
         if (window.confirm("¿Seguro que desea CANCELAR el pedido? El estado pasará a 'Cancelado'.")) {
             try {
-                await updatePedido(id, { nuevoEstado: "Cancelado" });
+                await updatePedido(id, { nuevoEstado: "cancelado" });
 
                 fetchPedidos();
                 alert("Pedido cancelado correctamente.");
@@ -78,13 +78,13 @@ export default function PedidosLista() {
     const pedidosFiltrados = (() => {
         switch (estadoFiltro) {
             case "pendiente":
-                return pedidos.filter((pedido) => pedido.estadoPedido === "Pendiente");
+                return pedidos.filter((pedido) => pedido.estadoPedido === "pendiente");
             case "listo":
-                return pedidos.filter((pedido) => pedido.estadoPedido === "Listo");
+                return pedidos.filter((pedido) => pedido.estadoPedido === "listo");
             case "finalizado":
-                return pedidos.filter((pedido) => pedido.estadoPedido === "Finalizado");
+                return pedidos.filter((pedido) => pedido.estadoPedido === "finalizado");
             case "cancelado":
-                return pedidos.filter((pedido) => pedido.estadoPedido === "Cancelado");
+                return pedidos.filter((pedido) => pedido.estadoPedido === "cancelado");
             default:
                 return pedidos;
         }

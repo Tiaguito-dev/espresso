@@ -8,9 +8,9 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
     let textoBotonEstado = '';
     let deshabilitarBotonEstado = false;
 
-    if (pedido.estadoPedido === "Pendiente") {
+    if (pedido.estadoPedido === "pendiente") {
         textoBotonEstado = "Pasar a Listo";
-    } else if (pedido.estadoPedido === "Listo") {
+    } else if (pedido.estadoPedido === "listo") {
         textoBotonEstado = "Pasar a Finalizado";
     } else {
         textoBotonEstado = "Proceso Completo";
@@ -19,7 +19,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
     
     const claseEstado = `estado-label estado-${pedido.estadoPedido}`;
     
-    const isFinishedOrCanceled = pedido.estadoPedido === "Finalizado" || pedido.estadoPedido === "Cancelado";
+    const isFinishedOrCanceled = pedido.estadoPedido === "finalizado" || pedido.estadoPedido === "cancelado";
 
     return (
         <tr>
