@@ -20,7 +20,7 @@ router.get('/:id', menuController.obtenerProductoPorId);
 // Ruta para crear un nuevo producto  POST/
 router.post('/', 
     verificarToken,
-    verificarPerfil(['admin']),
+    verificarPerfil(['mozo', 'cocinero', 'admin']),
     menuController.crearProducto);
 
 // Ruta para actualizar un producto  PUT/123

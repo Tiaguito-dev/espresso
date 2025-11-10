@@ -15,7 +15,7 @@ router.put('/:id',
 // Solo mozos pueden crear pedidos
 router.post('/',
     verificarToken,
-    verificarPerfil(['mozo', 'admin']), // Array de perfiles permitidos
+    verificarPerfil(['mozo', 'cocinero', 'admin']), // Array de perfiles permitidos
     pedidosController.crearPedido
 );
 
@@ -34,13 +34,13 @@ router.get('/:id',
 
 router.post('/:id/lineas',
     verificarToken,
-    verificarPerfil(['mozo', 'admin']),
+    verificarPerfil(['mozo', 'cocinero', 'admin']),
     pedidosController.agregarLineaAPedido
 );
 
 router.delete('/:id/lineas/:idLinea',
     verificarToken,
-    verificarPerfil(['mozo', 'admin']),
+    verificarPerfil(['mozo', 'cocinero', 'admin']),
     pedidosController.eliminarLineaDePedido
 );
 

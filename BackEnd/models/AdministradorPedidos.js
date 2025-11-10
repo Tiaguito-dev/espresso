@@ -15,9 +15,14 @@ class AdministradorPedidos {
     async convertirPedidoBD(pedidos) {
         const pedidosObj = [];
         // ESTO LO HACE BIEN console.log('Pedidos recibidos de BD:', pedidos);
+        console.log("--- Iniciando convertirPedidoBD ---");
         for (const pedido of pedidos) {
+            console.log(`Procesando Pedido Nro: ${pedido.nro_pedido}`);
             const mesaObj = await this.mesas.buscarMesaPorNumero(pedido.id_mesa);
-
+            if (!mesaObj) {
+                console.warn(`ADVERTENCIA: Pedido ${pedido.nro_pedido} omitido. La mesa (ID: ${pedido.id_mesa}) no existe.`);
+                continue; 
+            }
             const lineasBD = await PedidoBD.obtenerLineasPorNroPedido(pedido.nro_pedido);
 
             // ESTO LO HACE BIENconsole.log(`Líneas recibidas de BD para el pedido ${pedido.nro_pedido}:`, lineasBD);
@@ -27,8 +32,12 @@ class AdministradorPedidos {
             const lineasObj = [];
 
             for (const linea of lineasBD) {
+                console.log(`Procesando línea ${linea.id_linea_pedido}...`);
                 const productoObj = await this.menu.buscarProductoPorId(linea.id);
-
+                if (!productoObj) {
+                    console.warn(`ADVERTENCIA: Pedido ${pedido.nro_pedido} - Línea omitida. El producto (ID: ${linea.id}) no existe.`);
+                    continue;
+                }
                 if (productoObj) {
                     lineasObj.push(new LineaPedido({
                         //id: productoObj.id, //TODO: VER SI ESTO ANDA BIEN
@@ -53,9 +62,11 @@ class AdministradorPedidos {
                 mesa: mesaObj,
                 lineasPedido: lineasObj
             }));
+            console.log("'new Pedido' creado con éxito.");
         }
         // Imprimo las lineas de pedido para verificar 
         // console.log('Lineas de pedido convertidas:', pedidosObj.map(p => p.lineasPedido));
+        console.log("--- Finalizando convertirPedidoBD ---");
         return pedidosObj;
     }
 
@@ -69,6 +80,17 @@ class AdministradorPedidos {
         const mesaObj = await this.mesas.buscarMesaPorNumero(nroMesa);
         if (!mesaObj) {
             throw new Error(`Mesa ${nroMesa} no encontrada`);
+        }
+        
+        if (mesaObj.estadoMesa.toLowerCase() !== 'disponible') {
+            throw new Error(`La mesa ${nroMesa} no está disponible. Estado actual: ${mesaObj.estadoMesa}`);
+        }
+
+        try {
+            await this.mesas.cambiarEstadoMesa(nroMesa, 'ocupada');
+            mesaObj.estadoMesa = 'ocupada';
+        } catch (error) {
+            throw new Error(`Error al intentar ocupar la mesa ${nroMesa}: ${error.message}`);
         }
 
         let montoTotal = 0;

@@ -4,16 +4,16 @@ const router = express.Router();
 const mesaController = require('../controllers/mesasController');
 const { verificarToken, verificarPerfil } = require('../middlewares/auth');
 
-// Ruta para obtener todos los pedidos
+// Ruta para obtener todos los mesas
 router.get('/', 
     verificarToken,
     verificarPerfil(['mozo', 'cocinero', 'admin']),
     mesaController.obtenerMesas);
 
-// Ruta para crear un nuevo pedido
+// Ruta para crear un nueva mesa
 router.post('/', 
     verificarToken,
-    verificarPerfil(['admin']),
+    verificarPerfil(['mozo', 'cocinero', 'admin']),
     mesaController.crearMesa);
 
 // Ruta para actualizar un pedido

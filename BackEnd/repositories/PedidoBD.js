@@ -5,7 +5,7 @@ const Gateway = require('../DB/Gateway');
 const selectPedidosFecha = `SELECT pedido.*, usuario.nombre AS nombre_mozo FROM pedido JOIN usuario ON pedido.id_mozo = usuario.id_usuario WHERE date(pedido.fecha_registro)= date($1)`;
 //const selectPedidoPorNro = 'SELECT * FROM pedido WHERE nro_pedido = $1';
 const selectPedidoPorNro = `SELECT pedido.*, usuario.nombre AS nombre_mozo FROM pedido JOIN usuario ON pedido.id_mozo = usuario.id_usuario WHERE pedido.nro_pedido = $1`;
-const insertPedido = 'INSERT INTO pedido (nro_pedido, observacion, total, id_mozo, id_mesa) VALUES ($1, $2, $3, (SELECT id_usuario FROM usuario WHERE codigo = $4), (SELECT id_mesa FROM mesa WHERE nro_mesa = $5))';
+const insertPedido = 'INSERT INTO pedido (nro_pedido, observacion, total, id_mozo, id_mesa) VALUES ($1, $2, $3, (SELECT id_usuario FROM usuario WHERE codigo = $4), (SELECT nro_mesa FROM mesa WHERE nro_mesa = $5))';
 const selectUltimoNroPedido = 'SELECT MAX(nro_pedido) FROM pedido';
 const updateEstadoPedidoPorNro = 'UPDATE pedido SET estado = $2 WHERE nro_pedido = $1';
 const insertLineaPedido = `INSERT INTO linea_pedido (id_pedido, id_producto, cantidad, subtotal) VALUES ((SELECT id_pedido FROM pedido WHERE nro_pedido = $1), (SELECT id FROM producto WHERE id = $2), $3, $4);`;
