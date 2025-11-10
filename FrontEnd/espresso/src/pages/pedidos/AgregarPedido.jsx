@@ -93,12 +93,12 @@ function AgregarPedido() {
 		}
 		const productoParaAgregar = productosDisponibles.find(producto => producto.id == productoSeleccionadoId);
 		if (productoParaAgregar) {
-			setProductosPedido(prevProductos => [...prevProductos, { ...productoParaAgregar, cantidad: 1}]);
+			setProductosPedido(prevProductos => [...prevProductos, { ...productoParaAgregar, cantidad: 0}]);
 		}
 	}
 
 	const actualizarCantidadProducto = (idProducto, nuevaCantidad) => {
-		const cantidad = Math.max(1, parseInt(nuevaCantidad, 10) || 1);
+		const cantidad = Math.max(0, parseInt(nuevaCantidad, 10) || 1);
 		setProductosPedido(prevProductos =>
 			prevProductos.map(producto => (producto.id === idProducto ? { ...producto, cantidad: cantidad } : producto))
 		);
@@ -256,7 +256,7 @@ function AgregarPedido() {
                                                 type="number" 
                                                 value={producto.cantidad}
                                                 onChange={(evento) => actualizarCantidadProducto(producto.id, evento.target.value)}
-                                                min="1"
+                                                min="0"
                                                 className="input-cantidad"
                                                 disabled={cargando}
                                             />
