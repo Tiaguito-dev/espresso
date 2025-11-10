@@ -195,24 +195,8 @@ function AgregarPedido() {
                     </select>
                 </div>
                 
-<<<<<<< HEAD
-                <div className="form-group">
-=======
-                <div className="campo-mozo">
-                    <label htmlFor="mozo">Numero de Mozo</label>
-                    <input 
-                        type="text" 
-                        name="mozo" 
-                        id="mozo"
-                        value={pedidoInfo.mozo}
-                        onChange={actualizarVistaPedido}
-                        required
-                        disabled={cargando}
-                    />
-                </div>
                 
                 <div className="campo-observacion">
->>>>>>> avi-rama
                     <label htmlFor="observacion">Observaciones del Pedido</label>
                     <input 
                         type="text" 

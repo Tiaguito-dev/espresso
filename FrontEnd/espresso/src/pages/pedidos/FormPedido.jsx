@@ -9,7 +9,6 @@ import {
 import { getProductos } from "../../services/productosService";
 import CabeceraTablaPedidos from "../../components/CabeceraTablaPedidos";
 
-import "./AgregarPedido.css";
 
 const FormPedido = () => {
 
