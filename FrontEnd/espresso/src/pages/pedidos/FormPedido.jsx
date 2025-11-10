@@ -130,110 +130,113 @@ const FormPedido = () => {
     };
 
     return (
-        // NUEVO: Convertido en formulario con onSubmit
-        <form onSubmit={handleSubmit}>
-            <h3>Datos del Pedido</h3>
-            <table>
-                <CabeceraTablaPedidos arrayCampos={camposInfoPedido}></CabeceraTablaPedidos>
-                <tbody>
-                    <tr>
-                        <td>{pedido.nroPedido}</td>
-                        <td>{pedido.fecha}</td>
-                        <td>
-                            {/* NUEVO: Campo 'estado' ahora es editable */}
-                            <select 
-                                name="estadoPedido" 
-                                value={pedido.estadoPedido} 
-                                onChange={handlePedidoChange}
-                            >
-                                <option value="pendiente">Pendiente</option>
-                                <option value="listo">Listo</option>
-                                <option value="terminado">Terminado</option>
-                                <option value="cancelado">Cancelado</option>
-                            </select>
-                        </td>
-                        <td>{pedido.mesa.nroMesa}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div className="agregar-item">
+            <h2 className="titulo-accion">Datos del Pedido</h2>
+            <form className="formulario" onSubmit={handleSubmit}>
 
-            {/* NUEVO: Campo de Observación */}
-            <div>
-                <label htmlFor="observacion">Observaciones:</label>
-                <textarea 
-                    id="observacion"
-                    name="observacion"
-                    value={pedido.observacion}
-                    onChange={handlePedidoChange}
-                    rows="3"
-                    style={{ width: '100%' }}
-                />
-            </div>
+                <div>
+                    <label>Nro. Pedido</label>
+                    <input type="text" value={pedido.nroPedido} readOnly />
+                </div>
 
-            <hr />
+                <div>
+                    <label>Fecha</label>
+                    <input type="text" value={pedido.fecha} readOnly />
+                </div>
 
-            <h3>Líneas del Pedido</h3>
-            <table>
-                <CabeceraTablaPedidos arrayCampos={camposLineaPedido}></CabeceraTablaPedidos>
-                <tbody>
-                    {
-                        pedido.lineasPedido.map((linea) => (
-                            <tr key={linea.idLinea}>
-                                <td>{linea.idProducto}</td>
-                                <td>{linea.nombreProducto}</td>
-                                <td>{linea.precioUnitario}</td>
-                                <td>{linea.cantidad}</td>
-                                <td>
-                                    {/* NUEVO: Botón de eliminar con handler correcto */}
-                                    <button 
-                                        type="button" 
-                                        onClick={() => handleEliminarLinea(linea.idLinea)}
-                                    >
-                                        Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
+                <div>
+                    <label>Estado</label>
+                    <select 
+                        name="estadoPedido" 
+                        value={pedido.estadoPedido} 
+                        onChange={handlePedidoChange}
+                    >
+                        <option value="pendiente">Pendiente</option>
+                        <option value="listo">Listo</option>
+                        <option value="terminado">Terminado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
 
-            {/* NUEVO: Sección para agregar nuevos productos */}
-            <div className="agregar-linea-section">
-                <h4>Añadir Producto al Pedido</h4>
-                <select value={productoSeleccionado} onChange={(e) => setProductoSeleccionado(e.target.value)}>
-                    <option value="">-- Seleccione un producto --</option>
-                    {productos.map(producto => (
-                        // Asumo que tu producto tiene 'id' y 'nombre'
-                        <option key={producto.id} value={producto.id}>
-                            {producto.nombre} (${producto.precio})
-                        </option>
-                    ))}
-                </select>
+                <div>
+                    <label>Mesa</label>
+                    <input type="text" value={pedido.mesa.nroMesa} readOnly />
+                </div>
+
+                <div className="campo-observacion">
+                    <label htmlFor="observacion">Observaciones:</label>
+                    <textarea 
+                        id="observacion"
+                        name="observacion"
+                        value={pedido.observacion}
+                        onChange={handlePedidoChange}
+                        rows="3"
+                    />
+                </div>
+        
+                <h3 className="titulo-accion">Líneas del Pedido</h3>
+
+                <div className="tabla-productos">
+                    <table>
+                        <CabeceraTablaPedidos arrayCampos={camposLineaPedido} />
+                        <tbody>
+                            {pedido.lineasPedido.map((linea) => (
+                                <tr key={linea.idLinea}>
+                                    <td>{linea.idProducto}</td>
+                                    <td>{linea.nombreProducto}</td>
+                                    <td>{linea.precioUnitario}</td>
+                                    <td>{linea.cantidad}</td>
+                                    <td>
+                                        {/* Añade la clase 'btn-quitar' que ya tienes definida */}
+                                        <button 
+                                            type="button" 
+                                            className="btn-quitar" 
+                                            onClick={() => handleEliminarLinea(linea.idLinea)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
                 
-                <label htmlFor="cantidadNueva">Cantidad:</label>
-                <input 
-                    type="number" 
-                    id="cantidadNueva"
-                    value={cantidadNueva}
-                    onChange={(e) => setCantidadNueva(Math.max(1, Number(e.target.value)))}
-                    style={{ width: '60px' }}
-                    min="1"
-                />
+                <div className="formulario-agregar-producto">
+                    <h4>Añadir Producto al Pedido</h4>
+                    <select value={productoSeleccionado} onChange={(e) => setProductoSeleccionado(e.target.value)}>
+                        <option value="">-- Seleccione un producto --</option>
+                        {productos.map(producto => (
+                            <option key={producto.id} value={producto.id}>
+                                {producto.nombre} (${producto.precio})
+                            </option>
+                        ))}
+                    </select>
 
-                <button 
-                    type="button" 
-                    onClick={handleAgregarLinea}
-                >
-                    Añadir
-                </button>
-            </div>
+                    <div className="flex-item-control">
+                        <label htmlFor="cantidadNueva">Cantidad</label>
+                        <input 
+                            type="number" 
+                            id="cantidadNueva"
+                            value={cantidadNueva}
+                            onChange={(e) => setCantidadNueva(Math.max(1, Number(e.target.value)))}
+                            min="1"
+                            className="input-cantidad" 
+                        />
+                    </div>
 
-            <hr />
-
-            {/* NUEVO: Botón de guardado ahora es tipo 'submit' */}
-            <button type="submit">Guardar Cambios</button>
-        </form>
+                    <button
+                        className="agregar-linea-boton"
+                        type="button" 
+                        onClick={handleAgregarLinea}
+                    >
+                        Añadir
+                    </button>
+                </div>
+        
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>    
     )
 }
 

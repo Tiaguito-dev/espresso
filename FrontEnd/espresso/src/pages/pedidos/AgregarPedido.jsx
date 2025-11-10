@@ -3,6 +3,7 @@ import { createPedido } from "../../services/pedidosService";
 import { getProductos } from "../../services/productosService";
 import { getMesas } from "../../services/mesasService";
 import "../../UnicoCSS.css";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -21,6 +22,7 @@ function AgregarPedido() {
 	const [cargando, setCargando] = useState(false);
 	const [error, setError] = useState(false);
 	const [mensajeExito, setMensajeExito] = useState(null);
+	const navigate = useNavigate();
 
 
 	const cargarMesas = async () => {
@@ -156,13 +158,11 @@ function AgregarPedido() {
 			}
 
 			await cargarMesas();
+			navigate("/pedidos");
 		} catch (error) {
 			setError("Error al enviar el pedido: " + error.message);
-		} finally {
-			setCargando(false);
 		}
 	} 
-
 
 	return (
 		<div className="agregar-item">
@@ -180,9 +180,9 @@ function AgregarPedido() {
                     <select 
                         name="mesa" 
                         id="mesa"
-                        value={pedidoInfo.mesa} // <-- Enlazado al estado (inicialmente "")
+                        value={pedidoInfo.mesa} 
                         onChange={actualizarVistaPedido}
-                        required // <-- Evita envío si el valor es ""
+                        required // 
                         disabled={cargando || mesasDisponibles.length === 0}
                     >
                         <option value="">-- Seleccione una mesa --</option>
@@ -287,7 +287,7 @@ function AgregarPedido() {
                     </p>
                 </div>
 
-                <button type="submit" disabled={cargando || productosPedido.length === 0}>
+                <button type="submit" disabled={cargando || productosPedido.length === 0 }>
                     {cargando ? "Procesando..." : "Agregar Pedido"}
                 </button>
             </form>
