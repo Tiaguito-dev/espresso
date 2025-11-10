@@ -117,8 +117,8 @@ const FormPedido = () => {
                 observacion: pedido.observacion,
                 // Enviamos solo el ID de línea y la cantidad actualizada
                 lineasPedido: pedido.lineasPedido.map(linea => ({
-                    idLinea: parseInt(linea.idLinea),
-                    cantidad: parseInt(linea.cantidad)
+                    idLinea: linea.idLinea,
+                    cantidad: linea.cantidad
                 }))
             };
             

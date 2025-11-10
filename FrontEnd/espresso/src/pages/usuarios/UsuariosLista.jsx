@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { obtenerUsuarios } from "../../services/usuariosService";
 import { useNavigate } from "react-router-dom";
+import "../../UnicoCSS.css";
+import IconoModificar from "../../components/IconoModificar";
 
 export default function UsuariosLista() {
   const [usuarios, setUsuarios] = useState([]);
@@ -31,14 +33,16 @@ export default function UsuariosLista() {
   if (loading) return <p>Cargando usuarios...</p>;
 
   return (
-    <div className="container">
-      <h2>Gestión de Usuarios</h2>
+    <div className="tabla-contenedor">
+      <h1 className="titulo-tabla">Gestión de Usuarios</h1>
 
       {error && <p className="error-message">{error}</p>}
 
-      <button onClick={handleAgregar}>Agregar Usuario</button>
-
-      <table className="tabla-usuarios">
+      <div className="div-botones">
+        <button className="boton-agregar" onClick={handleAgregar}> + Agregar Usuario</button>
+      </div>
+      
+      <table className="tabla">
         <thead>
           <tr>
             <th>Código</th>
@@ -57,7 +61,8 @@ export default function UsuariosLista() {
                 <td>{u.correo}</td>
                 <td>{u.perfil?.nombre ?? u.perfil ?? "—"}</td>
                 <td>
-                  <button onClick={() => handleEditar(u.codigo)}> Editar</button>
+                  <button className="modificar-user" onClick={() => handleEditar(u.codigo)}> <IconoModificar size={18}></IconoModificar>
+                  </button>
                 </td>
               </tr>
             ))

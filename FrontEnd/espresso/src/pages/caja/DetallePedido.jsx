@@ -1,4 +1,4 @@
-import './DetallePedido.css';
+import "../../UnicoCSS.css";
 
 const DetallePedido = ({ funcionAbrir, funcionCerrar, children }) => {
 

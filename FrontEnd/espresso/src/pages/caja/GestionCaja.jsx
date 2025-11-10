@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getPedidos, updatePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
-import "../pedidos/PedidosLista.css";
+import "../../UnicoCSS.css"
 import Filtro from "./../menu/Filtro";
 import DetallePedido from './DetallePedido';
 import CabeceraTablaPedidos from "../../components/CabeceraTablaPedidos.jsx";
@@ -55,7 +55,7 @@ function GestionCaja() {
 //Funciones para cambios de estados fijos
 
     const cambiarEstadoFinalizado = async (id) => {
-        const nuevoEstado = "Finalizado";
+        const nuevoEstado = "finalizado";
         if (!nuevoEstado) return;
         try {
             await updatePedido(id, { estado: nuevoEstado });
@@ -92,29 +92,25 @@ function GestionCaja() {
     const camposDetalle = ["ID", "Producto", "Cantidad"];
 
     return (
-        <div className="container">
-        {/* Botón filtros */}
-        <button className="toggle-filtros" onClick={toggleFiltros}>
-            Filtros
-        </button>
-        {mostrarFiltros && (
-            <div className="filtros">
-                <input type="text" placeholder="Buscar por Mozo" />
-                <input type="text" placeholder="Buscar por Mesa" />
-            </div>
-        )}
+        <div className="tabla-contenedor">
 
-        <div className="filtros-estado">
-            <div className="estados">
-                <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
-                <Filtro estadoActual={estadoFiltro} estadoValor="Pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
-                <Filtro estadoActual={estadoFiltro} estadoValor="Listo" nombreFiltro="Listo" onClick={filtrarEstado} />
-                <Filtro estadoActual={estadoFiltro} estadoValor="Finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
-                <Filtro estadoActual={estadoFiltro} estadoValor="Cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
+        <h1 className="titulo-tabla">Gestión de Caja</h1>
+
+        <div className="div-botones">
+            <div className="controles-izquierda">
+                <div className="filtros-estado">
+                    <div className="estados">
+                        <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
+                        <Filtro estadoActual={estadoFiltro} estadoValor="Pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
+                        <Filtro estadoActual={estadoFiltro} estadoValor="Listo" nombreFiltro="Listo" onClick={filtrarEstado} />
+                        <Filtro estadoActual={estadoFiltro} estadoValor="Finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
+                        <Filtro estadoActual={estadoFiltro} estadoValor="Cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
+                    </div>
+                </div>
             </div>
         </div>
 
-        <table>
+        <table className="tabla">
 
             <CabeceraTablaPedidos arrayCampos={camposTabla}></CabeceraTablaPedidos>
 
@@ -144,7 +140,7 @@ function GestionCaja() {
                                 Cambiar Estado
                             </button>
                             <button
-                                className="modificar"
+                                className="modificarFinalizado"
                                 onClick={() => cambiarEstadoFinalizado(pedido.nroPedido)}
                             >
                                 Marcar Cobrado

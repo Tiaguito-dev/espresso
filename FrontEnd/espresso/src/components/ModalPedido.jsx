@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { addPedido } from '../services/pedidosService';
-import './ModalPedido.css'; // Asegúrate de crear este archivo para los estilos
+import './ModalPedido.css';
 
 const ModalPedido = ({ onClose, onPedidoAgregado }) => {
   const [mesa, setMesa] = useState('');

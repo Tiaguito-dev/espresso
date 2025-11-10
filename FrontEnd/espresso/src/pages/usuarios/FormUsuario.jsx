@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {obtenerUsuarioPorId,createUsuario,updateUsuario,obtenerPerfiles,} from "../../services/usuariosService";
+import "../../UnicoCSS.css";
 
 const USUARIO_INICIAL = {
   nombre: "",
@@ -94,56 +95,66 @@ export default function FormUsuario() {
   if (loading) return <div className="container">Cargando datos...</div>;
 
   return (
-    <div className="form-mesa-container">
-      <h2>{esModificar ? "Modificar Usuario" : "Registrar Nuevo Usuario"}</h2>
+    <div className="agregar-item">
+
+      <h2 className="titulo-accion">{esModificar ? "Modificar Usuario" : "Registrar Nuevo Usuario"}</h2>
       {error && <p className="error-message">{error}</p>}
 
-      <form onSubmit={handleGuardar}>
-        <input
+      <form className="formulario" onSubmit={handleGuardar}>
+        <div>
+          <input
           type="text"
           name="nombre"
           value={usuario.nombre}
           onChange={handleChange}
           placeholder="Nombre"
           required
-        />
-        <input
+          />
+        </div>
+        
+        <div>
+          <select
+          name="perfil"
+          value={usuario.perfil}
+          onChange={handleChange}
+          required
+          >
+            <option value="">Seleccione un perfil</option>
+            {perfiles.map((p) => (
+              <option key={p.codigo} value={p.nombre}>
+                {p.nombre}
+              </option>
+          ))}
+          </select>
+        </div>
+
+        <div>
+          <input
           type="email"
           name="correo"
           value={usuario.correo}
           onChange={handleChange}
           placeholder="Correo"
           required
-        />
+          />
+        </div>
 
-        <input
+        <div>
+          <input
           type="password"
           name="contraseña"
           value={usuario.contraseña}
           onChange={handleChange}
           placeholder={esModificar ? "Nueva contraseña (opcional)" : "Contraseña"}
           required={!esModificar}
-        />
-
-        <select
-          name="perfil"
-          value={usuario.perfil}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Seleccione un perfil</option>
-          {perfiles.map((p) => (
-            <option key={p.codigo} value={p.nombre}>
-              {p.nombre}
-            </option>
-          ))}
-        </select>
+          />
+        </div>
         
         <div className="form-buttons">
-          <button type="submit">
+          <button className="btn-guardar" type="submit">
             {esModificar ? "Guardar Cambios" : "Agregar Usuario"}
           </button>
-          <button type="button" onClick={handleCancelar}>
+          <button className="btn-cancelar" type="button" onClick={handleCancelar}>
             Cancelar
           </button>
         </div>

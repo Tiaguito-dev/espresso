@@ -1,11 +1,11 @@
 function Filtro({ estadoActual, estadoValor, nombreFiltro, onClick }) {
     return (
-        <span
-            className={estadoActual === estadoValor ? "activo" : ""}
+        <button
+            className={"todos"}
             onClick={() => onClick(estadoValor)}
         >
             {nombreFiltro}
-        </span>
+        </button>
     );
 }
 

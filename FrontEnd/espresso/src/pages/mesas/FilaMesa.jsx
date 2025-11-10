@@ -1,4 +1,5 @@
 import React from 'react';
+import IconoEliminar from '../../components/IconoEliminar';
 
 export default function FilaMesa({ mesa, funcionCambiarEstado, funcionEliminar }) {
   // Clase para badge según estado
@@ -25,16 +26,16 @@ export default function FilaMesa({ mesa, funcionCambiarEstado, funcionEliminar }
       </td>
       <td>
         <button
-          className="btn btn-estado"
+          className="boton-cambiar-estado-mesa"
           onClick={() => funcionCambiarEstado(mesa.nroMesa)}
         >
           Cambiar Estado
         </button>
         <button
-          className="btn btn-Dar de baja"
+          className="baja-mesa"
           onClick={() => funcionEliminar(mesa.nroMesa)}
         >
-          Dar de baja
+          <IconoEliminar size={18}></IconoEliminar>
         </button>
       </td>
     </tr>

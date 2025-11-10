@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { createProducto, updateProducto, buscarPorId, obtenerCategorias } from "../../services/productosService";
 import { useNavigate } from "react-router-dom";
-import "../pedidos/AgregarPedido.css";
+import "../../UnicoCSS.css"
 
 function FormProducto() {
     const { id } = useParams();
@@ -92,13 +92,12 @@ function FormProducto() {
     };
 
     return (
-        <div className="agregar-pedido">
-            <h2>{existeId ? "Modificar Producto" : "Agregar Producto"}</h2>
+        <div className="agregar-item">
+            <h2 className="titulo-accion">{existeId ? "Modificar Producto" : "Agregar Producto"}</h2>
             <form onSubmit={handleSubmit}>
-                <div className="form-row">
-                    {/* ID - Solo mostrar en modo edición y como solo lectura */}
+                <div className="formulario">
                     {existeId && (
-                        <div className="form-field">
+                        <div className="campo-id">
                             <label>ID</label>
                             <input
                                 type="text"
@@ -108,7 +107,7 @@ function FormProducto() {
                         </div>
                     )}
 
-                    <div className="form-field">
+                    <div className="campo-nombre">
                         <label>Nombre</label>
                         <input
                             type="text"
@@ -119,7 +118,7 @@ function FormProducto() {
                         />
                     </div>
 
-                    <div className="form-field">
+                    <div className="campo-categoria">
                         <label>Categoría</label>
                         {!usarNuevaCategoria ? (
                             <select
@@ -137,7 +136,7 @@ function FormProducto() {
                                 {categorias.map((categoriaItem) => (
                                     <option key={categoriaItem.id} value={categoriaItem.id}>{categoriaItem.nombre}</option>
                                 ))}
-                                <option value="nueva">Agregar nueva...</option>
+                                <option value="nueva">Agregar nueva categoria</option>
                             </select>
                         ) : (
                             <input
@@ -150,7 +149,7 @@ function FormProducto() {
                         )}
                     </div>
 
-                    <div className="form-field">
+                    <div className="campo-descripcion">
                         <label>Descripción</label>
                         <input
                             type="text"
@@ -160,7 +159,7 @@ function FormProducto() {
                         />
                     </div>
 
-                    <div className="form-field">
+                    <div className="campo-precio">
                         <label>Precio</label>
                         <input
                             type="number"
@@ -173,7 +172,7 @@ function FormProducto() {
                         />
                     </div>
                 </div>
-                <button className="btn-guardar" type="submit"> {existeId ? "Guardar cambios" : "Agregar"} </button>
+                <button className="boton-guardar" type="submit"> {existeId ? "Guardar cambios" : "Agregar"} </button>
             </form>
         </div>
     );

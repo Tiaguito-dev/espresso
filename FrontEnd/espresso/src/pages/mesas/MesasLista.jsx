@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TablaMesas from "./TablaMesas";
 import { getMesas, updateMesa } from "../../services/mesasService";
+import "../../UnicoCSS.css"
 
 const ESTADOS = {
   DISPONIBLE: "disponible",
@@ -14,7 +15,6 @@ export default function MesasLista() {
   const [estadoFiltro, setEstadoFiltro] = useState("todas");
   const navigate = useNavigate();
 
-  // 🔹 Cargar mesas al montar el componente
   useEffect(() => {
     fetchMesas();
   }, []);
@@ -29,7 +29,6 @@ export default function MesasLista() {
     }
   };
 
-  // 🔹 Cambiar estado de una mesa (Disponible ↔ Ocupada)
   const cambiarEstado = async (nroMesa) => {
     const mesa = mesas.find((m) => m.nroMesa === nroMesa);
     if (!mesa) return;
@@ -51,7 +50,6 @@ export default function MesasLista() {
     }
   };
 
-  // 🔹 Dar de baja una mesa (pasar a "fuera de servicio")
   const eliminarMesa = async (nroMesa) => {
     if (!window.confirm(`¿Dar de baja mesa ${nroMesa}?`)) return;
 
@@ -69,7 +67,6 @@ export default function MesasLista() {
     }
   };
 
-  // 🔹 Filtrado por estado
   const mesasFiltradas =
     estadoFiltro === "todas"
       ? mesas
@@ -77,42 +74,47 @@ export default function MesasLista() {
 
   const arrayCampos = ["Número", "Estado", "Acciones"];
 
-  // 🔹 Render
   return (
-    <div className="container">
-      <div className="filtros-estado">
-        <div className="estados">
-          <button
-            onClick={() => setEstadoFiltro("todas")}
-            className="btn btn-estado"
-          >
-            Todas
-          </button>
+    <div className="tabla-contenedor">
 
-          <button
-            onClick={() => setEstadoFiltro(ESTADOS.DISPONIBLE)}
-            className="btn btn-estado"
-          >
-            Disponible
-          </button>
+      <h1 className="titulo-tabla">Gestión de Mesas</h1>
 
-          <button
-            onClick={() => setEstadoFiltro(ESTADOS.OCUPADA)}
-            className="btn btn-estado"
-          >
-            Ocupada
-          </button>
+      <div className="div-botones">
+        <div className="controles-izquierda">
+          <div className="filtros-estado">
+            <div className="estados">
+              <button
+                onClick={() => setEstadoFiltro("todas")}
+                className="boton-estado-mesa"
+              >
+                Todas
+              </button>
 
-          <button
-            onClick={() => setEstadoFiltro(ESTADOS.FUERA_SERVICIO)}
-            className="btn btn-estado"
-          >
-            Fuera de Servicio
-          </button>
+              <button
+                onClick={() => setEstadoFiltro(ESTADOS.DISPONIBLE)}
+                className="boton-estado-mesa"
+              >
+                Disponible
+              </button>
+
+              <button
+                onClick={() => setEstadoFiltro(ESTADOS.OCUPADA)}
+                className="boton-estado-mesa"
+              >
+                Ocupada
+              </button>
+
+              <button
+                onClick={() => setEstadoFiltro(ESTADOS.FUERA_SERVICIO)}
+                className="boton-estado-mesa"
+              >
+                Fuera de Servicio
+              </button> 
+            </div>
+          </div>
         </div>
-
         <button
-          className="btn-agregar"
+          className="boton-agregar"
           onClick={() => navigate("/mesas/nueva")}
         >
           + Agregar Mesa

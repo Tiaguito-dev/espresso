@@ -61,7 +61,7 @@ const FormularioLogin = () => {
 
                 <h3>¡Bienvenido de vuelta!</h3>
 
-                <form onSubmit={enviarFormulario} className="formulario">
+                <form onSubmit={enviarFormulario} className="formulario-login">
                     <div className="grupos">
                         <label htmlFor="correo" className="formulario-label">
                             Correo Electrónico
