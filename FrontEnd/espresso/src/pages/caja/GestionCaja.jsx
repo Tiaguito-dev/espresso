@@ -93,6 +93,7 @@ function GestionCaja() {
 
     return (
         <div className="tabla-contenedor">
+        <div className="div-espacio-navbar"></div>
 
         <h1 className="titulo-tabla">Gestión de Caja</h1>
 
@@ -132,12 +133,6 @@ function GestionCaja() {
                                 onClick={() => abrirDetalle(pedido)}
                             >
                                 Ver detalle
-                            </button>
-                            <button
-                                className="modificar"
-                                onClick={() => cambiarEstado(pedido.nroPedido)}
-                            >
-                                Cambiar Estado
                             </button>
                             <button
                                 className="modificarFinalizado"

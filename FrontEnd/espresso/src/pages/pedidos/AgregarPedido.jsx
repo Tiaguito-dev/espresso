@@ -165,7 +165,10 @@ function AgregarPedido() {
 	} 
 
 	return (
-		<div className="agregar-item">
+		<div>
+			<div className="div-espacio-navbar"></div>
+			<div className="agregar-item">
+		
             <h2 className="titulo-accion">Agregar Pedido</h2>
 
             {/* Mensajes de estado */}
@@ -292,6 +295,8 @@ function AgregarPedido() {
                 </button>
             </form>
         </div>
+		</div>
+		
 	)
 }
 

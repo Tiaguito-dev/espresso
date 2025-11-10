@@ -95,6 +95,8 @@ export default function FormUsuario() {
   if (loading) return <div className="container">Cargando datos...</div>;
 
   return (
+    <div>
+    <div className="div-espacio-navbar"></div>
     <div className="agregar-item">
 
       <h2 className="titulo-accion">{esModificar ? "Modificar Usuario" : "Registrar Nuevo Usuario"}</h2>
@@ -160,5 +162,7 @@ export default function FormUsuario() {
         </div>
       </form>
     </div>
+    </div>
+    
   );
 }

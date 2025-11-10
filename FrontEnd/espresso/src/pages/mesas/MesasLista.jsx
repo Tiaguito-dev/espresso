@@ -76,6 +76,7 @@ export default function MesasLista() {
 
   return (
     <div className="tabla-contenedor">
+      <div className="div-espacio-navbar"></div>
 
       <h1 className="titulo-tabla">Gestión de Mesas</h1>
 

@@ -93,6 +93,7 @@ function FormProducto() {
 
     return (
         <div className="agregar-item">
+            <div className="div-espacio-navbar"></div>
             <h2 className="titulo-accion">{existeId ? "Modificar Producto" : "Agregar Producto"}</h2>
             <form onSubmit={handleSubmit}>
                 <div className="formulario">

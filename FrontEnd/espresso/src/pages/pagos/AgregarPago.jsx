@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { getPedidos } from '../../services/pedidosService';
 import { crearPago } from '../../services/pagosService';
 import "../../UnicoCSS.css"
+import { useNavigate } from "react-router-dom";
 
 
 /**
@@ -17,6 +18,7 @@ export default function AgregarPago() {
     const [medioDePago, setMedioDePago] = useState('efectivo');
     const [mensaje, setMensaje] = useState('');
     const [enviando, setEnviando] = useState(false);
+    const navigate = useNavigate();
 
     const mediosDePagoOptions = [
         "efectivo",
@@ -113,6 +115,7 @@ export default function AgregarPago() {
             setSelectedPedido(null);
             setDescuento(0);
             setMedioDePago('efectivo');
+            navigate("/pagos");
 
         } catch (error) {
             setMensaje(`Error al registrar el pago: ${error.message}`);
@@ -124,6 +127,8 @@ export default function AgregarPago() {
     // --- RENDERIZADO DEL COMPONENTE ---
 
     return (
+        <div>
+        <div className="div-espacio-navbar"></div>
         <div className='agregar-item'>
             
             <h2 className='titulo-accion'>Registrar Nuevo Pago</h2>
@@ -217,5 +222,7 @@ export default function AgregarPago() {
                 </div>
             )}
         </div>
+        </div>
+        
     );
 }

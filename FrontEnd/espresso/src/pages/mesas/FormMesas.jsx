@@ -76,6 +76,8 @@ export default function FormMesas() {
     if (error && esModificar) return <div className="container error-message">Error: {error}</div>;
 
     return (
+        <div>
+        <div className="div-espacio-navbar"></div>
         <div className="agregar-item">
             <h2 className="titulo-accion">{esModificar ? `Modificar Mesa N° ${mesa.nroMesa || '...'}` : "Registrar Nueva Mesa"}</h2>
             {error && <p className="error-message">{error}</p>}
@@ -110,6 +112,7 @@ export default function FormMesas() {
                     </button>
                 </div>
             </form>
+        </div>
         </div>
     );
 }

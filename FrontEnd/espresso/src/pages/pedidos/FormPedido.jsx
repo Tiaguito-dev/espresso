@@ -60,11 +60,9 @@ const FormPedido = () => {
         }
     };
 
-    //Definicion de las columnas de la tabla info pedido
-    const camposInfoPedido = ["ID", "Fecha", "Estado", "Nro Mesa"];
 
     //Definicion de las columnas de la tabla lineas de pedido
-    const camposLineaPedido = ["ID Producto", "Nombre Producto", "Precio Unitario", "Cantidad", "Acciones"];
+    const camposLineaPedido = ["ID Producto", "Nombre Producto", "Precio Unitario", "Cantidad"];
 
     // NUEVO: Handler genérico para campos del pedido (estado y observación)
     const handlePedidoChange = (e) => {
@@ -130,6 +128,8 @@ const FormPedido = () => {
     };
 
     return (
+        <div>
+        <div className="div-espacio-navbar"></div>
         <div className="agregar-item">
             <h2 className="titulo-accion">Datos del Pedido</h2>
             <form className="formulario" onSubmit={handleSubmit}>
@@ -186,57 +186,16 @@ const FormPedido = () => {
                                     <td>{linea.nombreProducto}</td>
                                     <td>{linea.precioUnitario}</td>
                                     <td>{linea.cantidad}</td>
-                                    <td>
-                                        {/* Añade la clase 'btn-quitar' que ya tienes definida */}
-                                        <button 
-                                            type="button" 
-                                            className="btn-quitar" 
-                                            onClick={() => handleEliminarLinea(linea.idLinea)}
-                                        >
-                                            Eliminar
-                                        </button>
-                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
-                
-                <div className="formulario-agregar-producto">
-                    <h4>Añadir Producto al Pedido</h4>
-                    <select value={productoSeleccionado} onChange={(e) => setProductoSeleccionado(e.target.value)}>
-                        <option value="">-- Seleccione un producto --</option>
-                        {productos.map(producto => (
-                            <option key={producto.id} value={producto.id}>
-                                {producto.nombre} (${producto.precio})
-                            </option>
-                        ))}
-                    </select>
 
-                    <div className="flex-item-control">
-                        <label htmlFor="cantidadNueva">Cantidad</label>
-                        <input 
-                            type="number" 
-                            id="cantidadNueva"
-                            value={cantidadNueva}
-                            onChange={(e) => setCantidadNueva(Math.max(1, Number(e.target.value)))}
-                            min="1"
-                            className="input-cantidad" 
-                        />
-                    </div>
-
-                    <button
-                        className="agregar-linea-boton"
-                        type="button" 
-                        onClick={handleAgregarLinea}
-                    >
-                        Añadir
-                    </button>
-                </div>
-        
                 <button type="submit">Guardar Cambios</button>
             </form>
         </div>    
+        </div>
     )
 }
 

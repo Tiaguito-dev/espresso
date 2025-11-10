@@ -105,6 +105,7 @@ function GestionCocina() {
 
     return (
         <div className="tabla-contenedor">
+            <div className="div-espacio-navbar"></div>
             <h1 className="titulo-tabla">Gestión de Cocina</h1>
             <div className="div-botones">
                 <div className="controles-izquierda">
@@ -163,12 +164,6 @@ function GestionCocina() {
                                     onClick={() => abrirObservacion(pedido)}
                                 >
                                     Observación
-                                </button>
-                                <button
-                                    className="modificar"
-                                    onClick={() => cambiarEstado(pedido.nroPedido)}
-                                >
-                                    Cambiar Estado
                                 </button>
                                 <button
                                     className="modificarFinalizado"

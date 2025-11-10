@@ -98,6 +98,7 @@ export default function Menu() {
 
     return (
         <div className="tabla-contenedor">
+            <div className="div-espacio-navbar"></div>
 
             <h1 className="titulo-tabla">Gestión de Productos</h1>
 

@@ -27,6 +27,7 @@ function GestionPagos() {
 
     return (
         <div className="tabla-container">
+            <div className="div-espacio-navbar"></div>
             <h1 className="titulo-tabla">Gestion pagos</h1>
             <div className="div-botones">
                 <button
