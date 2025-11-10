@@ -79,3 +79,30 @@ export const buscarPedidoPorId = async (id,) => {
 
   return response.json();
 };
+
+export const agregarLineaAPedido = async (id, lineaData) => {
+  const response = await fetch(`${API_URL}/${id}/lineas`, {
+    method: 'POST',
+    headers: {
+      ...getAuthHeaders(),
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(lineaData),
+  });
+  if (!response.ok) {
+    throw new Error(`Pedido no encontrado o error del servidor: ${response.statusText}`);
+  }
+  return response.json();
+};
+
+export const eliminarLineaAPedido = async (idPedido, idLinea) => {
+  const response = await fetch(`${API_URL}/${idPedido}/lineas/${idLinea}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Pedido no encontrado o error del servidor: ${response.statusText}`);
+  }
+  return; 
+};
