@@ -14,6 +14,7 @@ const selectLineasPorNroPedido = ("SELECT linea.id_linea_pedido, linea.cantidad,
 const deleteLineaPorId = 'DELETE FROM linea_pedido WHERE id_linea_pedido = $1';
 const updatePedidoTotal = 'UPDATE pedido SET total = $1 WHERE nro_pedido = $2';
 const selectLineaPorId = 'SELECT * FROM linea_pedido WHERE id_linea_pedido = $1';
+const updateObservacionPedidoPorNro = 'UPDATE pedido SET observacion = $2 WHERE nro_pedido = $1';
 
 // TODO: FALTA HACER ESTO
 const selectPedidoPorMozo = 'SELECT * FROM pedido WHERE nombre = $1';
@@ -187,5 +188,17 @@ exports.obtenerLineaPorId = async (idLinea) => {
         return lineas[0] || null;
     } catch (error) {
         throw new Error(`Error al obtener la línea ${idLinea}: ${error.message}`);
+    }
+};
+
+exports.modificarObservacionPedido = async (pedido, observacion) => {
+    try {
+        await Gateway.ejecutarQuery({ text: updateObservacionPedidoPorNro, values: [pedido, observacion] });
+        return {
+            success: true,
+            message: `La observación del pedido ${pedido} se actualizó correctamente.`
+        };
+    } catch (error) {
+        throw new Error(`Error al modificar la observación del pedido ${pedido} desde la base de datos: ${error.message}`);
     }
 };

@@ -33,11 +33,15 @@ exports.actualizarPedido = async (req, res) => {
     try{
         const { id } = req.params;
         const nroPedido = parseInt(id, 10);
-        const { nuevoEstado } = req.body;
+        const { estadoPedido: nuevoEstado, observacion } = req.body;
 
-        const pedido = await administradorPedidos.modificarEstadoPedido(nroPedido, nuevoEstado);
+        let pedidoActualizado = await administradorPedidos.modificarEstadoPedido(nroPedido, nuevoEstado);
         
-        res.json({ message: `Pedido actualizado a ${pedido.estadoPedido}`, pedido: pedido });
+        if (observacion !== undefined && observacion !== null && observacion !== pedidoActualizado.observacion) {
+            pedidoActualizado = await administradorPedidos.actualizarObservacion(nroPedido, observacion);
+        }
+
+        res.json({ message: `Pedido actualizado`, pedido: pedidoActualizado });
         
     }catch(error){
         if (error.message === "Pedido no encontrado.") {

@@ -293,6 +293,18 @@ class AdministradorPedidos {
         await PedidoBD.actualizarTotalPedido(nroPedido, nuevoTotal);
         return this.buscarPedidoPorNumero(nroPedido);
     }
+    async actualizarObservacion(nroPedido, observacion) {
+        const pedido = await this.buscarPedidoPorNumero(nroPedido);
+        if (!pedido) {
+            throw new Error("Pedido no encontrado.");
+        }
+
+        if (observacion !== undefined && observacion !== null && observacion !== pedido.observacion) {
+            await PedidoBD.modificarObservacionPedido(nroPedido, observacion);
+            pedido.observacion = observacion; 
+        }
+        return pedido;
+    }
 }
 
 
