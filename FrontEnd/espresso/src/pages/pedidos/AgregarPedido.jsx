@@ -10,9 +10,8 @@ function AgregarPedido() {
 
 	const [pedidoInfo, setPedidoInfo] = useState(
 		{
-			nroPedido: "",
-			monto: "",
-			metodo: ""
+			observacion: "",
+			mesa: ""
 		}
 	);
 	const [productosDisponibles, setProductosDisponibles] = useState([]);
@@ -126,10 +125,6 @@ function AgregarPedido() {
 			setError("Por favor, seleccione una mesa disponible.");
 			return;
 		}
-		if (!pedidoInfo.mozo) {
-			setError("Por favor, complete el numero de mozo.");
-			return;
-		}
 		if (!productosPedido.lenght == 0) {
 			setError("El pedido esta vacio. Agregue al menos un producto.");
 			return;
@@ -152,8 +147,7 @@ function AgregarPedido() {
 			
 			setPedidoInfo({
 				observacion: "",
-				mesa: "",
-				mozo: ""
+				mesa: ""
 			});
 			setProductosPedido([]);
 
@@ -203,19 +197,6 @@ function AgregarPedido() {
                             </option>
                         ))}
                     </select>
-                </div>
-                
-                <div className="form-group">
-                    <label htmlFor="mozo">Numero de Mozo</label>
-                    <input 
-                        type="text" 
-                        name="mozo" 
-                        id="mozo"
-                        value={pedidoInfo.mozo}
-                        onChange={actualizarVistaPedido}
-                        required
-                        disabled={cargando}
-                    />
                 </div>
                 
                 <div className="form-group">
