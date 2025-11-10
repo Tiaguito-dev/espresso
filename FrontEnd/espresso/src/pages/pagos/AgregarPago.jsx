@@ -30,7 +30,7 @@ export default function AgregarPago() {
             try {
                 const data = await getPedidos(); 
 
-                setPedidos(data.filter(p => p.estadoPedido === 'Listo'));
+                setPedidos(data.filter(p => p.estadoPedido === 'listo'));
             } catch (error) {
                 setMensaje(`Error al cargar pedidos: ${error.message}`);
             }

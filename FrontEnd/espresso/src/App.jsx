@@ -35,6 +35,7 @@ function App() {
   return (
     <Router>
       {autenticado && <Navbar />}
+      <div className="div-espacio-navbar"></div>
       <div className="p-4">
         <Routes>
           {/*ESTAS SON TODAS RUTAS PROTEGIDAS*/}
