@@ -28,7 +28,7 @@ const ModalPedido = ({ onClose, onPedidoAgregado }) => {
         mesa: parseInt(mesa, 10),
         productos: productos, // Considera si esto debe ser un array de objetos
         precioTotal: parseFloat(precioTotal),
-        estado: 'Pendiente', // Estado inicial
+        estado: 'pendiente', // Estado inicial
       };
 
       await addPedido(nuevoPedido);

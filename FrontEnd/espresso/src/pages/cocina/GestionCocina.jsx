@@ -38,7 +38,7 @@ function GestionCocina() {
 
     const cambiarEstado = async (id) => {
         const nuevoEstado = prompt(
-        "Ingrese nuevo estado (Pendiente, Listo, Finalizado, Cancelado):"
+        "Ingrese nuevo estado (pendiente, listo, finalizado, cancelado):"
         );
         if (!nuevoEstado) return;
 
@@ -56,7 +56,7 @@ function GestionCocina() {
 //Funciones para cambios de estados fijos
 
     const cambiarEstadoListo = async (id) => {
-        const nuevoEstado = "Listo";
+        const nuevoEstado = "listo";
         if (!nuevoEstado) return;
 
         try {
@@ -111,10 +111,10 @@ function GestionCocina() {
                     <div className="filtros-estado">
                         <div className="estados">
                             <Filtro estadoActual={estadoFiltro} estadoValor="todos" nombreFiltro="Todos" onClick={filtrarEstado} />
-                            <Filtro estadoActual={estadoFiltro} estadoValor="Pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
-                            <Filtro estadoActual={estadoFiltro} estadoValor="Listo" nombreFiltro="Listo" onClick={filtrarEstado} />
-                            <Filtro estadoActual={estadoFiltro} estadoValor="Finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
-                            <Filtro estadoActual={estadoFiltro} estadoValor="Cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="pendiente" nombreFiltro="Pendiente" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="listo" nombreFiltro="Listo" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="finalizado" nombreFiltro="Finalizado" onClick={filtrarEstado} />
+                            <Filtro estadoActual={estadoFiltro} estadoValor="cancelado" nombreFiltro="Cancelado" onClick={filtrarEstado} />
                         </div>
                     </div>
                 </div>
