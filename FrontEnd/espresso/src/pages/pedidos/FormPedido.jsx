@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { createPedido, updatePedido, buscarPedidoPorId } from "../../services/pedidosService"; 
-import "./AgregarPedido.css";
+{/*import "./AgregarPedido.css";*/}
 
 const FormPedido = () => {
     return (

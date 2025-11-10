@@ -1,18 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-// --- IMPORTAR SERVICIOS ---
-// Las importaciones a servicios externos fallarán en este entorno de vista previa.
-// Han sido comentadas y reemplazadas por funciones simuladas (mocks) a continuación.
-//
 import { getPedidos } from '../../services/pedidosService';
 import { crearPago } from '../../services/pagosService';
-//
-// -------------------------
-
-// --- SIMULACRO DE SERVICIOS (PARA PREVISUALIZACIÓN) ---
-// (Reemplaza esto con tus imports reales en tu proyecto)
-
-
+import "../../UnicoCSS.css"
 
 
 /**
@@ -20,30 +10,14 @@ import { crearPago } from '../../services/pagosService';
  * Permite seleccionar un pedido finalizado, aplicar un descuento y registrar un pago.
  */
 export default function AgregarPago() {
-    // --- ESTADOS DEL COMPONENTE ---
-    
-    // Almacena la lista de pedidos finalizados (con detalles completos)
     const [pedidos, setPedidos] = useState([]);
-    
-    // Almacena el ID del pedido seleccionado en el dropdown
     const [selectedPedidoId, setSelectedPedidoId] = useState('');
-    
-    // Almacena el objeto completo del pedido seleccionado
     const [selectedPedido, setSelectedPedido] = useState(null);
-    
-    // Almacena el monto del descuento
     const [descuento, setDescuento] = useState(0);
-    
-    // Almacena el método de pago seleccionado
-    const [medioDePago, setMedioDePago] = useState('efectivo'); // Valor por defecto
-    
-    // Estado para mensajes de éxito o error
+    const [medioDePago, setMedioDePago] = useState('efectivo');
     const [mensaje, setMensaje] = useState('');
-    
-    // Estado para deshabilitar el botón mientras se envía
     const [enviando, setEnviando] = useState(false);
 
-    // Opciones para el medio de pago
     const mediosDePagoOptions = [
         "efectivo",
         "transferencia bancaria",
@@ -51,17 +25,11 @@ export default function AgregarPago() {
         "tarjeta de crédito"
     ];
 
-    // --- EFECTOS (HOOKS) ---
-
-    // useEffect para cargar los pedidos al montar el componente
     useEffect(() => {
         const cargarPedidos = async () => {
             try {
-                // Llama a la función (ahora simulada)
                 const data = await getPedidos(); 
 
-                // Filtramos por pedidos "Finalizado"
-                // Asumimos que 'data' es un array de pedidos con 'lineasPedido' incluidas
                 setPedidos(data.filter(p => p.estadoPedido === 'Listo'));
             } catch (error) {
                 setMensaje(`Error al cargar pedidos: ${error.message}`);
@@ -69,39 +37,30 @@ export default function AgregarPago() {
         };
 
         cargarPedidos();
-    }, []); // El array vacío [] significa que se ejecuta solo una vez al montar
+    }, []); 
 
-    // useEffect para ACTUALIZAR el pedido seleccionado cuando cambia el ID
     useEffect(() => {
         if (!selectedPedidoId) {
             setSelectedPedido(null);
             return;
         }
 
-        // No hacemos fetch. Buscamos en el estado 'pedidos' que ya cargamos.
-        // Convertimos 'selectedPedidoId' a número si 'nroPedido' es numérico.
-        // Si 'nroPedido' es string, usa: p.nroPedido === selectedPedidoId
         const pedidoEncontrado = pedidos.find(p => p.nroPedido.toString() === selectedPedidoId);
 
         if (pedidoEncontrado) {
             setSelectedPedido(pedidoEncontrado);
         } else {
-            // Esto es un seguro, no debería pasar si el dropdown se llena desde 'pedidos'
             setSelectedPedido(null);
             setMensaje("Error: Pedido no encontrado en la lista.");
         }
         
-    }, [selectedPedidoId, pedidos]); // Se ejecuta si cambia el ID o la lista de pedidos
+    }, [selectedPedidoId, pedidos]); 
 
-    // --- CÁLCULOS DERIVADOS (useMemo) ---
-
-    // Calcula el monto total del pedido seleccionado
     const montoPedido = useMemo(() => {
         if (!selectedPedido || !selectedPedido.lineasPedido) {
             return 0;
         }
 
-        // Suma el precio de todas las líneas de pedido
         return selectedPedido.lineasPedido.reduce((total, item) => {
             const precio = parseFloat(item.precioUnitario) || 0;
             const cantidad = parseInt(item.cantidad) || 0;
@@ -109,13 +68,11 @@ export default function AgregarPago() {
         }, 0);
     }, [selectedPedido]);
 
-    // Calcula el monto final a pagar (Total - Descuento)
     const montoFinal = useMemo(() => {
         const final = montoPedido - descuento;
-        return final < 0 ? 0 : final; // Evita montos negativos
+        return final < 0 ? 0 : final; 
     }, [montoPedido, descuento]);
 
-    // --- MANEJADORES DE EVENTOS ---
 
     // Maneja el envío del formulario
     const handleSubmit = async (event) => {
@@ -167,14 +124,13 @@ export default function AgregarPago() {
     // --- RENDERIZADO DEL COMPONENTE ---
 
     return (
-        <div>
+        <div className='agregar-item'>
             
-            <h2>Registrar Nuevo Pago</h2>
+            <h2 className='titulo-accion'>Registrar Nuevo Pago</h2>
             
-            <form onSubmit={handleSubmit}>
-                {/* 1. Selección de Pedido */}
+            <form className='formulario' onSubmit={handleSubmit} >
                 <div>
-                    <label htmlFor="pedido-select">Número de Pedido:</label>
+                    <label htmlFor="campo-pedido">Número de Pedido:</label>
                     <select 
                         id="pedido-select" 
                         value={selectedPedidoId}

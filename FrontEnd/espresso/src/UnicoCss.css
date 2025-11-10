@@ -39,7 +39,7 @@ h3 {
     height: 90px;
 }
 
-.formulario {
+.formulario-login {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -285,6 +285,11 @@ h3 {
 
 
 /*================== NAVBAR CSS ==================*/
+
+body {
+    margin: 0px;
+}
+
 .navbar {
   background-color: #B5C99A;
   padding: 12px 20px;
@@ -600,6 +605,21 @@ h3 {
     font-weight: bold;
 }
 
+.todos {
+    margin: 0;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #9C6644;
+}
+
+.todos:hover {
+    color: #db9874;
+}
+
 .boton-agregar {
     background-color: #6a994e;
     color: white;
@@ -625,8 +645,7 @@ h3 {
     margin: 0 auto;
 }
 
-.tabla th,
-.tabla td {
+.tabla th, .tabla td {
     padding: 12px;
     border-bottom: 1px solid #ddd;
     text-align: center;
@@ -755,19 +774,39 @@ h3 {
 
 .modificar {
   background-color: #64b5f6;
+  border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .baja {
   background-color: #db3535;
   color: white;
+  border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .info {
   background-color: #fedd24;
+  border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .modificarFinalizado {
     background-color: rgb(128, 189, 36);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .modificarFinalizado:hover{
@@ -817,3 +856,412 @@ h3 {
     font-weight: bold;
 }
 
+/*================== AGREGAR PEDIDO / PRODUCTO / PAGO / MESAS / USUARIO CSS ==================*/
+
+.agregar-item {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  font-family: 'Nunito', sans-serif;
+  color: #333;
+}
+
+.titulo-accion {
+  color: #5a3e2b;
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+  border-bottom: 2px solid #a97457;
+  padding-bottom: 6px;
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  gap: 20px; 
+}
+
+.campo-id,
+.campo-nombre,
+.campo-categoria,
+.campo-descripcion,
+.campo-precio,
+.campo-mesa,
+.campo-mozo,
+.campo-observacion {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo-descripcion, .campo-observacion {
+    grid-column: 1 / -1;
+}
+
+label {
+  font-weight: bold;
+  color: #7F5539; 
+  margin-bottom: 6px;
+  font-family: 'Nunito', sans-serif; 
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],  
+input[type="password"],
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;      
+  font-size: 1rem;
+  font-family: 'Nunito', sans-serif;
+  background-color: #fff;
+  box-sizing: border-box; 
+}
+
+input[readOnly] {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #ffcdd2;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+.success-message {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+.formulario-agregar-producto {
+  grid-column: 1 / -1; 
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  margin-top: 10px;
+}
+
+.formulario-agregar-producto select {
+  flex-grow: 1; 
+}
+
+.formulario-agregar-producto input[type="button"] {
+  background-color: #90caf9; 
+  color: #333;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.2s;
+}
+
+.formulario-agregar-producto input[type="button"]:hover {
+  background-color: #64b5f6;
+}
+
+.tabla-productos {
+  grid-column: 1 / -1; 
+}
+
+.tabla-productos table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tabla-productos th,
+.tabla-productos td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.tabla-productos th {
+  background-color: #B08968; 
+  color: white;
+  font-weight: bold;
+}
+
+.input-cantidad {
+  width: 70px;
+  padding: 6px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.btn-quitar {
+  background-color: #db3535; 
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+
+.btn-quitar:hover {
+  background-color: #eb3f3f;
+}
+
+.seccion-total {
+  grid-column: 1 / -1;
+  text-align: right;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+  border-top: 2px solid #5a3e2b;
+  padding-top: 15px;
+  margin-top: 10px;
+}
+
+.formulario button[type="submit"] {
+  grid-column: 1 / -1; 
+  justify-self: center; 
+  width: 50%; 
+  display: block;
+  background: #6a994e;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+
+.formulario button[type="submit"]:hover {
+  background-color: rgb(112, 145, 59);
+}
+
+.formulario button:disabled,
+.formulario input[type="button"]:disabled {
+    background-color: #e0e0e0 !important; 
+    color: #757575 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+.boton-guardar {
+    display: block;
+  background: #6a994e;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 25px auto 0 auto;
+  transition: background 0.3s;
+}
+
+.boton-guardar:hover {
+  background-color: rgb(112, 145, 59);
+}
+
+.form-buttons {
+  grid-column: 1 / -1; 
+  display: flex;
+  justify-content: center; 
+  gap: 15px;       
+  margin-top: 20px;  
+  flex-direction: row-reverse;
+}
+
+.btn-guardar, .btn-cancelar {
+  width: 180px; 
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.btn-guardar {
+  background: #6a994e;
+  color: white;
+  width: 180px !important;
+  margin-top: 0 !important; 
+  justify-self: auto !important;
+}
+
+.btn-cancelar {
+  background-color: #db3535;
+  color: white;
+}
+
+.btn-cancelar:hover {
+  background-color: #eb3f3f;
+}
+
+.btn-guardar:hover {
+  background-color: rgb(112, 145, 59);
+}
+
+.form-buttons button {
+  width: auto;       
+  justify-self: auto; 
+  margin-top: 0;    
+}
+
+/*================== DETALLE PEDIDO CSS ==================*/
+.detalle {
+    display: block; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.detalle-contenido {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.cerrarBtn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cerrarBtn:hover,
+.cerrarBtn:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/*================== DETALLE PEDIDO CSS ==================*/
+
+.detalle {
+    display: block; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.detalle-contenido {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.cerrarBtn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cerrarBtn:hover,
+.cerrarBtn:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/*================== ACRODEON CSS ==================*/
+
+.acordeon-item {
+    background-color: #d7ccc8;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+
+.acordeon-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background-color: #a97457;
+    color: white;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 6px;
+    transition: background-color 0.3s ease; 
+}
+
+.acordeon-header.active {
+    border-radius: 6px 6px 0px 0px;
+}
+
+.acordeon-header:hover {
+    background-color: #8a5d44;
+}
+
+.acordeon-content {
+    background-color: #d7ccc8;
+    max-height: 0; 
+    padding: 0 3px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out; 
+}
+
+.acordeon-content.open {
+    max-height: 400px;
+    padding: 3px; 
+    border-top: none;
+    border-radius: 0px 0px 6px 6px;
+}

@@ -76,10 +76,10 @@ export default function FormMesas() {
     if (error && esModificar) return <div className="container error-message">Error: {error}</div>;
 
     return (
-        <div className="form-mesa-container container">
-            <h2>{esModificar ? `Modificar Mesa N° ${mesa.nroMesa || '...'}` : "Registrar Nueva Mesa"}</h2>
+        <div className="agregar-item">
+            <h2 className="titulo-accion">{esModificar ? `Modificar Mesa N° ${mesa.nroMesa || '...'}` : "Registrar Nueva Mesa"}</h2>
             {error && <p className="error-message">{error}</p>}
-            <form className="form-mesa" onSubmit={handleGuardar}>
+            <form className="formulario" onSubmit={handleGuardar}>
                 <div>
                     <label>Número de Mesa</label>
                     <input
@@ -101,11 +101,11 @@ export default function FormMesas() {
                         <option value="fuera de servicio">Fuera de Servicio</option>
                     </select>
                 </div>
-                <div className="form-mesa-buttons">
-                    <button type="submit" className="btn btn-guardar">
+                <div className="form-buttons">
+                    <button type="submit" className="btn-guardar">
                         {esModificar ? "Guardar Cambios" : "Agregar Mesa"}
                     </button>
-                    <button type="button" className="btn btn-cancelar" onClick={handleCancelar}>
+                    <button type="button" className="btn-cancelar" onClick={handleCancelar}>
                         Cancelar
                     </button>
                 </div>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { getPedidos, updatePedido } from "../../services/pedidosService";
 import { useNavigate } from "react-router-dom";
-import "../pedidos/PedidosLista.css";
 import Filtro from "./../menu/Filtro";
-import Acordeon from "./Acordeon";
+import "../../UnicoCSS.css"
 import CabeceraTablaPedidos from "../../components/CabeceraTablaPedidos.jsx";
 import DetallePedido from "../caja/DetallePedido";
+import Acordeon from "./Acordeon.jsx"
 
 
 function GestionCocina() {
@@ -162,7 +162,7 @@ function GestionCocina() {
                                     className="info"
                                     onClick={() => abrirObservacion(pedido)}
                                 >
-                                    Ver detalle
+                                    Observación
                                 </button>
                                 <button
                                     className="modificar"

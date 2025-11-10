@@ -44,7 +44,6 @@ function GestionPagos() {
                         <th>Fecha</th>
                         <th>Monto</th>
                         <th>Método</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,18 +54,6 @@ function GestionPagos() {
                                 <td>{pago.fecha}</td>
                                 <td>{pago.monto}</td>
                                 <td>{pago.metodo}</td>
-                                <td>
-                                    <div className="acciones-container">
-                                        <div className="boton-modificar-eliminar">
-                                            <button className="boton-fila-accion boton-modificar-fila">
-                                                <IconoModificar size={18}></IconoModificar>
-                                            </button>
-                                            <button className="boton-fila-accion boton-cancelar-fila">
-                                                <IconoEliminar size={18}></IconoEliminar>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
                             </tr>
                         ))
                     ) : (

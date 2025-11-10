@@ -2,7 +2,7 @@ import React, { use, useEffect, useMemo, useState } from "react";
 import { createPedido } from "../../services/pedidosService"; 
 import { getProductos } from "../../services/productosService";
 import { getMesas } from "../../services/mesasService";
-import "./AgregarPedido.css";
+import "../../UnicoCSS.css";
 
 
 
@@ -171,17 +171,17 @@ function AgregarPedido() {
 
 
 	return (
-		<div className="agregar-pedido-container">
-            <h1>Agregar Pedido</h1>
+		<div className="agregar-item">
+            <h2 className="titulo-accion">Agregar Pedido</h2>
 
             {/* Mensajes de estado */}
             {cargando && <p>Cargando...</p>}
             {error && <p className="error-message">{error}</p>}
             {mensajeExito && <p className="success-message">{mensajeExito}</p>}
 
-            <form onSubmit={enviarFormulario} className="pedido-form">
+            <form onSubmit={enviarFormulario} className="formulario">
                 
-                <div className="form-group">
+                <div className="campo-mesa">
                     <label htmlFor="mesa">Numero de Mesa</label>
                     <select 
                         name="mesa" 
@@ -191,12 +191,8 @@ function AgregarPedido() {
                         required // <-- Evita envío si el valor es ""
                         disabled={cargando || mesasDisponibles.length === 0}
                     >
-                        {/* 3. PLACEHOLDER (como solicitaste) */}
                         <option value="">-- Seleccione una mesa --</option>
 
-                        {/* Si no hay mesas, el map no se ejecuta.
-                          El 'disabled' y el 'required' manejan el resto.
-                        */}
                         {mesasDisponibles.map(mesa => (
                             <option key={mesa.nroMesa} value={mesa.nroMesa}>
                                 Mesa {mesa.nroMesa}
@@ -205,7 +201,7 @@ function AgregarPedido() {
                     </select>
                 </div>
                 
-                <div className="form-group">
+                <div className="campo-mozo">
                     <label htmlFor="mozo">Numero de Mozo</label>
                     <input 
                         type="text" 
@@ -218,7 +214,7 @@ function AgregarPedido() {
                     />
                 </div>
                 
-                <div className="form-group">
+                <div className="campo-observacion">
                     <label htmlFor="observacion">Observaciones del Pedido</label>
                     <input 
                         type="text" 
@@ -230,10 +226,8 @@ function AgregarPedido() {
                     />
                 </div>
 
-                <hr />
-
                 {/* --- Sección Agregar Productos --- */}
-                <div className="form-group-inline">
+                <div className="formulario-agregar-producto">
                     <select 
                         value={productoSeleccionadoId}
                         onChange={(evento) => setProductoSeleccionadoId(evento.target.value)}
@@ -305,7 +299,7 @@ function AgregarPedido() {
                 </div>
 
                 {/* --- Total y Envío --- */}
-                <div className="total-section">
+                <div className="seccion-total">
                     <p>
                         <strong>Total: ${totalPedido.toFixed(2)}</strong>
                     </p>

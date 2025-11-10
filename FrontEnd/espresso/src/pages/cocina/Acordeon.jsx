@@ -1,6 +1,4 @@
-// Acordeon.jsx (Corregido)
-
-import "./Acordeon.css"
+import "../../UnicoCSS.css"
 import React, { useState } from 'react';
 
 const Acordeon = ({ children }) => {
