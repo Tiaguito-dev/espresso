@@ -7,7 +7,6 @@ import TablaPedidos from "../../components/TablaPedidos";
 
 export default function PedidosLista() {
     const [pedidos, setPedidos] = useState([]);
-    const [mostrarFiltros, setMostrarFiltros] = useState(false);
     const [estadoFiltro, setEstadoFiltro] = useState("todos");
     const navigate = useNavigate();
 
@@ -23,10 +22,6 @@ export default function PedidosLista() {
         }
     };
 
-    const toggleFiltros = () => {
-        setMostrarFiltros(!mostrarFiltros);
-    };
-
     const filtrarEstado = (estado) => {
         setEstadoFiltro(estado);
     };
@@ -40,6 +35,8 @@ export default function PedidosLista() {
             let siguienteEstado;
             if (pedidoActual.estadoPedido === "pendiente") {
                 siguienteEstado = "listo";
+            } else if (pedidoActual.estadoPedido === "Pendiente") {
+                siguienteEstado = "pendiente";
             } else if (pedidoActual.estadoPedido === "listo") {
                 siguienteEstado = "finalizado";
             } else {

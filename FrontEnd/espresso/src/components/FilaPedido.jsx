@@ -3,8 +3,15 @@ import IconoEliminar from "./IconoEliminar";
 import IconoModificar from "./IconoModificar";
 
 function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEliminar }) {
-    
 
+    const cambiarPendiente = async (pedido) => {
+        if (pedido.estadoPedido === "Pendiente"){
+            funcionCambiarEstado(pedido.nroPedido);
+        }
+    }
+
+    cambiarPendiente(pedido);
+    
     let textoBotonEstado = '';
     let deshabilitarBotonEstado = false;
 
@@ -17,8 +24,6 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
         deshabilitarBotonEstado = true;
     }
     
-    const claseEstado = `estado-label estado-${pedido.estadoPedido}`;
-    
     const isFinishedOrCanceled = pedido.estadoPedido === "finalizado" || pedido.estadoPedido === "cancelado";
 
     return (
@@ -29,7 +34,7 @@ function FilaPedido({ pedido, funcionCambiarEstado, funcionModificar, funcionEli
     
             <td>{pedido.fecha ? pedido.fecha : '-'}</td> 
             
-            <td><span className={claseEstado}>{pedido.estadoPedido}</span></td>
+            <td>{pedido.estadoPedido}</td>
             
             <td>${pedido.total}</td>
             
