@@ -911,7 +911,8 @@ input[type="text"],
 input[type="number"],
 input[type="email"],  
 input[type="password"],
-select {
+select,
+textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -1264,4 +1265,148 @@ input[readOnly] {
     padding: 3px; 
     border-top: none;
     border-radius: 0px 0px 6px 6px;
+}
+
+/*================== TABLA MODIFICAR PEDIDO CSS ==================*/
+
+.formulario hr {
+  border: none;
+  border-top: 2px solid #eee;
+  margin: 25px 0;
+}
+
+
+.campo-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.campo-vertical textarea {
+    width: 100%;
+}
+
+.formulario table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.formulario th,
+.formulario td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.formulario th {
+  background-color: #B08968; 
+  color: white;
+  font-weight: bold;
+}
+
+.boton-eliminar-linea {
+  background-color: #db3535; 
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.boton-eliminar-linea:hover {
+  background-color: #eb3f3f;
+}
+
+.agregar-linea-section {
+  display: flex;
+  gap: 10px;
+  align-items: center; 
+  flex-wrap: wrap; 
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.agregar-linea-section h4 {
+  width: 100%; 
+  margin: 0 0 10px 0;
+  color: #5a3e2b;
+}
+
+.agregar-linea-section select {
+  flex-grow: 1; 
+}
+
+.agregar-linea-section input[type="number"] {
+  width: 80px; 
+  padding: 10px;
+}
+
+.agregar-linea-boton {
+  background-color: #2e8edd; 
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.agregar-linea-boton:hover {
+  background-color: #90caf9;
+}
+
+.formulario-agregar-producto {
+  grid-column: 1 / -1; 
+  display: flex; 
+  align-items: flex-end; 
+  flex-wrap: wrap; 
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  column-gap: 10px;
+  row-gap: 0px;
+}
+
+.formulario-agregar-producto h4 {
+  width: 100%; 
+  color: #5a3e2b;
+  font-size: 1.1em; 
+  font-weight: bold;
+}
+
+.flex-item-control {
+  margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex-grow: 1; 
+}
+
+.flex-item-control select {
+    flex-grow: 1; 
+    min-width: 150px; 
+}
+
+.flex-item-control .input-cantidad {
+    width: 80px; 
+    flex-grow: 0; 
+}
+
+.flex-item-control button {
+    margin-top: auto; 
+    align-self: flex-end; 
 }

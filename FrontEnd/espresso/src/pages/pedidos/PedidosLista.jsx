@@ -111,7 +111,7 @@ export default function PedidosLista() {
                 </div>
                 <button
                     className="boton-agregar"
-                    onClick={() => navigate("/pedidos/agregar")}
+                    onClick={() => navigate("/pedidos/agregar/")}
                 >
                     + Agregar Pedido
                 </button>
