@@ -20,39 +20,37 @@ const FormPedido = () => {
         nroPedido: id,
         fecha: "",
         estadoPedido: "",
-        observacion: "", // NUEVO: Añadido campo observación al estado inicial
+        observacion: "",
         mesa: {
             nroMesa:"",
             estadoMesa:""
         },
-        lineasPedido: [] // Inicializar como array vacío
+        lineasPedido: [] 
     });
 
-    // NUEVO: Estados para manejar el dropdown de productos y la nueva línea
+
     const [productos, setProductos] = useState([]);
     const [productoSeleccionado, setProductoSeleccionado] = useState("");
     const [cantidadNueva, setCantidadNueva] = useState(1);
 
-    // Carga inicial del pedido y de la lista de productos
+
     useEffect(() => {
         fetchPedido();
-        fetchProductos(); // NUEVO: Cargar productos para el desplegable
+        fetchProductos();
     }, []);
 
     const fetchPedido = async () => {
         try {
             const data = await buscarPedidoPorId(id);
-            // Asegurarse de que observación no sea null para evitar error en input
             setPedido({ ...data, observacion: data.observacion || "" });
         } catch (error) {
             console.error("Error no se pudo obtener el pedido:", error);
         }
     };
 
-    // NUEVO: Función para cargar los productos del desplegable
+
     const fetchProductos = async () => {
         try {
-            // Asumo que tienes un servicio `getProductos` que devuelve un array
             const data = await getProductos(); 
             setProductos(data);
         } catch (error) {
@@ -61,10 +59,10 @@ const FormPedido = () => {
     };
 
 
-    //Definicion de las columnas de la tabla lineas de pedido
+
     const camposLineaPedido = ["ID Producto", "Nombre Producto", "Precio Unitario", "Cantidad"];
 
-    // NUEVO: Handler genérico para campos del pedido (estado y observación)
+
     const handlePedidoChange = (e) => {
         const { name, value } = e.target;
         setPedido(prevPedido => ({
@@ -73,17 +71,16 @@ const FormPedido = () => {
         }));
     };
 
-    // NUEVO: Handler para el botón de eliminar línea
+
     const handleEliminarLinea = async (idLinea) => {
         try {
             await eliminarLineaAPedido(pedido.nroPedido, idLinea);
-            fetchPedido(); // Recargar el pedido para mostrar los cambios
+            fetchPedido();
         } catch (error) {
             console.error("Error al eliminar la línea:", error);
         }
     };
 
-    // NUEVO: Handler para el botón de agregar nueva línea
     const handleAgregarLinea = async () => {
         if (!productoSeleccionado) {
             alert("Por favor, seleccione un producto.");
@@ -95,8 +92,7 @@ const FormPedido = () => {
                 cantidad: cantidadNueva
             };
             await agregarLineaAPedido(pedido.nroPedido, datosNuevaLinea);
-            fetchPedido(); // Recargar el pedido
-            // Resetear campos
+            fetchPedido();
             setProductoSeleccionado("");
             setCantidadNueva(1);
         } catch (error) {
@@ -104,15 +100,12 @@ const FormPedido = () => {
         }
     };
 
-    // NUEVO: Handler para guardar todos los cambios del formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Creamos un objeto solo con los datos que se pueden modificar
             const datosActualizados = {
                 estadoPedido: pedido.estadoPedido,
                 observacion: pedido.observacion,
-                // Enviamos solo el ID de línea y la cantidad actualizada
                 lineasPedido: pedido.lineasPedido.map(linea => ({
                     idLinea: linea.idLinea,
                     cantidad: linea.cantidad

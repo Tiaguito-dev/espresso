@@ -6,10 +6,6 @@ import "../../UnicoCSS.css"
 import { useNavigate } from "react-router-dom";
 
 
-/**
- * Componente principal AgregarPago
- * Permite seleccionar un pedido finalizado, aplicar un descuento y registrar un pago.
- */
 export default function AgregarPago() {
     const [pedidos, setPedidos] = useState([]);
     const [selectedPedidoId, setSelectedPedidoId] = useState('');
@@ -76,9 +72,9 @@ export default function AgregarPago() {
     }, [montoPedido, descuento]);
 
 
-    // Maneja el envío del formulario
+
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Evita que la página se recargue
+        event.preventDefault();
         
         // Validaciones
         if (!selectedPedidoId || !selectedPedido) {
@@ -97,7 +93,7 @@ export default function AgregarPago() {
         setEnviando(true);
         setMensaje('Registrando pago...');
 
-        // Construir el objeto de pago según el JSON de la captura
+
         const pagoData = {
             nroPedido: parseInt(selectedPedidoId),
             monto: montoFinal,
@@ -105,7 +101,6 @@ export default function AgregarPago() {
         };
 
         try {
-            // Llama a la función (ahora simulada)
             const nuevoPago = await crearPago(pagoData);
             
             setMensaje(`Pago registrado exitosamente (ID: ${nuevoPago.nroPago || 'N/A'})`);
@@ -124,7 +119,7 @@ export default function AgregarPago() {
         }
     };
 
-    // --- RENDERIZADO DEL COMPONENTE ---
+
 
     return (
         <div>
@@ -152,7 +147,7 @@ export default function AgregarPago() {
                     </select>
                 </div>
 
-                {/* 2. Monto del Pedido (informativo) */}
+
                 <div>
                     <label>Monto del Pedido:</label>
                     <input 
@@ -163,7 +158,7 @@ export default function AgregarPago() {
                     />
                 </div>
 
-                {/* 3. Descuento */}
+
                 <div>
                     <label htmlFor="descuento-input">Descuento:</label>
                     <input 
@@ -177,7 +172,7 @@ export default function AgregarPago() {
                     />
                 </div>
 
-                {/* 4. Monto Final (informativo) */}
+
                 <div>
                     <label>Monto Final a Pagar:</label>
                     <input 
@@ -188,7 +183,7 @@ export default function AgregarPago() {
                     />
                 </div>
 
-                {/* 5. Medio de Pago */}
+
                 <div>
                     <label htmlFor="medio-pago-select">Medio de Pago:</label>
                     <select 
@@ -206,7 +201,7 @@ export default function AgregarPago() {
                     </select>
                 </div>
 
-                {/* 6. Botón de Envío */}
+
                 <button 
                     type="submit" 
                     disabled={enviando || !selectedPedido}
@@ -215,7 +210,7 @@ export default function AgregarPago() {
                 </button>
             </form>
 
-            {/* 7. Mensaje de Estado */}
+
             {mensaje && (
                 <div>
                     {mensaje}

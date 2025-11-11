@@ -74,12 +74,9 @@ function AgregarPedido() {
 	}, []);
 
 
-//funcion que recupera todos los cambios en el formulario
 	const actualizarVistaPedido = (evento) => {
-		//guarda el nombre del campo y valor que envio el evento
 		const { name, value } = evento.target;
 		setPedidoInfo(
-			//setea en el state del pedido el campo con su valor
 			prevInfo => ({ ...prevInfo, [name]: value})
 		);
 	}
@@ -211,7 +208,7 @@ function AgregarPedido() {
                     />
                 </div>
 
-                {/* --- Sección Agregar Productos --- */}
+
                 <div className="formulario-agregar-producto">
                     <select 
                         value={productoSeleccionadoId}
@@ -233,7 +230,7 @@ function AgregarPedido() {
                     />
                 </div>
 
-                {/* --- Tabla de Productos Agregados --- */}
+
                 <div className="tabla-productos">
                     <table>
                         <thead>
@@ -283,7 +280,7 @@ function AgregarPedido() {
                     </table>
                 </div>
 
-                {/* --- Total y Envío --- */}
+
                 <div className="seccion-total">
                     <p>
                         <strong>Total: ${totalPedido.toFixed(2)}</strong>
